@@ -563,17 +563,5 @@
     "/vendors/css/maps/images/marker-icon.png": "/vendors/css/maps/images/marker-icon.png",
     "/vendors/css/maps/images/marker-shadow.png": "/vendors/css/maps/images/marker-shadow.png",
     "/vendors/css/editors/quill/fonts/KaTeX_Main-Regular.woff2": "/vendors/css/editors/quill/fonts/KaTeX_Main-Regular.woff2",
-    "/vendors/css/editors/quill/fonts/KaTeX_Math-Italic.woff2": "/vendors/css/editors/quill/fonts/KaTeX_Math-Italic.woff2",
-    "/fonts/feather/iconfont.css": "/fonts/feather/iconfont.css",
-    "/fonts/flag-icon-css/css/flag-icon.css": "/fonts/flag-icon-css/css/flag-icon.css",
-    "/fonts/flag-icon-css/css/flag-icon.min.css": "/fonts/flag-icon-css/css/flag-icon.min.css",
-    "/fonts/font-awesome/css/font-awesome.css": "/fonts/font-awesome/css/font-awesome.css",
-    "/fonts/font-awesome/css/font-awesome.min.css": "/fonts/font-awesome/css/font-awesome.min.css",
-    "/data/ajax.php": "/data/ajax.php",
-    "/data/invoice-list.json": "/data/invoice-list.json",
-    "/data/jstree-data.json": "/data/jstree-data.json",
-    "/data/kanban.json": "/data/kanban.json",
-    "/data/search.json": "/data/search.json",
-    "/data/table-datatable.json": "/data/table-datatable.json",
-    "/data/user-list.json": "/data/user-list.json"
+    "/vendors/css/editors/quill/fonts/KaTeX_Math-Italic.woff2": "/vendors/css/editors/quill/fonts/KaTeX_Math-Italic.woff2"
 }

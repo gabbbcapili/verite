@@ -13,7 +13,10 @@
     "fruitcake/laravel-cors": "^2.0",
     "guzzlehttp/guzzle": "^7.0.1",
     "laravel/framework": "^8.40",
-    "laravel/tinker": "^2.5"
+    "laravel/jetstream": "2.8.5",
+    "laravel/sanctum": "^2.15",
+    "laravel/tinker": "^2.5",
+    "livewire/livewire": "^2.5"
   },
   "require-dev": {
     "facade/ignition": "^2.5",
@@ -21,7 +24,8 @@
     "laravel/sail": "^1.0.1",
     "mockery/mockery": "^1.4.2",
     "nunomaduro/collision": "^5.0",
-    "phpunit/phpunit": "^9.3.3"
+    "phpunit/phpunit": "^9.3.3",
+    "pixinvent/jetstrap-vuexy": "dev-main"
   },
   "config": {
     "optimize-autoloader": true,
