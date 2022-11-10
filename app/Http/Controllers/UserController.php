@@ -42,7 +42,7 @@ class UserController extends Controller
             ->rawColumns(['action'])
             ->make(true);
         }
-        $roles = Role::where('is_deleted', false)->get();
+        $roles = Role::where('is_deleted', false)->where('id', '!=', 3)->get();
         return view('app.user.index', [
             'breadcrumbs' => $breadcrumbs,
             'roles' => $roles,
