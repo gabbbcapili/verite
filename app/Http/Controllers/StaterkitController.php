@@ -10,7 +10,7 @@ class StaterkitController extends Controller
     public function home()
     {
         $breadcrumbs = [
-            ['link' => "home", 'name' => "Home"], ['name' => "Index"]
+            ['link' => "home", 'name' => "Home"], ['name' => ""]
         ];
         return view('/content/home', ['breadcrumbs' => $breadcrumbs]);
     }

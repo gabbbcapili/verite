@@ -5,6 +5,12 @@
   <link rel="stylesheet" href="{{ asset(mix('vendors/css/vendors.min.css')) }}" />
 @endif
 
+
+<!-- Global Page Css -->
+<link rel="stylesheet" href="{{ asset('vendors/css/animate/animate.min.css') }}">
+<link rel="stylesheet" href="{{ asset('vendors/css/extensions/sweetalert2.min.css') }}">
+<link rel="stylesheet" href="{{ asset(mix('vendors/css/forms/select/select2.min.css')) }}">
+<!-- Global Page Css -->
 @yield('vendor-style')
 <!-- END: Vendor CSS-->
 
@@ -13,6 +19,7 @@
 <link rel="stylesheet" href="{{ asset(mix('css/base/themes/dark-layout.css')) }}" />
 <link rel="stylesheet" href="{{ asset(mix('css/base/themes/bordered-layout.css')) }}" />
 <link rel="stylesheet" href="{{ asset(mix('css/base/themes/semi-dark-layout.css')) }}" />
+<link rel="stylesheet" href="{{ asset(mix('vendors/css/bootstrap-extended.css')) }}">
 
 @php $configData = Helper::applClasses(); @endphp
 

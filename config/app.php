@@ -177,6 +177,11 @@ return [
         App\Providers\FortifyServiceProvider::class,
         App\Providers\JetstreamServiceProvider::class,
         App\Providers\MenuServiceProvider::class,
+
+         /*
+         * Application Custom Providers
+         */
+        Spatie\Permission\PermissionServiceProvider::class,
     ],
 
     /*
