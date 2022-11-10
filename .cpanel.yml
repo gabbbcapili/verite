@@ -1,0 +1,5 @@
+---
+deployment:
+ tasks:
+ - export DEPLOYPATH=/home/aquiware/public_html/verite
+ - /bin/cp -r * $DEPLOYPATH
