@@ -16,7 +16,7 @@
     <div class="col-md-12 col-sm-12">
       <div class="card">
         <div class="card-header">
-          <h4 class="card-title">Add Supplier</h4>
+          <h4 class="card-title">Filters</h4>
           <div class="heading-elements">
             <ul class="list-inline mb-0">
               <li>
@@ -27,57 +27,19 @@
         </div>
         <div class="card-content collapse">
           <div class="card-body">
-            <form action="{{ route('supplier.store') }}" method="POST" class="form" enctype="multipart/form-data">
-              @csrf
-              <div class="form-body">
-                <div class="row mb-2">
-                    <div class="col-lg-4 col-xs-12">
-                      <div class="form-group">
-                          <label for="name">First Name:</label>
-                          <input type="text" class="form-control" name="first_name" placeholder="First Name">
-                      </div>
-                    </div>
-                    <div class="col-lg-4 col-xs-12">
-                      <div class="form-group">
-                          <label for="name">Last Name:</label>
-                          <input type="text" class="form-control" name="last_name" placeholder="Last Name">
-                      </div>
-                    </div>
-                    <div class="col-lg-4 col-xs-12">
-                      <div class="form-group">
-                          <label for="name">Email:</label>
-                          <input type="text" class="form-control" name="email" placeholder="Email">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row mb-2">
-                    <div class="col-lg-4 col-xs-12">
-                      <div class="form-group">
-                          <label for="name">Password:</label>
-                          <input type="text" class="form-control" name="password" placeholder="Password">
-                      </div>
-                    </div>
-                    <div class="col-lg-4 col-xs-12">
-                      <div class="form-group">
-                          <label for="name">Template:</label>
-                          <select class="form-control select2" name="template_id">
-                            @foreach($templates as $template)
-                              <option value="{{ $template->id }}">{{ $template->name }}</option>
-                            @endforeach
-                          </select>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-6">
-                     <div class="col-12">
-                          <input type="submit" name="save_with_reload_table" class="btn btn-primary mr-1 mb-1 btn_save" value="Save">
-                          <button type="reset" class="btn btn-outline-warning mr-1 mb-1">Reset </button>
-                      </div>
-                    </div>
-                  </div>
+            <div class="row mb-2">
+              <div class="col-4">
+                <label>Status:</label>
+
+                <select class="form-control select2 selectFilter" id="status">
+                  <option class="all">All</option>
+                  <option class="pending">Pending</option>
+                  <option class="answered">Waiting for Admin Approval</option>
+                  <option class="additional">Additional Info Needed</option>
+                  <option class="completed">Completed</option>
+                </select>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       </div>
@@ -93,6 +55,7 @@
             <tr>
               <th>Id</th>
               <th>Name</th>
+              <th>Email</th>
               <th>Created At</th>
               <th>Update At</th>
               <th>Status</th>
@@ -132,16 +95,26 @@
     var table_route = {
           url: '{{ route('supplier.index') }}',
           data: function (data) {
-                // data.field = $("#field").val();
+                data.status = $("#status").val();
             }
         };
       var columnns = [
             { data: 'id', name: 'id'},
             { data: 'fullName', name: 'fullName'},
+            { data: 'email', name: 'email'},
             { data: 'created_at', name: 'created_at'},
             { data: 'updated_at', name: 'updated_at'},
             { data: 'status', name: 'status'},
             { data: 'action', name: 'action', 'orderable' : false}
+        ];
+      var buttons = [
+            {
+                text: '<i data-feather="plus"></i> Create New',
+                className: 'btn btn-primary',
+                action: function ( e, dt, node, config ) {
+                    window.location.href = '{{ route("supplier.create") }}';
+                }
+            }
         ];
       var drawCallback = function( settings ) {
         $('[data-bs-toggle="tooltip"]').tooltip();

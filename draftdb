@@ -32,3 +32,36 @@ id
 spaf_id
 question_id
 value
+
+
+
+Risk Management, Spaf Extension
+Tables
+    add filter
+    add archive
+    add deleted view,
+    Add button accordion,
+    add badge sa menu if may kailangan i approve
+
+Template Clone, Group Clone ok
+Template email, number, title, textarea ok
+SPAF email token based link redirect to change password then login ok
+dashboard
+    stats lang muna
+    sa supplier Welcome chuchu
+
+Supplier
+        List Supplier ok
+        Add Supplier ok
+
+Add Supplier
+    -transaction based ok
+    -client spaf edit (fillup) save and finish later ok
+    - spaf show ok
+
+capital letters spaf ok
+Menu change people to users ok
+User Profile
+    remove settings ok
+
+

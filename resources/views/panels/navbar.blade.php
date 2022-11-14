@@ -88,10 +88,10 @@
             <i class="me-50" data-feather="key"></i> API Tokens
           </a>
         @endif
-        <a class="dropdown-item" href="#">
+  <!--       <a class="dropdown-item" href="#">
           <i class="me-50" data-feather="settings"></i> Settings
         </a>
-
+ -->
         @if (Auth::User() && Laravel\Jetstream\Jetstream::hasTeamFeatures())
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">Manage Team</h6>

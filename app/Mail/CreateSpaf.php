@@ -18,12 +18,11 @@ class CreateSpaf extends Mailable
      *
      * @return void
      */
-    public function __construct(User $user, Spaf $spaf, $password)
+    public function __construct(User $user, Spaf $spaf, $token)
     {
         $this->user = $user;
         $this->spaf = $spaf;
-        $this->password = $password;
-
+        $this->token = $token;
     }
 
     /**
@@ -33,7 +32,7 @@ class CreateSpaf extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.supplier.spaf', ['user' => $this->user, 'spaf' => $this->spaf, 'password' => $this->password])
+        return $this->markdown('emails.supplier.spaf', ['user' => $this->user, 'spaf' => $this->spaf, 'token' => $this->token])
                     ->subject('Supplier Pre-assessment Form');
     }
 }

@@ -1,6 +1,6 @@
 @inject('request', 'Illuminate\Http\Request')
 @extends('layouts/contentLayoutMaster')
-@section('title', 'Spaf Template')
+@section('title', 'SPAF Template')
 
 @section('vendor-style')
   <link rel="stylesheet" href="{{ asset('vendors/css/tables/datatable/dataTables.bootstrap5.min.css') }}">
@@ -16,7 +16,7 @@
     <div class="col-md-12 col-sm-12">
       <div class="card">
         <div class="card-header">
-          <h4 class="card-title">Add Spaf Template</h4>
+          <h4 class="card-title">Add SPAF Template</h4>
           <div class="heading-elements">
             <ul class="list-inline mb-0">
               <li>

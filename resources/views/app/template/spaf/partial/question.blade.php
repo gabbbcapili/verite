@@ -7,8 +7,12 @@
     }
 @endphp
 
-@if($q->type == 'input')
+@if($q->type == 'input' || $q->type == 'email' || $q->type == 'number')
     <input type="text" name="question[{{ $q->id  }}]" id="question.{{ $q->id }}" class="form-control" placeholder="{{ $q->text }}" value="{{ $answer ? $answer : '' }}" {{ isset($disabled) ? 'disabled' : '' }}>
+@elseif($q->type == 'textarea')
+    <textarea name="question[{{ $q->id  }}]" id="question.{{ $q->id }}" class="form-control" placeholder="{{ $q->text }}" {{ isset($disabled) ? 'disabled' : '' }}>{{ $answer ? $answer : '' }}</textarea>
+@elseif($q->type == 'title')
+
 @elseif($q->type == 'radio')
     <input type="hidden" id="question.{{ $q->id }}">
     @foreach(explode(',', $q->for_checkbox) as $option)

@@ -65,7 +65,7 @@ $(function() {
                   elem.first().after('<label class="text-danger error">' + val + '</label>');
                 }else{
                     elem.after('<label class="text-danger error">' + val + '</label>');
-                    $('input[id="'+ index +'"]').after('<label class="text-danger error">' + val + '</label>');
+                    $('[id="'+ index +'"]').after('<label class="text-danger error">' + val + '</label>');
                 }
 
               });

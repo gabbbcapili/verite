@@ -84,14 +84,24 @@ class SpafController extends Controller
     public function update(Request $request, Spaf $spaf)
     {
         $validation = [];
-        foreach($spaf->template->questions  as $q){
-            if($q->type == 'checkbox'){
-                $validation['checkbox.'. $q->id] = $q->required ? 'required' : '';
-            }else{
-                $validation['question.'. $q->id] = $q->required ? 'required' : '';
-            }
+        if(! $request->has('save_finish_later')){
+            foreach($spaf->template->questions  as $q){
+                if($q->type == 'checkbox'){
+                    $validation['checkbox.'. $q->id] = $q->required ? 'required' : '';
+                }else{
+                    $validation['question.'. $q->id] = $q->required ? 'required' : '';
+                }
 
+                if($q->type == 'email'){
+                    $validation['checkbox.'. $q->id] = $q->required ? ['required', 'email'] : 'email';
+                }
+                if($q->type == 'number'){
+                    $validation['checkbox.'. $q->id] = $q->required ? ['required', 'numeric'] : 'numeric';
+                }
+            }
         }
+
+        // dd($validation);
         $validator = Validator::make($request->all(),
             $validation,
         [
@@ -99,14 +109,16 @@ class SpafController extends Controller
             'checkbox.*.required' => 'This field is required.'
         ]);
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()]);
+            return response()->json(['error' => $validator->errors(), 'msg' => 'Please check all errors']);
         }
         try {
             DB::beginTransaction();
-            $spaf->update([
-                'status' => 'answered',
-                'completed_at' => Carbon::now()->format('Y-m-d H:i:s')
-            ]);
+            if(! $request->has('save_finish_later')){
+                $spaf->update([
+                    'status' => 'answered',
+                    'completed_at' => Carbon::now()->format('Y-m-d H:i:s')
+                ]);
+            }
 
             if($request->has('question')){
                 foreach($request->question as $name => $q){

@@ -10,6 +10,9 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class User extends Authenticatable
 {
@@ -77,5 +80,25 @@ class User extends Authenticatable
 
     public function spaf(){
         return $this->hasOne(Spaf::class, 'user_id');
+    }
+
+    public function generatePassworResetToken(){
+        // This is set in the .env file
+        // $key = config('app.key');
+
+        // // Illuminate\Support\Str;
+        // if (Str::startsWith($key, 'base64:')) {
+        //     $key = base64_decode(substr($key, 7));
+        // }
+        // $token = hash_hmac('sha256', Str::random(40), $key);
+        // $token = Str::random(60);
+        // DB::table('password_resets')->where('email',$this->email)->delete();
+        // DB::table('password_resets')->insert([
+        //         'email' => $this->email,
+        //         'token' => $token,
+        //         'created_at' => Carbon::now()
+        // ]);
+        $token = \Illuminate\Support\Facades\Password::broker('users')->createToken($this);
+        return $token;
     }
 }

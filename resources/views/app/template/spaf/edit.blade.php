@@ -114,6 +114,9 @@
               {
                 $("#sortable_groups").html(result);
                 replaceIcons();
+                $('[data-bs-toggle="tooltip"]').tooltip({container: 'section', trigger: 'hover'}).on('click', function() {
+                    $(this).tooltip('hide')
+                });
               }
           });
         }
@@ -134,7 +137,7 @@
                   },
                   success:function(result)
                   {
-
+                    loadPreview();
                   }
                 });
               }

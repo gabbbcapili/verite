@@ -14,6 +14,7 @@ class Utilities extends Model
             'Delete' => 'trash',
             'Approve' => 'check',
             'Default' => 'thumbs-up',
+            'confirmWithNotes' => 'copy',
         ];
     }
 
@@ -41,13 +42,17 @@ class Utilities extends Model
       $html = '';
         foreach($buttons as $action){
             $type =   array_key_exists('type', $action) ? $action['type'] : 'modal_button';
-            $title =   array_key_exists('title', $action) ? $action['title'] : '';
+            $title =   array_key_exists('title', $action) ? $action['title'] : $action['name'];
+            $text =   array_key_exists('text', $action) ? $action['text'] : '';
+            $confirmButtonText =   array_key_exists('confirmButtonText', $action) ? $action['confirmButtonText'] : '';
             if($type == 'modal_button'){
-              $html .= '<a href="#" data-bs-toggle="tooltip" data-placement="top" title="'. $title .'"" data-action="'. $action['route'] . '" class="me-75 '. $type .'"><i data-feather="'. $icons[$action['name']] .'"></i>';
+              $html .= '<a href="#" data-bs-toggle="tooltip" data-placement="top" title="'. $title .'" data-action="'. $action['route'] . '" class="me-75 '. $type .'"><i data-feather="'. $icons[$action['name']] .'"></i></a>';
             }elseif($type == 'approve'){
-              $html .= '<a href="#" data-bs-toggle="tooltip" data-placement="top" title="'. $title .'"" data-action="'. $action['route'] . '" class="me-75 confirm" data-title="Are you sure to approve this?" ><i data-feather="'. $icons[$action['name']] .'"></i>';
+              $html .= '<a href="#" data-bs-toggle="tooltip" data-placement="top" title="'. $title .'" data-action="'. $action['route'] . '" class="me-75 confirm" data-title="Are you sure to approve this?" ><i data-feather="'. $icons[$action['name']] .'"></i></a>';
+            }elseif($type == 'confirmWithNotes'){
+              $html .= '<a href="#" data-bs-toggle="tooltip" data-placement="top" data-title="'. $title .'" data-text="'. $text .'" data-confirmbutton="'. $confirmButtonText .'" title="'. $title .'"" data-action="'. $action['route'] . '" class="me-75 confirmWithNotes"><i data-feather="'. $icons[$action['name']] .'"></i></a>';
             }else{
-              $html .= '<a href="'. $action['route'] .'" data-bs-toggle="tooltip" data-placement="top" title="'. $title .'"" data-href="'. $action['route'] . '" class="me-50"><i data-feather="'. $icons[$action['name']] .'"></i>';
+              $html .= '<a href="'. $action['route'] .'" data-bs-toggle="tooltip" data-placement="top" title="'. $title .'" data-href="'. $action['route'] . '" class="me-50"><i data-feather="'. $icons[$action['name']] .'"></i></a>';
             }
         }
         return $html;

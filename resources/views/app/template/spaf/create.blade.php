@@ -1,6 +1,6 @@
 @inject('request', 'Illuminate\Http\Request')
 @extends('layouts/contentLayoutMaster')
-@section('title', 'Create Spaf Template')
+@section('title', 'Create SPAF Template')
 
 @section('vendor-style')
 @endsection

@@ -33,9 +33,9 @@
                         <tr>
                           <th style="width: 25%;">Question</th>
                           <th style="width: 20%;">Type</th>
-                          <th style="width: 10%;">Required <i data-feather="info" data-bs-toggle="tooltip" data-bs-placement="top" title="Check / Uncheck this field wether this field is required to fill up or not."></i></th>
-                          <th style="width: 10%;">Next Line <i data-feather="info" data-bs-toggle="tooltip" data-bs-placement="top" title="Uncheck this field if it is a multiple question in one line."></i></th>
-                          <th style="width: 25%;">For Checkbox/Radio <i data-feather="info" data-bs-toggle="tooltip" data-bs-placement="top" title="If the field is checkbox or radio, put all the options in this field separeted by comma (,) e.g. 'Yes,No' 'Management,Direct,Outsorce,Dispatch'"></i></th>
+                          <th style="width: 10%;">Required <i data-feather="info" data-bs-toggle-modal="tooltip" data-bs-placement="top" title="Check / Uncheck this field wether this field is required to fill up or not."></i></th>
+                          <th style="width: 10%;">Next Line <i data-feather="info" data-bs-toggle-modal="tooltip" data-bs-placement="top" title="Uncheck this field if it is a multiple question in one line."></i></th>
+                          <th style="width: 25%;">For Checkbox/Radio <i data-feather="info" data-bs-toggle-modal="tooltip" data-bs-placement="top" title="If the field is checkbox or radio, put all the options in this field separeted by comma (,) e.g. 'Yes,No' 'Management,Direct,Outsource,Dispatch'"></i></th>
                           <th style="width: 10%;">Action</th>
                         </tr>
                       </thead>
@@ -51,11 +51,15 @@
                                 <option value="input" {{ $q->type == 'input' ? 'selected' : '' }}>Text</option>
                                 <option value="checkbox" {{ $q->type == 'checkbox' ? 'selected' : '' }}>Check Box</option>
                                 <option value="radio" {{ $q->type == 'radio' ? 'selected' : '' }}>Radio Button</option>
+                                <option value="title" {{ $q->type == 'title' ? 'selected' : '' }}>Title</option>
+                                <option value="email" {{ $q->type == 'email' ? 'selected' : '' }}>Email</option>
+                                <option value="number" {{ $q->type == 'number' ? 'selected' : '' }}>Number</option>
+                                <option value="textarea" {{ $q->type == 'textarea' ? 'selected' : '' }}>Long Text</option>
                               </select>
                             </td>
                             <td>
                             <div class="form-check">
-                              <input class="form-check-input" type="checkbox" value="1" name="question[{{ $loop->iteration }}][required]" id="question.{{ $loop->iteration }}.required" {{ $q->required ? 'checked' : '' }}>
+                              <input class="form-check-input for_required" type="checkbox" value="1" name="question[{{ $loop->iteration }}][required]" id="question.{{ $loop->iteration }}.required" {{ $q->required ? 'checked' : '' }}>
                               <label class="form-check-label">
                                 Required
                               </label>
@@ -63,20 +67,21 @@
                           </td>
                             <td>
                               <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="1" name="question[{{ $loop->iteration }}][next_line]" id="question.{{ $loop->iteration }}.next_line" {{ $q->next_line ? 'checked' : '' }}>
+                                <input class="form-check-input for_next_line" type="checkbox" value="1" name="question[{{ $loop->iteration }}][next_line]" id="question.{{ $loop->iteration }}.next_line" {{ $q->next_line ? 'checked' : '' }}>
                                 <label class="form-check-label">
                                   Next Line
                                 </label>
                               </div>
                             </td>
                             <td>
-                              <input type="textbox" name="question[{{ $loop->iteration }}][for_checkbox]" id="question.{{ $loop->iteration }}.for_checkbox" class="form-control for_checkbox" placeholder="Management,Direct,Outsorce,Dispatch" value="{{ $q->for_checkbox }}">
+                              <input type="textbox" name="question[{{ $loop->iteration }}][for_checkbox]" id="question.{{ $loop->iteration }}.for_checkbox" class="form-control for_checkbox" placeholder="Management,Direct,Outsource,Dispatch" value="{{ $q->for_checkbox }}">
                             </td>
                             <td>
                               <div class="d-flex justify-content-end">
                                   <div class="btn-group" role="group">
-                                      <button type="button" class="btn btn-sm btn-outline-success delete_row" data-bs-toggle="tooltip" title="Delete"><i data-feather="delete"></i></button>
-                                      <span role="button" class="btn btn-sm btn-outline-success cursor-move ui-icon" data-bs-toggle="tooltip" title="Move"><i class="" data-feather="move"></i></span>
+                                      <button type="button" class="btn btn-sm btn-outline-success delete_row" data-bs-toggle-modal="tooltip" title="Delete"><i data-feather="delete"></i></button>
+                                      <!-- <button type="button" class="btn btn-sm btn-outline-success duplicate_row" data-bs-toggle-modal="tooltip" title="Copy"><i data-feather="copy"></i></button> -->
+                                      <span role="button" class="btn btn-sm btn-outline-success cursor-move ui-icon" data-bs-toggle-modal="tooltip" title="Move"><i class="" data-feather="move"></i></span>
                                   </div>
                               </div>
                             </td>
@@ -101,21 +106,34 @@
 <script src="{{ asset(mix('js/scripts/forms-validation/form-modal.js')) }}"></script>
 <script type="text/javascript">
     $(document).ready(function(){
-      $('.selectType').each(function(i, obj) {
-        if($(this).find('option:selected').val() != 'input'){
-          $(this).closest('tr').find('.for_checkbox').removeAttr('disabled');
+      function changeType(select){
+        if(select.find('option:selected').val() == 'checkbox' || select.find('option:selected').val() == 'radio'){
+          select.closest('tr').find('.for_checkbox').removeAttr('disabled');
         }else{
-          $(this).closest('tr').find('.for_checkbox').attr('disabled', 'disabled');
+          select.closest('tr').find('.for_checkbox').attr('disabled', 'disabled');
         }
+        if(select.find('option:selected').val() == 'title'){
+          select.closest('tr').find('.for_required').attr('disabled', 'disabled');
+          select.closest('tr').find('.for_required').prop('checked', false);
+          select.closest('tr').find('.for_next_line').attr('disabled', 'disabled');
+          select.closest('tr').find('.for_next_line').prop('checked', true);
+        }else{
+          select.closest('tr').find('.for_required').removeAttr('disabled');
+          select.closest('tr').find('.for_required').prop('checked', true);
+          select.closest('tr').find('.for_next_line').removeAttr('disabled');
+          select.closest('tr').find('.for_next_line').prop('checked', true);
+        }
+      }
+      $('.selectType').each(function(i, obj) {
+        changeType($(this));
       });
       $(document).on('change', '.selectType', function(){
-        if($(this).find('option:selected').val() != 'input'){
-          $(this).closest('tr').find('.for_checkbox').removeAttr('disabled');
-        }else{
-          $(this).closest('tr').find('.for_checkbox').attr('disabled', 'disabled');
-        }
+        changeType($(this));
       });
-      $('[data-bs-toggle="tooltip"]').tooltip();
+      $('[data-bs-toggle-modal="tooltip"]').tooltip({
+        container : 'body',
+        trigger: 'hover',
+      });
       $("#question_sortable").sortable({
         handle: ".ui-icon",
         items: "tr",
@@ -128,22 +146,29 @@
 
         $tr += '<tr>';
         $tr += '<td><textarea name="question['+ row +'][text]" id="question.'+ row +'.text" class="form-control"></textarea></td>';
-        $tr += '<td><select class="form-control selectType" name="question['+ row +'][type]" id="question.'+ row +'.type"><option value="input">Text</option><option value="checkbox">Check Box</option><option value="radio">Radio Button</option></select></td>';
-        $tr += '<td><div class="form-check"><input class="form-check-input" type="checkbox" value="1" name="question['+ row +'][required]" id="question.'+ row +'.required" checked><label class="form-check-label">Required</label></div></td>';
-        $tr += '<td><div class="form-check"><input class="form-check-input" type="checkbox" value="1" name="question['+ row +'][next_line]" id="question.'+ row +'.next_line" checked><label class="form-check-label">Next Line</label></div></td>';
-        $tr += '<td><input type="textbox" name="question['+ row +'][for_checkbox]" id="question.'+ row +'.for_checkbox" class="form-control for_checkbox" placeholder="Management,Direct,Outsorce,Dispatch" disabled></td>';
-        $tr += '<td><div class="d-flex justify-content-end"><div class="btn-group" role="group"><button type="button" class="btn btn-sm btn-outline-success delete_row" data-bs-toggle="tooltip" title="Delete"><i data-feather="delete"></i></button><span role="button" class="btn btn-sm btn-outline-success cursor-move ui-icon" data-bs-toggle="tooltip" title="Move"><i class="" data-feather="move"></i></span></div></div></td>';
+        $tr += '<td><select class="form-control selectType" name="question['+ row +'][type]" id="question.'+ row +'.type"><option value="input">Text</option><option value="checkbox">Check Box</option><option value="radio">Radio Button</option><option value="title">Title</option><option value="email">Email</option><option value="number">Number</option><option value="textarea">Long Text</option></select></td>';
+        $tr += '<td><div class="form-check"><input class="form-check-input for_required" type="checkbox" value="1" name="question['+ row +'][required]" id="question.'+ row +'.required" checked><label class="form-check-label">Required</label></div></td>';
+        $tr += '<td><div class="form-check"><input class="form-check-input for_next_line" type="checkbox" value="1" name="question['+ row +'][next_line]" id="question.'+ row +'.next_line" checked><label class="form-check-label">Next Line</label></div></td>';
+        $tr += '<td><input type="textbox" name="question['+ row +'][for_checkbox]" id="question.'+ row +'.for_checkbox" class="form-control for_checkbox" placeholder="Management,Direct,Outsource,Dispatch" disabled></td>';
+        $tr += '<td><div class="d-flex justify-content-end"><div class="btn-group" role="group"><button type="button" class="btn btn-sm btn-outline-success delete_row" data-bs-toggle-modal="tooltip" title="Delete"><i data-feather="delete"></i></button><span role="button" class="btn btn-sm btn-outline-success cursor-move ui-icon" data-bs-toggle-modal="tooltip" title="Move"><i class="" data-feather="move"></i></span></div></div></td>';
         $tr += '</tr>';
         $('#question_table tr:last').after($tr);
         feather.replace({
           width: 14,height: 14
         });
-        $('[data-bs-toggle="tooltip"]').tooltip();
+        $('[data-bs-toggle-modal="tooltip"]').tooltip({
+        container : 'body',
+        trigger: 'hover',
+      });
       });
 
       $(document).on('click', '.delete_row', function(){
-        $('[data-bs-toggle="tooltip"]').tooltip('hide')
+        $('[data-bs-toggle-modal="tooltip"]').tooltip('hide')
         $(this).closest('tr').remove();
+      });
+      $(document).on('click', '.duplicate_row', function(){
+        var tr = $(this).closest('tr');
+        tr.after(tr.clone());
       });
     });
 </script>

@@ -205,4 +205,25 @@ class GroupController extends Controller
             }
         }
     }
+
+    public function clone(Group $group, Request $request){
+        try {
+            DB::beginTransaction();
+            $data = $request->all();
+            $newGroup = $group->replicate();
+            $newGroup->push();
+            $newGroup->questions()->createMany($group->questions->toArray());
+            DB::commit();
+            $output = ['success' => 1,
+                        'msg' => 'Template cloned successfully!',
+                    ];
+        } catch (\Exception $e) {
+            \Log::emergency("File:" . $e->getFile(). " Line:" . $e->getLine(). " Message:" . $e->getMessage());
+            $output = ['success' => 0,
+                        'msg' => env('APP_DEBUG') ? $e->getMessage() : 'Sorry something went wrong, please try again later.'
+                    ];
+             DB::rollBack();
+        }
+        return response()->json($output);
+    }
 }

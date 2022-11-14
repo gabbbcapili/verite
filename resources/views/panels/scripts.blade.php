@@ -54,7 +54,7 @@
   $(document).on('click', '.confirmWithNotes', function(){
     Swal.fire({
       title:$(this).data('title'),
-      text: 'You can add notes on the input below',
+      text: $(this).data('text'),
       input: 'text',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
@@ -142,6 +142,7 @@
 
   $(document).on('hidden.bs.modal', '#show_modal', function () {
       $('#show_modal').empty();
+      $('#view_modal').empty();
   });
 
 

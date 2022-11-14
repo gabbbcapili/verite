@@ -36,7 +36,7 @@ Route::group(['middleware' => ['auth']], function()
     Route::resource('spaf', SpafController::class)->only(['update', 'edit'])->middleware('role:Supplier');
 
     Route::resource('role', RoleController::class)->except('create')->middleware('permission:role.manage');
-    Route::resource('supplier', SupplierController::class)->except('create')->middleware('permission:supplier.manage')->parameters(['supplier' => 'user']);
+    Route::resource('supplier', SupplierController::class)->middleware('permission:supplier.manage')->parameters(['supplier' => 'user']);
     Route::group(['prefix' => 'template', 'as' => 'template.'], function()
     {
         Route::group(['middleware' => 'permission:template.manage'], function()
@@ -45,9 +45,11 @@ Route::group(['middleware' => ['auth']], function()
              Route::get('spaf/preview/{template}', [SpafTemplateController::class, 'preview'])->name('spaf.preview');
              Route::get('spaf/delete/{template}', [SpafTemplateController::class, 'delete'])->name('spaf.delete');
              Route::post('spaf/approve/{template}', [SpafTemplateController::class, 'approve'])->name('spaf.approve');
+             Route::post('spaf/clone/{template}', [SpafTemplateController::class, 'clone'])->name('spaf.clone');
              Route::resource('spaf', SpafTemplateController::class)->parameters(['spaf' => 'template']);
              // group
              Route::post('group/updateSort/{template}', [GroupController::class, 'updateSort'])->name('group.updateSort');
+             Route::post('group/clone/{group}', [GroupController::class, 'clone'])->name('group.clone');
              Route::get('group/create/{template}', [GroupController::class, 'create'])->name('group.create');
              Route::post('group/{template}', [GroupController::class, 'store'])->name('group.store');
              Route::get('group/delete/{group}', [GroupController::class, 'delete'])->name('group.delete');
