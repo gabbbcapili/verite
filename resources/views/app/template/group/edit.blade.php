@@ -106,7 +106,7 @@
 <script src="{{ asset(mix('js/scripts/forms-validation/form-modal.js')) }}"></script>
 <script type="text/javascript">
     $(document).ready(function(){
-      function changeType(select){
+      function changeType(select, initial = false){
         if(select.find('option:selected').val() == 'checkbox' || select.find('option:selected').val() == 'radio'){
           select.closest('tr').find('.for_checkbox').removeAttr('disabled');
         }else{
@@ -118,17 +118,20 @@
           select.closest('tr').find('.for_next_line').attr('disabled', 'disabled');
           select.closest('tr').find('.for_next_line').prop('checked', true);
         }else{
-          select.closest('tr').find('.for_required').removeAttr('disabled');
-          select.closest('tr').find('.for_required').prop('checked', true);
-          select.closest('tr').find('.for_next_line').removeAttr('disabled');
-          select.closest('tr').find('.for_next_line').prop('checked', true);
+          if(! initial){
+            select.closest('tr').find('.for_required').removeAttr('disabled');
+            select.closest('tr').find('.for_required').prop('checked', true);
+            select.closest('tr').find('.for_next_line').removeAttr('disabled');
+            select.closest('tr').find('.for_next_line').prop('checked', true);
+          }
+
         }
       }
       $('.selectType').each(function(i, obj) {
-        changeType($(this));
+        changeType($(this), true);
       });
       $(document).on('change', '.selectType', function(){
-        changeType($(this));
+        changeType($(this), false);
       });
       $('[data-bs-toggle-modal="tooltip"]').tooltip({
         container : 'body',

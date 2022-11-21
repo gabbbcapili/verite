@@ -2,12 +2,8 @@
 # Welcome to Verite {{ $user->fullName }}!
 
 Please take time to answer this supplier pre-assesment form, kindly click the button below.
-@component('mail::panel')
-<p>Your Email: {{ $user->email }}</p>
-<p>You will be prompted to change your password immediately</p>
-@endcomponent
 
-@component('mail::button', ['url' => route('password.reset', $token)])
+@component('mail::button', ['url' => route('spaf.edit', $spaf)])
 Go to Site
 @endcomponent
 

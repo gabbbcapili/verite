@@ -1,6 +1,6 @@
 @inject('request', 'Illuminate\Http\Request')
 @extends('layouts/contentLayoutMaster')
-@section('title', 'Add Supplier')
+@section('title', 'Add Client')
 
 @section('vendor-style')
 
@@ -8,13 +8,13 @@
 
 @section('content')
 <section id="card-actions">
-  <form action="{{ route('supplier.store') }}" method="POST" class="form" enctype="multipart/form-data">
+  <form action="{{ route('client.store') }}" method="POST" class="form" enctype="multipart/form-data">
     @csrf
     <div class="row">
       <div class="col-md-12 col-sm-12">
         <div class="card">
           <div class="card-header">
-            <h4 class="card-title">Create Supplier</h4>
+            <h4 class="card-title">Create Client</h4>
           </div>
           <div class="card-content">
             <div class="card-body">
@@ -42,10 +42,10 @@
                       </div>
                       <div class="col-lg-4 col-xs-12">
                         <div class="form-group">
-                            <label for="name">Clients:</label>
-                            <select class="form-control select2" multiple="multiple" name="clients[]" id="clients">
-                              @foreach($clients as $client)
-                                <option value="{{ $client->id }}">{{ $client->fullName }}</option>
+                            <label for="name">Suppliers:</label>
+                            <select class="form-control select2" multiple="multiple" name="suppliers[]" id="suppliers">
+                              @foreach($suppliers as $supplier)
+                                <option value="{{ $supplier->id }}">{{ $supplier->fullName }}</option>
                               @endforeach
                             </select>
                         </div>

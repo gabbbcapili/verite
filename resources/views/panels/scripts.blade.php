@@ -56,6 +56,9 @@
       title:$(this).data('title'),
       text: $(this).data('text'),
       input: 'text',
+      inputValidator: (value) => {
+        return !value && 'This field is required.'
+      },
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
@@ -151,5 +154,21 @@
       headers: {
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
       }
+  });
+
+  $(document).ready(function(){
+    $.ajax({
+          url: "{{ route('getBadges') }}",
+          method: "GET",
+          success:function(result)
+          {
+            $.each(result.data, function (index, item) {
+              if(item != 0){
+                $('#' + index).text(item);
+              }
+            });
+
+          }
+      });
   });
 </script>

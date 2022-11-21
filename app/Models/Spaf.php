@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Http\Request;
+use App\Models\Utilities;
 
 class Spaf extends Model
 {
@@ -11,10 +14,15 @@ class Spaf extends Model
 
     protected $table = 'spaf';
 
-    protected $fillable = ['user_id', 'template_id', 'status','completed_at','approved_at', 'notes'];
+    protected $fillable = ['client_id', 'supplier_id', 'template_id', 'status','completed_at','approved_at', 'notes'];
 
-    public function user(){
-        return $this->belongsTo(User::class, 'user_id');
+
+    public function client(){
+        return $this->belongsTo(User::class, 'client_id');
+    }
+
+    public function supplier(){
+        return $this->belongsTo(User::class, 'supplier_id');
     }
 
     public function template(){
@@ -37,5 +45,45 @@ class Spaf extends Model
 
     public function answers(){
         return $this->hasMany(SpafAnswer::class, 'spaf_id');
+    }
+
+    public static function datatables($spaf, $request){
+        return Datatables::eloquent($spaf)
+            ->addColumn('action', function(Spaf $spaf, Request $request) {
+                            $html = '';
+                            if($request->user()->hasRole('Supplier') || $request->user()->hasRole('Client')){
+                                $html .= Utilities::actionButtons([['route' => route('spaf.show', $spaf->id), 'name' => 'Show', 'type' => 'href']]);
+                            }else{
+                                if(in_array($spaf->status, ['answered', 'completed'])){
+                                    $html .= Utilities::actionButtons([['route' => route('spaf.show', $spaf->id), 'name' => 'Show', 'type' => 'href']]);
+                                }
+                            }
+                            return $html;
+                        })
+            ->addColumn('clientName', function(Spaf $spaf) {
+                            return $spaf->client->fullName;
+                        })
+            ->addColumn('supplierName', function(Spaf $spaf) {
+                            if($spaf->supplier){
+                                return $spaf->supplier->fullName;
+                            }
+                        })
+            ->addColumn('templateName', function(Spaf $spaf) {
+                            return $spaf->template->name;
+                        })
+            ->addColumn('type', function(Spaf $spaf) {
+                            return $spaf->template->typeDisplay;
+                        })
+            ->addColumn('status', function(Spaf $spaf) {
+                            return $spaf->statusDisplay;
+                        })
+            ->editColumn('created_at', function (Spaf $spaf) {
+                return $spaf->created_at->format('M d, Y');
+            })
+            ->editColumn('updated_at', function (Spaf $spaf) {
+                return $spaf->updated_at->diffForHumans();
+            })
+            ->rawColumns(['action', 'status', 'clients'])
+            ->make(true);
     }
 }

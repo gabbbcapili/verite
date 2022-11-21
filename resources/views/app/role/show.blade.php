@@ -15,8 +15,7 @@
             <div class="card-body">
               <div class="row mb-2">
                 <div class="col-6">
-                  <label class="form-label">Role Name:</label>
-                  <input type="text" name="name" placeholder="Role Name" class="form-control" value="{{ $role->name }}" viewonly="true">
+                  <h4>Role Name: {{ $role->name }}</h4>
                 </div>
               </div>
               @include('app.role.permissions', ['roleList' => $roleList])

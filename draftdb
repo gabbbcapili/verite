@@ -33,9 +33,17 @@ spaf_id
 question_id
 value
 
+roles&priviledges - check functionality ok refresh cache
+groups/question check - title next line ok
 
 
-Risk Management, Spaf Extension
+Risk Management, Spaf Extension ok
+email - x
+    send email - x
+    list email - x
+    add role ok
+
+
 Tables
     add filter
     add archive
@@ -43,12 +51,15 @@ Tables
     Add button accordion,
     add badge sa menu if may kailangan i approve
 
+dashboard
+    stats lang muna ok
+    sa supplier Welcome chuchu ok
+    add clickable buttons for links ok
+
 Template Clone, Group Clone ok
 Template email, number, title, textarea ok
 SPAF email token based link redirect to change password then login ok
-dashboard
-    stats lang muna
-    sa supplier Welcome chuchu
+
 
 Supplier
         List Supplier ok

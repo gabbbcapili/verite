@@ -1,6 +1,6 @@
 @inject('request', 'Illuminate\Http\Request')
 @extends('layouts/contentLayoutMaster')
-@section('title', 'SPAF Template')
+@section('title', strtoupper(str_replace('_', ' ', $type))  .' Template')
 
 @section('vendor-style')
   <link rel="stylesheet" href="{{ asset('vendors/css/tables/datatable/dataTables.bootstrap5.min.css') }}">
@@ -16,7 +16,7 @@
     <div class="col-md-12 col-sm-12">
       <div class="card">
         <div class="card-header">
-          <h4 class="card-title">Add SPAF Template</h4>
+          <h4 class="card-title">Add Template</h4>
           <div class="heading-elements">
             <ul class="list-inline mb-0">
               <li>
@@ -29,6 +29,7 @@
           <div class="card-body">
             <form action="{{ route('template.spaf.store') }}" method="POST" class="form" enctype="multipart/form-data">
               @csrf
+              <input type="hidden" name="type", value="{{ $type }}">
               <div class="form-body">
                 <div class="row mb-2">
                     <div class="col-lg-4 col-xs-12">
@@ -100,7 +101,7 @@
     var table_id = 'spaf_table'
     var table_title = 'Template List';
     var table_route = {
-          url: '{{ route('template.spaf.index') }}',
+          url: '{{ route('template.spaf.index', ['type' => $type]) }}',
           data: function (data) {
                 // data.field = $("#field").val();
             }

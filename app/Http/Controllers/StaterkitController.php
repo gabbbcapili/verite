@@ -3,59 +3,40 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
+use Spatie\Permission\Models\Role;
+use App\Models\Template;
+
 
 class StaterkitController extends Controller
 {
-    // home
     public function home()
     {
-        $breadcrumbs = [
-            ['link' => "home", 'name' => "Home"], ['name' => ""]
-        ];
-        return view('/content/home', ['breadcrumbs' => $breadcrumbs]);
+        $breadcrumbs = [['link' => "home", 'name' => "Home"], ['name' => ""]];
+        $totals = [];
+        $totals['users'] = User::all()->count();
+        $totals['suppliers'] = Role::find(3)->users->count();
+
+        return view('app.dashboard.index', compact('breadcrumbs', 'totals'));
     }
 
-    // Layout collapsed menu
-    public function collapsed_menu()
-    {
-        $pageConfigs = ['sidebarCollapsed' => true];
-        $breadcrumbs = [
-            ['link' => "home", 'name' => "Home"], ['link' => "javascript:void(0)", 'name' => "Layouts"], ['name' => "Collapsed menu"]
-        ];
-        return view('/content/layout-collapsed-menu', ['breadcrumbs' => $breadcrumbs, 'pageConfigs' => $pageConfigs]);
-    }
+    public function getBadges(){
+        try {
+            $data['badge_spaf'] = Template::where('type', 'spaf')->where('is_approved', false)->count();
+            $data['badge_spaf_extension'] = Template::where('type', 'spaf_extension')->where('is_approved', false)->count();
+            $data['badge_risk_management'] = Template::where('type', 'risk_management')->where('is_approved', false)->count();
 
-    // layout boxed
-    public function layout_full()
-    {
-        $pageConfigs = ['layoutWidth' => 'full'];
-
-        $breadcrumbs = [
-            ['link' => "home", 'name' => "Home"], ['name' => "Layouts"], ['name' => "Layout Full"]
-        ];
-        return view('/content/layout-full', ['pageConfigs' => $pageConfigs, 'breadcrumbs' => $breadcrumbs]);
-    }
-
-    // without menu
-    public function without_menu()
-    {
-        $pageConfigs = ['showMenu' => false];
-        $breadcrumbs = [
-            ['link' => "home", 'name' => "Home"], ['link' => "javascript:void(0)", 'name' => "Layouts"], ['name' => "Layout without menu"]
-        ];
-        return view('/content/layout-without-menu', ['breadcrumbs' => $breadcrumbs, 'pageConfigs' => $pageConfigs]);
-    }
-
-    // Empty Layout
-    public function layout_empty()
-    {
-        $breadcrumbs = [['link' => "home", 'name' => "Home"], ['link' => "javascript:void(0)", 'name' => "Layouts"], ['name' => "Layout Empty"]];
-        return view('/content/layout-empty', ['breadcrumbs' => $breadcrumbs]);
-    }
-    // Blank Layout
-    public function layout_blank()
-    {
-        $pageConfigs = ['blankPage' => true];
-        return view('/content/layout-blank', ['pageConfigs' => $pageConfigs]);
+            $data['badge_templates'] = $data['badge_spaf'] + $data['badge_spaf_extension'] + $data['badge_risk_management'];
+            $output = ['success' => 1,
+                        'msg' => 'Fetched successfully!',
+                        'data' => $data,
+                    ];
+        } catch (\Exception $e) {
+            \Log::emergency("File:" . $e->getFile(). " Line:" . $e->getLine(). " Message:" . $e->getMessage());
+            $output = ['success' => 0,
+                        'msg' => env('APP_DEBUG') ? $e->getMessage() : 'Sorry something went wrong, please try again later.'
+                    ];
+        }
+        return response()->json($output);
     }
 }

@@ -8,9 +8,7 @@
             <tr>
                 <td style="width: 30%;">{{ $q->text }}</td>
                 <td style="width: 70%;">
-                    <!-- <div class="row"> -->
-                        @include('app.template.spaf.partial.question', ['q' => $q, 'answers' => isset($answers) ? $answers : []])
-                    <!-- </div> -->
+                @include('app.template.spaf.partial.question', ['q' => $q, 'answers' => isset($answers) ? $answers : []])
         @else
             <div class="mt-1">
                 @include('app.template.spaf.partial.question', ['q' => $q, 'answers' => isset($answers) ? $answers : []])

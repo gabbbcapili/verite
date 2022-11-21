@@ -11,41 +11,6 @@
 @endsection
 
 @section('content')
-<section id="card-actions">
-  <div class="row">
-    <div class="col-md-12 col-sm-12">
-      <div class="card">
-        <div class="card-header">
-          <h4 class="card-title">Filters</h4>
-          <div class="heading-elements">
-            <ul class="list-inline mb-0">
-              <li>
-                <a data-action="collapse"><i data-feather="chevron-down"></i></a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="card-content collapse">
-          <div class="card-body">
-            <div class="row mb-2">
-              <div class="col-4">
-                <label>Status:</label>
-
-                <select class="form-control select2 selectFilter" id="status">
-                  <option class="all">All</option>
-                  <option class="pending">Pending</option>
-                  <option class="answered">Waiting for Admin Approval</option>
-                  <option class="additional">Additional Info Needed</option>
-                  <option class="completed">Completed</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 <section id="basic-datatable">
   <div class="row">
     <div class="col-12">
@@ -56,9 +21,9 @@
               <th>Id</th>
               <th>Name</th>
               <th>Email</th>
+              <th>Clients</th>
               <th>Created At</th>
               <th>Update At</th>
-              <th>Status</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -95,16 +60,16 @@
     var table_route = {
           url: '{{ route('supplier.index') }}',
           data: function (data) {
-                data.status = $("#status").val();
+                // data.status = $("#status").val();
             }
         };
       var columnns = [
             { data: 'id', name: 'id'},
             { data: 'fullName', name: 'fullName'},
             { data: 'email', name: 'email'},
+            { data: 'clients', name: 'clients'},
             { data: 'created_at', name: 'created_at'},
             { data: 'updated_at', name: 'updated_at'},
-            { data: 'status', name: 'status'},
             { data: 'action', name: 'action', 'orderable' : false}
         ];
       var buttons = [

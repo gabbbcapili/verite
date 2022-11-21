@@ -7,7 +7,7 @@
     }
 @endphp
 
-@if($q->type == 'input' || $q->type == 'email' || $q->type == 'number')
+@if($q->type == 'input')
     <input type="text" name="question[{{ $q->id  }}]" id="question.{{ $q->id }}" class="form-control" placeholder="{{ $q->text }}" value="{{ $answer ? $answer : '' }}" {{ isset($disabled) ? 'disabled' : '' }}>
 @elseif($q->type == 'textarea')
     <textarea name="question[{{ $q->id  }}]" id="question.{{ $q->id }}" class="form-control" placeholder="{{ $q->text }}" {{ isset($disabled) ? 'disabled' : '' }}>{{ $answer ? $answer : '' }}</textarea>

@@ -45,17 +45,52 @@
                       </div>
                     </div>
                   </div>
-                  <div class="row mb-2">
-                    <div class="col-lg-6 col-xs-12">
+
+                    <div class="row mb-2">
+                      @if(! $user->hasRole('Supplier') && ! $user->hasRole('Client'))
+                        <div class="col-lg-6 col-xs-12">
+                          <div class="form-group">
+                              <label for="name">Role:</label>
+                              <select class="form-control select2Modal"name="suppliers[]" id="suppliers">
+                                @foreach($roles as $role)
+                                  <option value="{{ $role->name }}" {{ $user->getRoleNames()->first() == $role->name ? 'selected' : '' }}>{{ $role->name }}</option>
+                                @endforeach
+                              </select>
+                          </div>
+                        </div>
+                        @endif
+
+                    @if($user->hasRole('Supplier'))
+                      <div class="col-lg-6 col-xs-12">
                       <div class="form-group">
-                          <label for="name">Role:</label>
-                          <select class="form-control select2Modal" name="role">
-                            @foreach($roles as $role)
-                              <option value="{{ $role->name }}" {{ $user->getRoleNames()->first() == $role->name ? 'selected' : '' }}>{{ $role->name }}</option>
+                          <label for="name">Clients:</label>
+                          @php
+                            $userClients = $user->clients->pluck('id')->toArray();
+                          @endphp
+                          <select class="form-control select2Modal" multiple="multiple" name="clients[]" id="clients">
+                            @foreach($clients as $client)
+                              <option value="{{ $client->id }}" {{ in_array($client->id, $userClients) ? 'selected' : ''}}>{{ $client->fullName }}</option>
                             @endforeach
                           </select>
                       </div>
                     </div>
+                    @endif
+
+                    @if($user->hasRole('Client'))
+                      <div class="col-lg-6 col-xs-12">
+                      <div class="form-group">
+                          <label for="name">Supplier:</label>
+                          @php
+                            $userSuppliers = $user->suppliers->pluck('id')->toArray();
+                          @endphp
+                          <select class="form-control select2Modal" multiple="multiple" name="suppliers[]" id="suppliers">
+                            @foreach($suppliers as $supplier)
+                              <option value="{{ $supplier->id }}" {{ in_array($supplier->id, $userSuppliers) ? 'selected' : ''}}>{{ $supplier->fullName }}</option>
+                            @endforeach
+                          </select>
+                      </div>
+                    </div>
+                    @endif
                   </div>
                 </div>
               </div>

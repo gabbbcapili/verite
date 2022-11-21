@@ -16,7 +16,7 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {
-        Role::create([
+        $default = Role::create([
             'name' => 'Default'
         ]);
 
@@ -24,24 +24,36 @@ class RoleSeeder extends Seeder
             'name' => 'Super Admin'
         ]);
 
-        Role::create([
+        $supplier = Role::create([
             'name' => 'Supplier',
+        ]);
+
+        $client = Role::create([
+            'name' => 'Client',
         ]);
 
         $permissions = [
             ['name' => 'user.manage'],
             ['name' => 'template.manage'],
             ['name' => 'supplier.manage'],
-            ['name' => 'supplier.approve'],
+            ['name' => 'client.manage'],
+            ['name' => 'spaf.manage'],
+            ['name' => 'spaf.approve'],
             ['name' => 'role.manage'],
-            ['name' => 'template.approve']
+            ['name' => 'template.approve'],
+            ['name' => 'dashboard.default'],
+            ['name' => 'dashboard.supplier'],
+            ['name' => 'dashboard.client'],
         ];
         foreach($permissions as $p){
             Permission::create($p);
         }
 
         $sa_permission = Permission::all();
-        $sa->syncPermissions($sa_permission);
+        $sa->syncPermissions(['user.manage', 'spaf.manage','template.manage', 'supplier.manage', 'client.manage', 'spaf.approve', 'role.manage', 'template.approve', 'dashboard.default']);
+        $default->syncPermissions(['dashboard.default']);
+        $supplier->syncPermissions(['dashboard.supplier']);
+        $client->syncPermissions(['dashboard.client']);
         User::find(1)->assignRole('Super Admin');
     }
 }

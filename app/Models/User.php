@@ -69,7 +69,7 @@ class User extends Authenticatable
     public static function roleList(){
         return [
                 'Main' => ['template.manage'],
-                'Suppliers' => ['supplier.manage', 'supplier.approve'],
+                'Suppliers' => ['supplier.manage', 'spaf.approve'],
                 'Users' => ['user.manage', 'role.manage'],
         ];
     }
@@ -78,26 +78,23 @@ class User extends Authenticatable
         return $this->first_name . ' ' . $this->last_name;
     }
 
-    public function spaf(){
-        return $this->hasOne(Spaf::class, 'user_id');
+    public function spafSupplier(){
+        return $this->hasMany(Spaf::class, 'supplier_id');
+    }
+
+    public function spafClient(){
+        return $this->hasMany(Spaf::class, 'client_id');
+    }
+
+    public function suppliers(){
+        return $this->belongsToMany(User::class, 'client_suppliers', 'client_id', 'supplier_id');
+    }
+
+    public function clients(){
+        return $this->belongsToMany(User::class, 'client_suppliers', 'supplier_id', 'client_id');
     }
 
     public function generatePassworResetToken(){
-        // This is set in the .env file
-        // $key = config('app.key');
-
-        // // Illuminate\Support\Str;
-        // if (Str::startsWith($key, 'base64:')) {
-        //     $key = base64_decode(substr($key, 7));
-        // }
-        // $token = hash_hmac('sha256', Str::random(40), $key);
-        // $token = Str::random(60);
-        // DB::table('password_resets')->where('email',$this->email)->delete();
-        // DB::table('password_resets')->insert([
-        //         'email' => $this->email,
-        //         'token' => $token,
-        //         'created_at' => Carbon::now()
-        // ]);
         $token = \Illuminate\Support\Facades\Password::broker('users')->createToken($this);
         return $token;
     }

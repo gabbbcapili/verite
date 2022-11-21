@@ -13,6 +13,8 @@ class Template extends Model
 
     protected $fillable = ['name', 'type', 'is_deleted', 'is_approved'];
 
+    public static $typeList = ['spaf', 'spaf_extension', 'risk_management'];
+
     public function groups(){
         return $this->hasMany(Group::class, 'template_id');
     }
@@ -24,4 +26,9 @@ class Template extends Model
     public function spaf(){
         return $this->hasOne(Spaf::class, 'user_id');
     }
+
+    public function getTypeDisplayAttribute(){
+        return strtoupper(str_replace('_', ' ', $this->type));
+    }
+
 }

@@ -1,6 +1,6 @@
 @inject('request', 'Illuminate\Http\Request')
 @extends('layouts/contentLayoutMaster')
-@section('title', 'Add Supplier')
+@section('title', 'Add Assessment')
 
 @section('vendor-style')
 
@@ -8,13 +8,13 @@
 
 @section('content')
 <section id="card-actions">
-  <form action="{{ route('supplier.store') }}" method="POST" class="form" enctype="multipart/form-data">
+  <form action="{{ route('spaf.store') }}" method="POST" class="form" enctype="multipart/form-data">
     @csrf
     <div class="row">
       <div class="col-md-12 col-sm-12">
         <div class="card">
           <div class="card-header">
-            <h4 class="card-title">Create Supplier</h4>
+            <h4 class="card-title">Create Assessment</h4>
           </div>
           <div class="card-content">
             <div class="card-body">
@@ -22,30 +22,31 @@
                   <div class="row mb-2">
                       <div class="col-lg-4 col-xs-12">
                         <div class="form-group">
-                            <label for="name">First Name:</label>
-                            <input type="text" class="form-control" name="first_name" placeholder="First Name">
+                            <label for="name">Client:</label>
+                            <select class="form-control select2" name="client_id" id="client">
+                              <option disabled selected></option>
+                              @foreach($clients as $client)
+                                <option value="{{ $client->id }}">{{ $client->fullName }}</option>
+                              @endforeach
+                            </select>
                         </div>
                       </div>
                       <div class="col-lg-4 col-xs-12">
-                        <div class="form-group">
-                            <label for="name">Last Name:</label>
-                            <input type="text" class="form-control" name="last_name" placeholder="Last Name">
+                        <div class="form-group" id="fg_supplier">
+                            <label for="name">Supplier:</label>
+                            <select class="form-control select2" name="supplier_id" id="supplier">
+                            </select>
                         </div>
                       </div>
                     </div>
                     <div class="row mb-2">
                       <div class="col-lg-4 col-xs-12">
                         <div class="form-group">
-                            <label for="name">Email:</label>
-                            <input type="text" class="form-control" name="email" placeholder="Email">
-                        </div>
-                      </div>
-                      <div class="col-lg-4 col-xs-12">
-                        <div class="form-group">
-                            <label for="name">Clients:</label>
-                            <select class="form-control select2" multiple="multiple" name="clients[]" id="clients">
-                              @foreach($clients as $client)
-                                <option value="{{ $client->id }}">{{ $client->fullName }}</option>
+                            <label for="name">Template:</label>
+                            <select class="form-control select2" name="template_id">
+                              <option disabled selected></option>
+                              @foreach($templates as $template)
+                                <option value="{{ $template->id }}">{{ $template->name }}</option>
                               @endforeach
                             </select>
                         </div>
@@ -86,6 +87,21 @@
   <script type="text/javascript">
       $(document).ready(function(){
         $('.select2').select2();
+
+        $('#client').change(function(){
+          var url = '{{ route("spaf.loadSuppliers", ":id") }}';
+                      url = url.replace(':id', $(this).val());
+          $.ajax({
+              url: url,
+              method: "POST",
+              success:function(result)
+              {
+                console.log(result);
+                $('#fg_supplier').html(result);
+                $('.select2').select2();
+              }
+          });
+        });
       });
   </script>
   <script src="{{ asset('js/scripts/forms-validation/form-normal.js') }}"></script>

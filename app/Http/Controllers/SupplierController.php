@@ -11,9 +11,10 @@ use Yajra\DataTables\Facades\DataTables;
 use Validator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\CreateSpaf;
+use App\Mail\ResetPassword;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use App\Models\ClientSuppliers;
 
 class SupplierController extends Controller
 {
@@ -28,31 +29,23 @@ class SupplierController extends Controller
             ['link'=>"/",'name'=>"Home"],['link'=> route('supplier.index'), 'name'=>"Supplier Management"], ['name'=>"list of Suppliers"]
         ];
         if (request()->ajax()) {
-
-            $user = User::with("roles")->with('spaf')->whereHas("roles", function($q) {
-                $q->where("name", 'supplier');
+            $user = User::with("roles")->whereHas("roles", function($q) {
+                $q->where("name", 'Supplier');
             })->orderBy('updated_at', 'desc');
-            // if($request->has('status')){
-            //     $user->where('spaf.status', $request->status);
-            // }
             return Datatables::eloquent($user)
-            // ->filter(function ($query) {
-            //         if (request()->has('status')) {
-            //             $query->where('spaf.status', request()->status);
-            //         }
-            // }, true)
             ->addColumn('action', function(User $user) {
-                            $html = '';
-                            if(in_array($user->spaf->status, ['answered', 'completed'])){
-                                    $html .= Utilities::actionButtons([['route' => route('spaf.show', $user->spaf->id), 'name' => 'Show', 'type' => 'href']]);
-                                }
-                            return $html;
+                            return Utilities::actionButtons([['route' => route('user.edit', $user->id), 'name' => 'Edit']]);
                         })
             ->addColumn('fullName', function(User $user) {
                             return $user->fullName;
                         })
-            ->addColumn('status', function(User $user) {
-                            return $user->spaf->statusDisplay;
+            ->addColumn('clients', function(User $user) {
+                            $html = '<div class="avatar-group">';
+                            foreach($user->clients as $c){
+                                $html .= '<div data-bs-toggle="tooltip" data-popup="tooltip-custom"data-bs-placement="top"class="avatar pull-up my-0"title="'. $c->fullName . '"><img src="'. $c->profile_photo_url .'" alt="Avatar" height="26" width="26"/></div>';
+                            }
+                            $html .= '</div>';
+                            return $html;
                         })
             ->editColumn('created_at', function (User $user) {
                 return $user->created_at->format('M d, Y');
@@ -60,7 +53,7 @@ class SupplierController extends Controller
             ->editColumn('updated_at', function (User $user) {
                 return $user->updated_at->diffForHumans();
             })
-            ->rawColumns(['action', 'status'])
+            ->rawColumns(['action', 'status', 'clients'])
             ->make(true);
         }
         return view('app.supplier.index', [
@@ -78,8 +71,10 @@ class SupplierController extends Controller
         $breadcrumbs = [
             ['link'=>"/",'name'=>"Home"],['link'=> route('supplier.index'), 'name'=>"List Suppliers"], ['name'=>"Add Supplier"]
         ];
-        $templates = Template::where('type', 'spaf')->where('is_deleted', false)->where('is_approved', true)->get();
-        return view('app.supplier.create', compact('breadcrumbs', 'templates'));
+        $clients = User::with("roles")->whereHas("roles", function($q) {
+                $q->where("name", 'Client');
+            })->get();
+        return view('app.supplier.create', compact('breadcrumbs', 'clients'));
     }
 
     /**
@@ -94,7 +89,7 @@ class SupplierController extends Controller
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'template_id' => ['required', 'exists:template,id']
+            'clients' => ['required']
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()]);
@@ -108,11 +103,16 @@ class SupplierController extends Controller
                 'email' => $data['email'],
                 'password' => Hash::make(Str::random(10)),
             ]);
-            $spaf = $user->spaf()->create(['template_id' => $request->template_id]);
             $user->assignRole('Supplier');
+            if($request->has('clients')){
+                foreach($request->clients as $c){
+                    ClientSuppliers::create(['supplier_id' => $user->id, 'client_id' => $c]);
+                }
+            }
+            // $spaf = $user->spaf()->create(['template_id' => $request->template_id]);
             $token = $user->generatePassworResetToken();
+            Mail::to($user)->send(new ResetPassword($user, $token));
 
-            Mail::to($user)->send(new CreateSpaf($user, $spaf, $token));
             DB::commit();
             $output = ['success' => 1,
                         'msg' => 'Supplier added successfully!',

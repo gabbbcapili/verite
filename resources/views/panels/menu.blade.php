@@ -9,11 +9,27 @@
   @can('template.manage')
   <li class="nav-item has-sub" style=""><a class="d-flex align-items-center" href="#">
     <i data-feather="file"></i>
-    <span class="menu-title text-truncate">Templates</span></a>
+    <span class="menu-title text-truncate">Templates</span><span class="badge badge-light-warning rounded-pill ms-auto me-1" id="badge_templates"></span></a>
     <ul class="menu-content">
-      <li class="nav-item {{ $request->segment(1) == 'template' && $request->segment(2) == 'spaf' ? 'active' : '' }}">
-        <a class="d-flex align-items-center" href="{{ route('template.spaf.index') }}"><i data-feather="circle"></i>
-        <span class="menu-item text-truncate">SPAF</span></a>
+      <li class="nav-item {{ $request->segment(1) == 'template' && $request->segment(2) == 'spaf' && $request->segment(3) == 'spaf' ? 'active' : '' }}">
+        <a class="d-flex align-items-center" href="{{ route('template.spaf.index', ['type' => 'spaf']) }}"><i data-feather="circle"></i>
+          <span class="menu-item text-truncate">SPAF</span>
+          <span class="badge badge-light-warning rounded-pill ms-auto me-1" id="badge_spaf"></span>
+        </a>
+
+      </li>
+      <li class="nav-item {{ $request->segment(1) == 'template' && $request->segment(2) == 'spaf' && $request->segment(3) == 'spaf_extension' ? 'active' : '' }}">
+        <a class="d-flex align-items-center" href="{{ route('template.spaf.index', ['type' => 'spaf_extension']) }}"><i data-feather="circle"></i>
+          <span class="menu-item text-truncate">SPAF Extension</span>
+          <span class="badge badge-light-warning rounded-pill ms-auto me-1" id="badge_spaf_extension"></span>
+        </a>
+
+      </li>
+      <li class="nav-item {{ $request->segment(1) == 'template' && $request->segment(2) == 'spaf' && $request->segment(3) == 'risk_management' ? 'active' : '' }}">
+      <a class="d-flex align-items-center" href="{{ route('template.spaf.index', ['type' => 'risk_management']) }}"><i data-feather="circle"></i>
+        <span class="menu-item text-truncate">Risk Management</span>
+        <span class="badge badge-light-warning rounded-pill ms-auto me-1" id="badge_risk_management"></span>
+      </a>
       </li>
     </ul>
   </li>
@@ -39,9 +55,34 @@
     </ul>
   </li>
   @endif
+
+
+  @can('client.manage')
+  <li class="nav-item has-sub" style=""><a class="d-flex align-items-center" href="#">
+    <i data-feather="award"></i>
+    <span class="menu-title text-truncate">Clients</span></a>
+    <ul class="menu-content">
+      @can('client.manage')
+        <li class="nav-item {{ $request->segment(1) == 'client' && $request->segment(2) == '' ? 'active' : '' }}">
+          <a class="d-flex align-items-center" href="{{ route('client.index') }}"><i data-feather="align-justify"></i>
+          <span class="menu-item text-truncate">List Clients</span></a>
+        </li>
+      @endcan
+
+      @can('client.manage')
+        <li class="nav-item {{ $request->segment(1) == 'client' && $request->segment(2) == 'create' ? 'active' : '' }}">
+          <a class="d-flex align-items-center" href="{{ route('client.create') }}"><i data-feather="plus-circle"></i>
+          <span class="menu-item text-truncate">Add Client</span></a>
+        </li>
+      @endcan
+    </ul>
+  </li>
+  @endcan
+
+
   @can('supplier.manage')
   <li class="nav-item has-sub" style=""><a class="d-flex align-items-center" href="#">
-    <i data-feather="users"></i>
+    <i data-feather="package"></i>
     <span class="menu-title text-truncate">Suppliers</span></a>
     <ul class="menu-content">
       @can('supplier.manage')
@@ -61,11 +102,45 @@
   </li>
   @endcan
 
+  @can('spaf.manage')
+  <li class="nav-item has-sub" style=""><a class="d-flex align-items-center" href="#">
+    <i data-feather="columns"></i>
+    <span class="menu-title text-truncate">Assessment Forms</span></a>
+    <ul class="menu-content">
+      @can('spaf.manage')
+        <li class="nav-item {{ $request->segment(1) == 'spaf' && $request->segment(2) == '' ? 'active' : '' }}">
+          <a class="d-flex align-items-center" href="{{ route('spaf.index') }}"><i data-feather="align-justify"></i>
+          <span class="menu-item text-truncate">List Assessments</span></a>
+        </li>
+      @endcan
+
+      @can('spaf.manage')
+        <li class="nav-item {{ $request->segment(1) == 'spaf' && $request->segment(2) == 'create' ? 'active' : '' }}">
+          <a class="d-flex align-items-center" href="{{ route('spaf.create') }}"><i data-feather="plus-circle"></i>
+          <span class="menu-item text-truncate">Add Assessment</span></a>
+        </li>
+      @endcan
+    </ul>
+  </li>
+  @endcan
+
+
+
+
+  @if($request->user()->hasRole('Client'))
+  <li class="nav-item {{ $request->segment(1) == 'spaf' ? 'active' : '' }}">
+      <a href="{{ route('spaf.clientIndex') }}" class="nav-link d-flex align-items-center">
+        <i data-feather="columns"></i>
+        <span>Assessment Forms</span>
+      </a>
+  </li>
+  @endif
+
   @if($request->user()->hasRole('Supplier'))
   <li class="nav-item {{ $request->segment(1) == 'spaf' ? 'active' : '' }}">
-      <a href="{{ route('spaf.show', $request->user()->spaf) }}" class="nav-link d-flex align-items-center">
-        <i data-feather="package"></i>
-        <span>SPAF</span>
+      <a href="{{ route('spaf.supplierIndex') }}" class="nav-link d-flex align-items-center">
+        <i data-feather="columns"></i>
+        <span>Assessment Forms</span>
       </a>
   </li>
   @endif

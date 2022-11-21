@@ -1,7 +1,7 @@
 @extends('layouts.contentLayoutMaster')
 
 @php
-$breadcrumbs = [['link' => 'home', 'name' => 'Home'], ['link' => 'javascript:void(0)', 'name' => 'User'], ['name' => 'Profile']];
+$breadcrumbs = [['link' => route('home'), 'name' => 'Home'], ['link' => 'javascript:void(0)', 'name' => 'User'], ['name' => 'Profile']];
 @endphp
 
 @section('title', 'Profile')

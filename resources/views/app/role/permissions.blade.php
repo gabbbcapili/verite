@@ -6,7 +6,7 @@
     <table class="table table-borderless">
       <thead>
         <tr>
-          <th>Main</th>
+          <th>Templates</th>
           <th></th>
           <th></th>
           <th></th>
@@ -52,17 +52,25 @@
               <span class="vs-checkbox">
                 <span class="vs-checkbox--check"><i data-feather="file-plus" class="vs-icon"></i></span>
               </span>
-              <span class="">Create Initials</span>
+              <span class="">Manage Suppliers</span>
             </div></fieldset>
           </td>
-
           <td>
             <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
-              <input type="checkbox" value="supplier.approve" name="permissions[]" {{ isset($roleList) ? in_array('supplier.approve', $roleList) ? 'checked' : '' : 'checked' }}>
+              <input type="checkbox" value="spaf.manage" name="permissions[]" {{ isset($roleList) ? in_array('spaf.manage', $roleList) ? 'checked' : '' : 'checked' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="paperclip" class="vs-icon"></i></span>
+              </span>
+              <span class="">Manage Assesment Forms</span>
+            </div></fieldset>
+          </td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="spaf.approve" name="permissions[]" {{ isset($roleList) ? in_array('spaf.approve', $roleList) ? 'checked' : '' : 'checked' }}>
               <span class="vs-checkbox">
                 <span class="vs-checkbox--check"><i data-feather="check-circle" class="vs-icon"></i></span>
               </span>
-              <span class="">Approve SPAF</span>
+              <span class="">Approve Assesment Forms</span>
             </div></fieldset>
           </td>
         </tr>
@@ -70,6 +78,29 @@
       <thead>
         <tr>
           <th>Users</th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td></td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="client.manage" name="permissions[]" {{ isset($roleList) ? in_array('client.manage', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="award" class="vs-icon"></i></span>
+              </span>
+              <span class="">Manage Clients</span>
+            </div></fieldset>
+          </td>
+          <td></td>
+        </tr>
+      </tbody>
+      <thead>
+        <tr>
+          <th>Manage</th>
           <th></th>
           <th></th>
           <th></th>

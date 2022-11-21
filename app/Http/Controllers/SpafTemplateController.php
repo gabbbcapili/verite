@@ -19,13 +19,16 @@ class SpafTemplateController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, $type)
     {
+        if(! in_array($type, Template::$typeList)){
+            abort(404);
+        }
         $breadcrumbs = [
-            ['link'=>"/",'name'=>"Home"],['link'=> route('template.spaf.index'), 'name'=>"SPAF"], ['name'=>"list of Templates"]
+            ['link'=>"/",'name'=>"Home"],['link'=> route('template.spaf.index', ['type' => $type]), 'name'=> strtoupper(str_replace('_', ' ', $type)) ], ['name'=>"list of Templates"]
         ];
         if (request()->ajax()) {
-            $template = Template::where('is_deleted', 0)->orderBy('updated_at', 'desc');
+            $template = Template::where('is_deleted', 0)->where('type', $type)->orderBy('updated_at', 'desc');
             return Datatables::eloquent($template)
             ->addColumn('action', function(Template $template) {
                             $html = '';
@@ -57,6 +60,7 @@ class SpafTemplateController extends Controller
         }
         return view('app.template.spaf.index', [
             'breadcrumbs' => $breadcrumbs,
+            'type' => $type,
         ]);
     }
 
@@ -90,7 +94,7 @@ class SpafTemplateController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->all();
-            $data['type'] = 'spaf';
+            // $data['type'] = 'spaf';
             $template = Template::create($data);
             DB::commit();
             $output = ['success' => 1,
@@ -127,7 +131,7 @@ class SpafTemplateController extends Controller
     public function edit(Template $template)
     {
         $breadcrumbs = [
-            ['link'=>"/",'name'=>"Home"],['link'=> route('template.spaf.index'), 'name'=>"List Templates"], ['name'=> $template->name]
+            ['link'=>"/",'name'=>"Home"],['link'=> route('template.spaf.index', ['type' => $template->type]), 'name'=>"List Templates"], ['name'=> $template->name]
         ];
         return view('app.template.spaf.edit', compact('template', 'breadcrumbs'));
     }
@@ -198,7 +202,6 @@ class SpafTemplateController extends Controller
             DB::beginTransaction();
             $data = $request->all();
             $newTemplate = $template->replicate();
-            $data['type'] = 'spaf';
             if($request->has('notes')){
                 $newTemplate->name = $request->notes;
             }

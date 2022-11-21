@@ -132,6 +132,10 @@ class GroupController extends Controller
             foreach($request->question as $q){
                 $q['sort'] = $count;
                 $count+= 1;
+                if($q['type'] == 'title'){
+                    $q['required'] = false;
+                    $q['next_line'] = true;
+                }
                 if(isset($q['question_id'])){
                     $updateQuestion = Question::findOrFail($q['question_id']);
                     $updatedQuestions[] = $updateQuestion->id;

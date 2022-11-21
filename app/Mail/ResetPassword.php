@@ -6,10 +6,9 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use App\Models\Spaf;
 use App\Models\User;
 
-class CreateSpaf extends Mailable
+class ResetPassword extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -18,10 +17,10 @@ class CreateSpaf extends Mailable
      *
      * @return void
      */
-    public function __construct(User $user, Spaf $spaf)
+    public function __construct(User $user, $token)
     {
         $this->user = $user;
-        $this->spaf = $spaf;
+        $this->token = $token;
     }
 
     /**
@@ -31,7 +30,7 @@ class CreateSpaf extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.supplier.spaf', ['user' => $this->user, 'spaf' => $this->spaf])
-                    ->subject('Supplier Pre-assessment Form');
+        return $this->markdown('emails.auth.reset', ['user' => $this->user, 'token' => $this->token])
+                    ->subject('Reset Password');
     }
 }
