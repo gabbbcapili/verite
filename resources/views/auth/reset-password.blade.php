@@ -13,9 +13,9 @@
       <!-- Reset Password basic -->
       <div class="card mb-0">
         <div class="card-body">
-          <a href="javascript:void(0);" class="brand-logo">
-            <img src="{{ asset('images/ico/verite.png') }}" style="height:60px; width:200px">
-            <!-- <h2 class="brand-text text-primary ms-1">Vuexy</h2> -->
+          <a href="#" class="brand-logo">
+            <!-- <img src="{{ asset('images/ico/verite.png') }}" style="height:60px; width:200px"> -->
+            <h2 class="brand-text text-primary ms-1 text-center">{{ env('APP_NAME_DETAIL') }}</h2>
           </a>
 
           <h4 class="card-title mb-1">Reset Password 🔒</h4>

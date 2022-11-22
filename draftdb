@@ -76,3 +76,32 @@ User Profile
     remove settings ok
 
 
+dashboard total spaf, for approval spaf
+edit users role sql error
+template -> email number check, title on create
+ams logo
+change reset to clear on forms
+change password - 8 chars, 1 capital 1 number 1 special char
+
+client/supplier view - check live remove create new
+
+user- company name - add on to clients --- add salutatation Mr. Mrs./ --- change Create Supplier to Primary Contact Details
+user - profile - add website
+under profile - add business info company name
+spaf show on each question add tooltip show updated at
+client createspaf email - check link change to clientIndex
+client - spaf - check no edit button
+spaf - resend email - reminder
+complete badges
+spaf - status status change colors
+spaf - email on completed,
+assessment create - add template type on option
+
+remove delete account user
+profile picture on live server storage:link
+
+
+show timestamps of question on spaf - updated_at
+
+settings
+    - email footer email header, context(body) per email

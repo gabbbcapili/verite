@@ -79,7 +79,7 @@
   <!-- dashboard default -->
 
 
-  @can('dashboard.supplier')
+  @can('dashboard.supplier' || 'dashboard.client')
     <div class="row match-height">
       <!-- Greetings Card starts -->
     <div class="col-lg-6 col-md-12 col-sm-12">
@@ -160,9 +160,7 @@
 @endsection
 
 @section('page-script')
-  <!-- Page js files -->
-  <script src="{{ asset(mix('js/scripts/pages/dashboard-analytics.js')) }}"></script>
-  <script src="{{ asset(mix('js/scripts/pages/app-invoice-list.js')) }}"></script>
+
 @endsection
 
 

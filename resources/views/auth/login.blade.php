@@ -14,12 +14,12 @@
       <div class="card mb-0">
         <div class="card-body">
           <a href="#" class="brand-logo">
-            <img src="{{ asset('images/ico/verite.png') }}" style="height:60px; width:200px">
-            <!-- <h2 class="brand-text text-primary ms-1">{{ env('APP_NAME') }}</h2> -->
+            <!-- <img src="{{ asset('images/ico/verite.png') }}" style="height:60px; width:200px"> -->
+            <h2 class="brand-text text-primary ms-1 text-center">{{ env('APP_NAME_DETAIL') }}</h2>
           </a>
 
-          <h4 class="card-title mb-1">Welcome to {{ env('APP_NAME') }}! 👋</h4>
-          <p class="card-text mb-2">Please sign-in to your account and start the adventure</p>
+          <!-- <h4 class="card-title mb-1">Welcome to {{ env('APP_NAME') }}! 👋</h4> -->
+          <!-- <p class="card-text mb-2">Please sign-in to your account and start the adventure</p> -->
 
           @if (session('status'))
             <div class="alert alert-success mb-1 rounded-0" role="alert">

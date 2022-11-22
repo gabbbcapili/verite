@@ -14,12 +14,12 @@
       <div class="card mb-0">
         <div class="card-body">
           <a href="#" class="brand-logo">
-            <img src="{{ asset('images/ico/verite.png') }}" style="height:60px; width:200px">
-            <!-- <h2 class="brand-text text-primary ms-1">{{ env('APP_NAME') }}</h2> -->
+            <!-- <img src="{{ asset('images/ico/verite.png') }}" style="height:60px; width:200px"> -->
+            <h2 class="brand-text text-primary ms-1 text-center">{{ env('APP_NAME_DETAIL') }}</h2>
           </a>
 
-          <h4 class="card-title mb-1">Adventure starts here 🚀</h4>
-          <p class="card-text mb-2">Make your audit process easy and fun!</p>
+          <!-- <h4 class="card-title mb-1">Adventure starts here 🚀</h4>
+          <p class="card-text mb-2">Make your audit process easy and fun!</p> -->
 
 
           <form class="auth-register-form mt-2" method="POST" action="{{ route('register') }}">
