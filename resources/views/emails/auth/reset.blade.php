@@ -1,6 +1,7 @@
 @component('mail::message')
-# Welcome to Verite {{ $user->fullName }}!
+# Welcome to {{ env('APP_NAME') }} {{ $user->fullName }}!
 
+{!! Helper::settings()->user_reset !!}
 @component('mail::panel')
 <p>Your Email: {{ $user->email }}</p>
 <p>You will be prompted to change your password immediately</p>
@@ -10,6 +11,5 @@
 Go to Site
 @endcomponent
 
-Thanks,<br>
-{{ config('app.name') }}
+{!! Helper::settings()->email_footer !!}
 @endcomponent

@@ -38,7 +38,7 @@ class SpafTemplateController extends Controller
                             if($template->is_approved == false){
                                 $html .= Utilities::actionButtons([['route' => route('template.spaf.edit', $template->id), 'name' => 'Edit', 'type' => 'href'], ['route' => route('template.spaf.delete', $template->id), 'name' => 'Delete'], ['route' => route('template.spaf.clone', $template->id), 'type' => 'confirmWithNotes', 'name' => 'confirmWithNotes', 'title' => 'Clone', 'text' => 'Template Name:', 'confirmButtonText' => 'Clone']]);
                             }else{
-                                $html .= Utilities::actionButtons([['route' => route('template.spaf.show', $template->id), 'name' => 'Show'], ['route' => route('template.spaf.delete', $template->id), 'name' => 'Delete'], ['route' => route('template.spaf.clone', $template->id), 'type' => 'confirmWithNotes', 'name' => 'confirmWithNotes', 'title' => 'Clone', 'text' => 'Template Name:', 'confirmButtonText' => 'Clone']]);
+                                $html .= Utilities::actionButtons([['route' => route('template.spaf.show', ['template' => $template->id]), 'name' => 'Show'], ['route' => route('template.spaf.delete', $template->id), 'name' => 'Delete'], ['route' => route('template.spaf.clone', $template->id), 'type' => 'confirmWithNotes', 'name' => 'confirmWithNotes', 'title' => 'Clone', 'text' => 'Template Name:', 'confirmButtonText' => 'Clone']]);
                             }
                             return $html;
                         })

@@ -16,7 +16,6 @@ $(function() {
         processData: false,
         contentType: false,
         success: function(result){
-          console.log(result);
           if(result.success == true){
             if(result.msg){
                 Swal.fire({

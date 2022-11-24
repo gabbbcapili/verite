@@ -13,11 +13,13 @@ class Role
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next, $role)
+    public function handle($request, Closure $next, ... $roles)
     {
-        if(! $request->user()->hasRole([$role])){
-                abort(403, 'Unauthorized Access');
+        foreach($roles as $role) {
+        // Check if user has the role This check will depend on how your roles are set up
+            if($request->user()->hasRole($role))
+                return $next($request);
         }
-        return $next($request);
+        abort(403, 'Unauthorized Access');
     }
 }

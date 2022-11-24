@@ -44,6 +44,37 @@
       </div>
     @endif
 
+
+    @if(request()->user()->hasRole('Supplier') || request()->user()->hasRole('Client'))
+      <div class="mb-1">
+        <x-jet-label class="form-label" for="company_name" value="{{ __('Company Name') }}" />
+        <x-jet-input id="company_name" type="text" class="{{ $errors->has('company_name') ? 'is-invalid' : '' }}"
+          wire:model.defer="state.company_name" autocomplete="company_name" />
+        <x-jet-input-error for="company_name" />
+      </div>
+
+      <div class="mb-1">
+        <x-jet-label class="form-label" for="website" value="{{ __('Website') }}" />
+        <x-jet-input id="website" type="text" class="{{ $errors->has('website') ? 'is-invalid' : '' }}"
+          wire:model.defer="state.website" autocomplete="website" />
+        <x-jet-input-error for="website" />
+      </div>
+
+      <div class="mb-1">
+        <x-jet-label class="form-label" for="contact_number" value="{{ __('Contact Number') }}" />
+        <x-jet-input id="contact_number" type="text" class="{{ $errors->has('contact_number') ? 'is-invalid' : '' }}"
+          wire:model.defer="state.contact_number" autocomplete="contact_number" />
+        <x-jet-input-error for="contact_number" />
+      </div>
+
+      <div class="mb-1">
+        <x-jet-label class="form-label" for="address" value="{{ __('Address') }}" />
+        <x-jet-input id="address" type="text" class="{{ $errors->has('address') ? 'is-invalid' : '' }}"
+          wire:model.defer="state.address" autocomplete="address" />
+        <x-jet-input-error for="address" />
+      </div>
+    @endif
+
     <!-- Name -->
     <div class="mb-1">
       <x-jet-label class="form-label" for="first_name" value="{{ __('First Name') }}" />

@@ -27,14 +27,16 @@
                                         <th class="text-end" style="width: 20%">Client Email:</th>
                                         <td style="width: 40%">{!! $spaf->client->email !!}</td>
                                     </tr>
-                                    <tr>
-                                        <th class="text-end" style="width: 20%">Supplier Name:</th>
-                                        <td style="width: 40%">{!! $spaf->supplier->fullName !!}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="text-end" style="width: 20%">Supplier Email:</th>
-                                        <td style="width: 40%">{!! $spaf->supplier->email !!}</td>
-                                    </tr>
+                                    @if($spaf->supplier)
+                                        <tr>
+                                            <th class="text-end" style="width: 20%">Supplier Name:</th>
+                                            <td style="width: 40%">{!! $spaf->supplier->fullName !!}</td>
+                                        </tr>
+                                        <tr>
+                                            <th class="text-end" style="width: 20%">Supplier Email:</th>
+                                            <td style="width: 40%">{!! $spaf->supplier->email !!}</td>
+                                        </tr>
+                                    @endif
                                     <tr>
                                         <th class="text-end" style="width: 20%">Status:</th>
                                         <td style="width: 40%">{!! $spaf->statusDisplay !!}</td>
@@ -51,6 +53,18 @@
                                             <td style="width: 40%">{{ $spaf->notes }}</td>
                                         </tr>
                                     @endif
+                                </table>
+                            </div>
+                            <div class="col-6">
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th class="text-end" style="width: 20%">Form:</th>
+                                        <td style="width: 40%">{{ $spaf->template->name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-end" style="width: 20%">Asessment Type:</th>
+                                        <td style="width: 40%">{{ $spaf->template->typeDisplay }}</td>
+                                    </tr>
                                 </table>
                             </div>
                         </div>
@@ -82,7 +96,7 @@
                     <div class="card-body">
                         <div class="row">
                         <div class="col-12 align-items-center justify-content-center text-center">
-                          @if(request()->user()->hasRole('Supplier') && in_array($spaf->status, ['pending', 'additional', 'answered']))
+                          @if(in_array($spaf->status, ['pending', 'additional', 'answered']) && (request()->user()->hasRole('Supplier') || request()->user()->hasRole('Client')))
                             <a href="{{ route('spaf.edit', $spaf) }}" class="btn btn-outline-secondary">Edit <i data-feather="arrow-right"></i></a>
                           @endif
                           @if(request()->user()->can('spaf.approve') && in_array($spaf->status, ['answered']))

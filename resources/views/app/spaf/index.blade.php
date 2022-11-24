@@ -81,7 +81,7 @@
             { data: 'updated_at', name: 'updated_at'},
             { data: 'action', name: 'action', 'orderable' : false}
         ];
-      @if(! $request->user()->hasRole('Supplier') && ! $request->user()->hasRole('Supplier'))
+      @if($request->user()->can('spaf.manage'))
       var buttons = [
             {
                 text: '<i data-feather="plus"></i> Create New',

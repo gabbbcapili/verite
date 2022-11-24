@@ -34,6 +34,10 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'company_name',
+        'address',
+        'contact_number',
+        'website',
     ];
 
     /**
@@ -76,6 +80,14 @@ class User extends Authenticatable
 
     public function getFullNameAttribute(){
         return $this->first_name . ' ' . $this->last_name;
+    }
+
+    public function getCompanyDetailsAttribute(){
+        if($this->company_name){
+            return $this->company_name . ' - ' . $this->first_name . ' ' . $this->last_name;
+        }else{
+            return $this->first_name . ' ' . $this->last_name;
+        }
     }
 
     public function spafSupplier(){

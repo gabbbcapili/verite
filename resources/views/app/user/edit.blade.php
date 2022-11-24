@@ -17,6 +17,10 @@
             <div class="card">
               <div class="card-body">
                 <div class="form-body">
+                  @if($user->hasRole('Supplier') || $user->hasRole('Client'))
+                    @include('app.user.company_details', ['user' => $user])
+                  @endif
+
                   <div class="row mb-2">
                     <div class="col-lg-6 col-xs-12">
                       <div class="form-group">

@@ -63,6 +63,32 @@
                 </div>
               </div>
             </div>
+            <div class="col-xl-3 col-sm-6 col-12 mb-2 mb-xl-0">
+              <div class="d-flex flex-row">
+                <div class="avatar bg-light-info me-2">
+                  <div class="avatar-content">
+                    <i data-feather="award" class="avatar-icon"></i>
+                  </div>
+                </div>
+                <div class="my-auto">
+                  <h4 class="fw-bolder mb-0">{{ $totals['clients'] }}</h4>
+                  <p class="card-text font-small-3 mb-0">Clients</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 col-12 mb-2 mb-xl-0">
+              <div class="d-flex flex-row">
+                <div class="avatar bg-light-success me-2">
+                  <div class="avatar-content">
+                    <i data-feather="columns" class="avatar-icon"></i>
+                  </div>
+                </div>
+                <div class="my-auto">
+                  <h4 class="fw-bolder mb-0">{{ $totals['spafs'] }}</h4>
+                  <p class="card-text font-small-3 mb-0">Completed SPAF</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -79,7 +105,7 @@
   <!-- dashboard default -->
 
 
-  @can('dashboard.supplier' || 'dashboard.client')
+  @if($request->user()->can('dashboard.supplier') || $request->user()->can('dashboard.client'))
     <div class="row match-height">
       <!-- Greetings Card starts -->
     <div class="col-lg-6 col-md-12 col-sm-12">

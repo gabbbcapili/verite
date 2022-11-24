@@ -31,11 +31,11 @@ class Spaf extends Model
 
     public function getStatusDisplayAttribute(){
         if($this->status == 'pending'){
-            return '<span class="badge rounded-pill badge-light-warning  me-1">Pending</span>';
+            return '<span class="badge rounded-pill badge-light-danger  me-1">Pending</span>';
         }elseif($this->status == 'answered'){
             return '<span class="badge rounded-pill badge-light-warning  me-1">Waiting for Admin Approval</span>';
         }elseif($this->status == 'additional'){
-            return '<span class="badge rounded-pill badge-light-warning  me-1">Additional Info Needed</span>';
+            return '<span class="badge rounded-pill badge-light-info  me-1">Additional Info Needed</span>';
         }elseif($this->status == 'completed'){
             return '<span class="badge rounded-pill badge-light-success  me-1">Completed</span>';
         }else{
@@ -54,6 +54,9 @@ class Spaf extends Model
                             if($request->user()->hasRole('Supplier') || $request->user()->hasRole('Client')){
                                 $html .= Utilities::actionButtons([['route' => route('spaf.show', $spaf->id), 'name' => 'Show', 'type' => 'href']]);
                             }else{
+                                if(in_array($spaf->status, ['pending'])){
+                                    $html .= '<a href="#" data-bs-toggle="tooltip" data-placement="top" title="Send Reminder Email" data-action="'. route('spaf.sendReminder', $spaf) .'" class="me-75 confirm" data-title="Are you sure to send reminder email?" ><i data-feather="send"></i></a>';
+                                }
                                 if(in_array($spaf->status, ['answered', 'completed'])){
                                     $html .= Utilities::actionButtons([['route' => route('spaf.show', $spaf->id), 'name' => 'Show', 'type' => 'href']]);
                                 }

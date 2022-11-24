@@ -18,8 +18,10 @@
           </div>
           <div class="card-content">
             <div class="card-body">
-                <div class="form-body">
+              @include('app.user.company_details')
+                <!-- <div class="form-body"> -->
                   <div class="row mb-2">
+                    <h4 class="card-title">Primary Contact Details</h4>
                       <div class="col-lg-4 col-xs-12">
                         <div class="form-group">
                             <label for="name">First Name:</label>
@@ -45,13 +47,13 @@
                             <label for="name">Suppliers:</label>
                             <select class="form-control select2" multiple="multiple" name="suppliers[]" id="suppliers">
                               @foreach($suppliers as $supplier)
-                                <option value="{{ $supplier->id }}">{{ $supplier->fullName }}</option>
+                                <option value="{{ $supplier->id }}">{{ $supplier->companyDetails }}</option>
                               @endforeach
                             </select>
                         </div>
                       </div>
                     </div>
-                </div>
+                <!-- </div> -->
             </div>
           </div>
         </div>
@@ -65,7 +67,7 @@
                         <div class="row">
                         <div class="col-12 align-items-center justify-content-center text-center">
                           <input type="submit" name="save" class="btn btn-primary me-1 btn_save" value="Save">
-                          <button type="reset" class="btn btn-outline-warning mr-1">Reset </button>
+                          <button type="reset" class="btn btn-outline-warning mr-1">Clear </button>
                         </div>
                       </div>
                     </div>

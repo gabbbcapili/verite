@@ -19,6 +19,7 @@
           <thead>
             <tr>
               <th>Id</th>
+              <th>Company</th>
               <th>Name</th>
               <th>Email</th>
               <th>Suppliers</th>
@@ -65,6 +66,7 @@
         };
       var columnns = [
             { data: 'id', name: 'id'},
+            { data: 'company_name', name: 'company_name'},
             { data: 'fullName', name: 'fullName'},
             { data: 'email', name: 'email'},
             { data: 'suppliers', name: 'suppliers'},

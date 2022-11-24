@@ -62,6 +62,10 @@ class GroupController extends Controller
             foreach($request->question as $q){
                 $q['sort'] = $count;
                 $count+= 1;
+                if($q['type'] == 'title'){
+                    $q['required'] = false;
+                    $q['next_line'] = true;
+                }
                 $question = $group->questions()->create($q);
             }
             DB::commit();

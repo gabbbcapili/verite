@@ -11,6 +11,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SpafController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\SettingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,11 +39,16 @@ Route::group(['middleware' => ['auth']], function()
     Route::get('spaf', [SpafController::class, 'index'])->name('spaf.index')->middleware('permission:spaf.manage');
     Route::get('spaf/create', [SpafController::class, 'create'])->name('spaf.create')->middleware('permission:spaf.manage');
     Route::post('spaf/loadSuppliers/{user}', [SpafController::class, 'loadSuppliers'])->name('spaf.loadSuppliers')->middleware('permission:spaf.manage');
+    Route::post('spaf/sendReminder/{spaf}', [SpafController::class, 'sendReminder'])->name('spaf.sendReminder')->middleware('permission:spaf.manage');
     Route::post('spaf', [SpafController::class, 'store'])->name('spaf.store')->middleware('permission:spaf.manage');
     Route::get('spaf/supplierIndex', [SpafController::class, 'supplierIndex'])->name('spaf.supplierIndex')->middleware('role:Supplier');
     Route::get('spaf/clientIndex', [SpafController::class, 'clientIndex'])->name('spaf.clientIndex')->middleware('role:Client');
     Route::get('spaf/{spaf}', [SpafController::class, 'show'])->name('spaf.show');
-    Route::resource('spaf', SpafController::class)->only(['update', 'edit'])->middleware('role:Supplier');
+    Route::resource('spaf', SpafController::class)->only(['update', 'edit'])->middleware('role:Supplier,Client');
+
+
+    Route::get('settings', [SettingController::class, 'index'])->name('settings.index')->middleware('permission:setting.manage');
+    Route::put('settings', [SettingController::class, 'update'])->name('settings.update')->middleware('permission:setting.manage');
 
     Route::resource('role', RoleController::class)->except('create')->middleware('permission:role.manage');
     Route::resource('supplier', SupplierController::class)->middleware('permission:supplier.manage')->parameters(['supplier' => 'user']);
@@ -57,7 +63,8 @@ Route::group(['middleware' => ['auth']], function()
              Route::post('spaf/approve/{template}', [SpafTemplateController::class, 'approve'])->name('spaf.approve');
              Route::post('spaf/clone/{template}', [SpafTemplateController::class, 'clone'])->name('spaf.clone');
              Route::get('spaf/{type}', [SpafTemplateController::class, 'index'])->name('spaf.index');
-             Route::resource('spaf', SpafTemplateController::class)->parameters(['spaf' => 'template'])->except('index');
+             Route::get('spaf/show/{template}', [SpafTemplateController::class, 'show'])->name('spaf.show');
+             Route::resource('spaf', SpafTemplateController::class)->parameters(['spaf' => 'template'])->except(['index', 'show']);
              // group
              Route::post('group/updateSort/{template}', [GroupController::class, 'updateSort'])->name('group.updateSort');
              Route::post('group/clone/{group}', [GroupController::class, 'clone'])->name('group.clone');

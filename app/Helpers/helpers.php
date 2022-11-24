@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use Config;
 use Illuminate\Support\Str;
+use App\Models\Setting;
 
 class Helper
 {
@@ -135,5 +136,9 @@ class Helper
                 }
             }
         }
+    }
+
+    public static function settings(){
+        return Setting::first();
     }
 }

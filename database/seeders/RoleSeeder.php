@@ -44,13 +44,14 @@ class RoleSeeder extends Seeder
             ['name' => 'dashboard.default'],
             ['name' => 'dashboard.supplier'],
             ['name' => 'dashboard.client'],
+            ['name' => 'setting.manage'],
         ];
         foreach($permissions as $p){
             Permission::create($p);
         }
 
         $sa_permission = Permission::all();
-        $sa->syncPermissions(['user.manage', 'spaf.manage','template.manage', 'supplier.manage', 'client.manage', 'spaf.approve', 'role.manage', 'template.approve', 'dashboard.default']);
+        $sa->syncPermissions(['user.manage', 'spaf.manage','template.manage', 'supplier.manage', 'client.manage', 'spaf.approve', 'role.manage', 'template.approve', 'dashboard.default', 'setting.manage']);
         $default->syncPermissions(['dashboard.default']);
         $supplier->syncPermissions(['dashboard.supplier']);
         $client->syncPermissions(['dashboard.client']);

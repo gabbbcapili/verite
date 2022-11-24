@@ -1,12 +1,11 @@
 @component('mail::message')
-# Welcome to Verite {{ $user->fullName }}!
+# Hello {{ $user->fullName }}!
 
-Please take time to answer this supplier pre-assesment form, kindly click the button below.
+{!! Helper::settings()->spaf_create !!}
 
 @component('mail::button', ['url' => route('spaf.edit', $spaf)])
 Go to Site
 @endcomponent
 
-Thanks,<br>
-{{ config('app.name') }}
+{!! Helper::settings()->email_footer !!}
 @endcomponent

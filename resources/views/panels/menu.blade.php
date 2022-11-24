@@ -105,7 +105,7 @@
   @can('spaf.manage')
   <li class="nav-item has-sub" style=""><a class="d-flex align-items-center" href="#">
     <i data-feather="columns"></i>
-    <span class="menu-title text-truncate">Assessment Forms</span></a>
+    <span class="menu-title text-truncate">Assessment Forms</span><span class="badge badge-light-warning rounded-pill ms-auto me-1" id="badge_assessment_forms_admin"></span></a>
     <ul class="menu-content">
       @can('spaf.manage')
         <li class="nav-item {{ $request->segment(1) == 'spaf' && $request->segment(2) == '' ? 'active' : '' }}">
@@ -124,6 +124,15 @@
   </li>
   @endcan
 
+  @can('setting.manage')
+  <li class="nav-item {{ $request->segment(1) == 'settings' ? 'active' : '' }}">
+      <a href="{{ route('settings.index') }}" class="nav-link d-flex align-items-center">
+        <i data-feather="settings"></i>
+        <span>Settings</span>
+      </a>
+  </li>
+  @endcan
+
 
 
 
@@ -131,7 +140,7 @@
   <li class="nav-item {{ $request->segment(1) == 'spaf' ? 'active' : '' }}">
       <a href="{{ route('spaf.clientIndex') }}" class="nav-link d-flex align-items-center">
         <i data-feather="columns"></i>
-        <span>Assessment Forms</span>
+        <span>Assessment Forms</span><span class="badge badge-light-warning rounded-pill ms-auto me-1" id="badge_assessment_forms"></span>
       </a>
   </li>
   @endif
@@ -140,7 +149,7 @@
   <li class="nav-item {{ $request->segment(1) == 'spaf' ? 'active' : '' }}">
       <a href="{{ route('spaf.supplierIndex') }}" class="nav-link d-flex align-items-center">
         <i data-feather="columns"></i>
-        <span>Assessment Forms</span>
+        <span>Assessment Forms</span><span class="badge badge-light-warning rounded-pill ms-auto me-1" id="badge_assessment_forms"></span>
       </a>
   </li>
   @endif

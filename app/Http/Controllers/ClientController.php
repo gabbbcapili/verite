@@ -43,7 +43,7 @@ class ClientController extends Controller
             ->addColumn('suppliers', function(User $user) {
                             $html = '<div class="avatar-group">';
                             foreach($user->suppliers as $c){
-                                $html .= '<div data-bs-toggle="tooltip" data-popup="tooltip-custom"data-bs-placement="top"class="avatar pull-up my-0"title="'. $c->fullName . '"><img src="'. $c->profile_photo_url .'" alt="Avatar" height="26" width="26"/></div>';
+                                $html .= '<div data-bs-toggle="tooltip" data-popup="tooltip-custom"data-bs-placement="top"class="avatar pull-up my-0"title="'. $c->companyDetails . '"><img src="'. $c->profile_photo_url .'" alt="Avatar" height="26" width="26"/></div>';
                             }
                             $html .= '</div>';
                             return $html;
@@ -97,12 +97,8 @@ class ClientController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->all();
-            $user =  User::create([
-                'first_name' => $data['first_name'],
-                'last_name' => $data['last_name'],
-                'email' => $data['email'],
-                'password' => Hash::make(Str::random(10)),
-            ]);
+            $data['password'] = Hash::make(Str::random(10));
+            $user =  User::create($data);
             $user->assignRole('Client');
             if($request->has('suppliers')){
                 foreach($request->suppliers as $s){

@@ -1,6 +1,7 @@
 @component('mail::message')
-# Welcome to Verite
+# Welcome to {{ env('APP_NAME') }}
 
+{!! Helper::settings()->user_welcome !!}
 @component('mail::panel')
     Hello {{ $user->fullName }}!
 @endcomponent
@@ -8,6 +9,5 @@
 Go to Site
 @endcomponent
 
-Thanks,<br>
-{{ config('app.name') }}
+{!! Helper::settings()->email_footer !!}
 @endcomponent

@@ -8,7 +8,6 @@ $breadcrumbs = [['link' => route('home'), 'name' => 'Home'], ['link' => 'javascr
 
 
 @section('content')
-
   @if (Laravel\Fortify\Features::canUpdateProfileInformation())
     @livewire('profile.update-profile-information-form')
   @endif

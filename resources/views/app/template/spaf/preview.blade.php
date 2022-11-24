@@ -5,8 +5,8 @@
     <table class="table table-bordered">
         @foreach($group->questions()->orderBy('sort')->get() as $q)
         @if($q->next_line || $loop->iteration == 1)
-            <tr>
-                <td style="width: 30%;">{{ $q->text }}</td>
+            <tr >
+                <td style="width: 30%; white-space:pre-wrap;">{{ $q->text }}</td>
                 <td style="width: 70%;">
                 @include('app.template.spaf.partial.question', ['q' => $q, 'answers' => isset($answers) ? $answers : []])
         @else

@@ -43,18 +43,12 @@
                           <input type="text" class="form-control" name="last_name" placeholder="Last Name">
                       </div>
                     </div>
-                    <div class="col-lg-4 col-xs-12">
-                      <div class="form-group">
-                          <label for="name">Email:</label>
-                          <input type="text" class="form-control" name="email" placeholder="Email">
-                      </div>
-                    </div>
                   </div>
                   <div class="row mb-2">
                     <div class="col-lg-4 col-xs-12">
                       <div class="form-group">
-                          <label for="name">Password:</label>
-                          <input type="text" class="form-control" name="password" placeholder="Password">
+                          <label for="name">Email:</label>
+                          <input type="text" class="form-control" name="email" placeholder="Email">
                       </div>
                     </div>
                     <div class="col-lg-4 col-xs-12">
@@ -72,7 +66,7 @@
                     <div class="col-6">
                      <div class="col-12">
                           <input type="submit" name="save_with_reload_table" class="btn btn-primary mr-1 mb-1 btn_save" value="Save">
-                          <button type="reset" class="btn btn-outline-warning mr-1 mb-1">Reset </button>
+                          <button type="reset" class="btn btn-outline-warning mr-1 mb-1">Clear </button>
                       </div>
                     </div>
                   </div>

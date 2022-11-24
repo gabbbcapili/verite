@@ -1,7 +1,7 @@
 @component('mail::message')
-# Hello {{ $user->fullName }}
+# Hello {{ $user->fullName }}!
 
-Thank you for your time answering spaf however {{ env('APP_NAME') }} needs additional info,
+{!! Helper::settings()->spaf_resend !!}
 @component('mail::panel')
 <p>Your Email: {{ $user->email }}</p>
 <p>{{ env('APP_NAME') }} Notes: {{ $spaf->notes }}</p>
@@ -12,6 +12,5 @@ If you wish to answer it now kindly click the button below. Thank you
 Go to Site
 @endcomponent
 
-Thanks,<br>
-{{ config('app.name') }}
+{!! Helper::settings()->email_footer !!}
 @endcomponent

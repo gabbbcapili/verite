@@ -13,6 +13,8 @@ use App\Models\Question;
 use App\Mail\ResendSpaf;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\CreateSpaf;
+use App\Mail\Spaf\Completed;
+use App\Mail\Spaf\Reminder;
 use App\Models\Template;
 use App\Models\User;
 
@@ -73,7 +75,7 @@ class SpafController extends Controller
         $breadcrumbs = [
             ['link'=>"/",'name'=>"Home"],['link'=> route('spaf.index'), 'name'=>"List Assessment Forms"], ['name'=>"Add Assessment"]
         ];
-        $templates = Template::where('type', 'spaf')->where('is_deleted', false)->where('is_approved', true)->get();
+        $templates = Template::where('is_deleted', false)->where('is_approved', true)->get();
         $clients = User::with("roles")->whereHas("roles", function($q) {
                 $q->where("name", 'Client');
             })->get();
@@ -171,10 +173,10 @@ class SpafController extends Controller
                 }
 
                 if($q->type == 'email'){
-                    $validation['checkbox.'. $q->id] = $q->required ? ['required', 'email'] : 'email';
+                    $validation['question.'. $q->id] = $q->required ? ['required', 'email'] : 'email';
                 }
                 if($q->type == 'number'){
-                    $validation['checkbox.'. $q->id] = $q->required ? ['required', 'numeric'] : 'numeric';
+                    $validation['question.'. $q->id] = $q->required ? ['required', 'numeric'] : 'numeric';
                 }
             }
         }
@@ -184,6 +186,8 @@ class SpafController extends Controller
             $validation,
         [
             'question.*.required' => 'This field is required.',
+            'question.*.email' => 'This field must be a valid email address.',
+            'question.*.numeric' => 'This field must be a number.',
             'checkbox.*.required' => 'This field is required.'
         ]);
         if ($validator->fails()) {
@@ -239,25 +243,53 @@ class SpafController extends Controller
 
     public function approve(Spaf $spaf, Request $request){
         try {
+            DB::beginTransaction();
             $data = [];
             if($request->has('notes')){
                 $data['notes'] = $request->notes;
+                $spaf->update($data);
             }
             if($request->has('approve')){
                 if(! $request->approve){
                     $data['status'] = 'additional';
                     Mail::to($spaf->client)->send(new ResendSpaf($spaf->client, $spaf));
-                    Mail::to($spaf->supplier)->send(new ResendSpaf($spaf->supplier, $spaf));
+                    if($spaf->supplier){
+                        Mail::to($spaf->supplier)->send(new ResendSpaf($spaf->supplier, $spaf));
+                    }
+
                 }else{
                     $data['status'] = 'completed';
+                    Mail::to($spaf->client)->send(new Completed($spaf->client, $spaf));
+                    if($spaf->supplier){
+                        Mail::to($spaf->supplier)->send(new Completed($spaf->supplier, $spaf));
+                    }
                     $data['approved_at'] = Carbon::now()->format('Y-m-d H:i:s');
                 }
             }
-            DB::beginTransaction();
             $spaf->update($data);
             DB::commit();
             $output = ['success' => 1,
                         'msg' => 'Template successfully updated!',
+                        'redirect' => route('spaf.show', $spaf)
+                    ];
+        } catch (\Exception $e) {
+            \Log::emergency("File:" . $e->getFile(). " Line:" . $e->getLine(). " Message:" . $e->getMessage());
+            $output = ['success' => 0,
+                        'msg' => env('APP_DEBUG') ? $e->getMessage() : 'Sorry something went wrong, please try again later.'
+                    ];
+             DB::rollBack();
+        }
+        return response()->json($output);
+    }
+
+    public function sendReminder(Spaf $spaf, Request $request){
+        try {
+            Mail::to($spaf->client)->send(new Reminder($spaf->client, $spaf));
+            if($spaf->supplier){
+                Mail::to($spaf->supplier)->send(new Reminder($spaf->supplier, $spaf));
+            }
+            $output = ['success' => 1,
+                        'msg' => 'Reminder email successfully sent!',
                         'redirect' => route('spaf.show', $spaf)
                     ];
         } catch (\Exception $e) {

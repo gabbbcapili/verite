@@ -26,7 +26,7 @@
                             <select class="form-control select2" name="client_id" id="client">
                               <option disabled selected></option>
                               @foreach($clients as $client)
-                                <option value="{{ $client->id }}">{{ $client->fullName }}</option>
+                                <option value="{{ $client->id }}">{{ $client->companyDetails }}</option>
                               @endforeach
                             </select>
                         </div>
@@ -46,7 +46,7 @@
                             <select class="form-control select2" name="template_id">
                               <option disabled selected></option>
                               @foreach($templates as $template)
-                                <option value="{{ $template->id }}">{{ $template->name }}</option>
+                                <option value="{{ $template->id }}">{{ $template->typeDisplay }} - {{ $template->name }}</option>
                               @endforeach
                             </select>
                         </div>
@@ -66,7 +66,7 @@
                         <div class="row">
                         <div class="col-12 align-items-center justify-content-center text-center">
                           <input type="submit" name="save" class="btn btn-primary me-1 btn_save" value="Save">
-                          <button type="reset" class="btn btn-outline-warning mr-1">Reset </button>
+                          <button type="reset" class="btn btn-outline-warning mr-1">Clear </button>
                         </div>
                       </div>
                     </div>

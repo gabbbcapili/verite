@@ -34,7 +34,7 @@
                           <th style="width: 20%;">Type</th>
                           <th style="width: 10%;">Required <i data-feather="info" data-bs-toggle-modal="tooltip" data-bs-placement="top" title="Check / Uncheck this field wether this field is required to fill up or not."></i></th>
                           <th style="width: 10%;">Next Line <i data-feather="info" data-bs-toggle-modal="tooltip" data-bs-placement="top" title="Uncheck this field if it is a multiple question in one line."></i></th>
-                          <th style="width: 25%;">For Checkbox/Radio <i data-feather="info" data-bs-toggle-modal="tooltip" data-bs-placement="top" title="If the field is checkbox or radio, put all the options in this field separeted by comma (,) e.g. 'Yes,No' 'Management,Direct,Outsource,Dispatch'"></i></th>
+                          <th style="width: 25%;">For Checkbox/Radio <i data-feather="info" data-bs-toggle-modal="tooltip" data-bs-placement="top" title="If the field is checkbox or radio, put all the options in this field separeted by vertical bar ( | ) e.g. 'Yes|No' 'Management|Direct|Outsource|Dispatch'"></i></th>
                           <th style="width: 10%;">Action</th>
                         </tr>
                       </thead>
@@ -71,7 +71,7 @@
                             </div>
                           </td>
                           <td>
-                            <input type="textbox" name="question[1][for_checkbox]" id="question.1.for_checkbox" class="form-control for_checkbox" placeholder="Management,Direct,Outsource,Dispatch">
+                            <textarea name="question[1][for_checkbox]" id="question.1.for_checkbox" class="form-control for_checkbox" placeholder="Management|Direct|Outsource|Dispatch"></textarea>
                           </td>
                           <td>
                             <div class="d-flex justify-content-end">
@@ -146,7 +146,7 @@
         $tr += '<td><select class="form-control selectType" name="question['+ row +'][type]" id="question.'+ row +'.type"><option value="input">Text</option><option value="checkbox">Check Box</option><option value="radio">Radio Button</option><option value="title">Title</option><option value="email">Email</option><option value="number">Number</option><option value="textarea">Long Text</option></select></td>';
         $tr += '<td><div class="form-check"><input class="form-check-input for_required" type="checkbox" value="1" name="question['+ row +'][required]" id="question.'+ row +'.required" checked><label class="form-check-label">Required</label></div></td>';
         $tr += '<td><div class="form-check"><input class="form-check-input for_next_line" type="checkbox" value="1" name="question['+ row +'][next_line]" id="question.'+ row +'.next_line" checked><label class="form-check-label">Next Line</label></div></td>';
-        $tr += '<td><input type="textbox" name="question['+ row +'][for_checkbox]" id="question.'+ row +'.for_checkbox" class="form-control for_checkbox" placeholder="Management,Direct,Outsource,Dispatch" disabled></td>';
+        $tr += '<td><textarea name="question['+ row +'][for_checkbox]" id="question.'+ row +'.for_checkbox" class="form-control for_checkbox" placeholder="Management|Direct|Outsource|Dispatch" disabled></textarea></td>';
         $tr += '<td><div class="d-flex justify-content-end"><div class="btn-group" role="group"><button type="button" class="btn btn-sm btn-outline-success delete_row" data-bs-toggle-modal="tooltip" title="Delete"><i data-feather="delete"></i></button><span role="button" class="btn btn-sm btn-outline-success cursor-move ui-icon" data-bs-toggle-modal="tooltip" title="Move"><i class="" data-feather="move"></i></span></div></div></td>';
         $tr += '</tr>';
         $('#question_table tr:last').after($tr);

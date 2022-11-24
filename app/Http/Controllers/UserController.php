@@ -12,6 +12,9 @@ use Validator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use App\Models\ClientSuppliers;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ResetPassword;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -74,7 +77,6 @@ class UserController extends Controller
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'min:8'],
             'role' => ['required', 'exists:roles,name']
         ]);
         if ($validator->fails()) {
@@ -87,9 +89,11 @@ class UserController extends Controller
                 'first_name' => $data['first_name'],
                 'last_name' => $data['last_name'],
                 'email' => $data['email'],
-                'password' => Hash::make($data['password']),
+                'password' => Hash::make(Str::random(10)),
             ]);
             $user->assignRole($request->role);
+            $token = $user->generatePassworResetToken();
+            Mail::to($user)->send(new ResetPassword($user, $token));
             DB::commit();
             $output = ['success' => 1,
                         'msg' => 'User added successfully!',
@@ -153,7 +157,7 @@ class UserController extends Controller
         }
         try {
             DB::beginTransaction();
-            $data = $request->only(['first_name','last_name','email']);
+            $data = $request->only(['first_name','last_name','email', 'company_name', 'website', 'contact_number', 'address']);
             if($request->has('password')){
                 if($request->password != null){
                     $data['password'] = Hash::make($request->password);

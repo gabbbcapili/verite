@@ -75,7 +75,7 @@
                             <div class="row">
                             <div class="col-12 align-items-center justify-content-center text-center">
                               <button type="submit" class="btn btn-primary me-1 btn_save">Submit</button>
-                              <button type="reset" class="btn btn-outline-secondary">Reset</button>
+                              <button type="reset" class="btn btn-outline-secondary">Clear</button>
                             </div>
                           </div>
                         </div>

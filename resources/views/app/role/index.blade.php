@@ -43,7 +43,7 @@
                     <div class="col-6">
                      <div class="col-12">
                           <input type="submit" name="save_with_reload_table" class="btn btn-primary mr-1 mb-1 btn_save" value="Save">
-                          <!-- <button type="reset" class="btn btn-outline-warning mr-1 mb-1">Reset </button> -->
+                          <!-- <button type="reset" class="btn btn-outline-warning mr-1 mb-1">Clear </button> -->
                       </div>
                     </div>
                   </div>
