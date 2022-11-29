@@ -36,14 +36,14 @@ Route::group(['middleware' => ['auth']], function()
     // Route::get('spaf/edit/{spaf}', [SpafController::class, 'edit'])->name('spaf.edit')->middleware('role:Supplier');
     // Route::put('spaf/{spaf}', [SpafController::class, 'update'])->name('spaf.edit')->middleware('role:Supplier');
     Route::post('spaf/approve/{spaf}/', [SpafController::class, 'approve'])->name('spaf.approve')->middleware('permission:spaf.approve');
-    Route::get('spaf', [SpafController::class, 'index'])->name('spaf.index')->middleware('permission:spaf.manage');
+    Route::get('spaf', [SpafController::class, 'index'])->name('spaf.index')->middleware('permission:spaf.manage,spaf.approve');
     Route::get('spaf/create', [SpafController::class, 'create'])->name('spaf.create')->middleware('permission:spaf.manage');
     Route::post('spaf/loadSuppliers/{user}', [SpafController::class, 'loadSuppliers'])->name('spaf.loadSuppliers')->middleware('permission:spaf.manage');
     Route::post('spaf/sendReminder/{spaf}', [SpafController::class, 'sendReminder'])->name('spaf.sendReminder')->middleware('permission:spaf.manage');
     Route::post('spaf', [SpafController::class, 'store'])->name('spaf.store')->middleware('permission:spaf.manage');
     Route::get('spaf/supplierIndex', [SpafController::class, 'supplierIndex'])->name('spaf.supplierIndex')->middleware('role:Supplier');
     Route::get('spaf/clientIndex', [SpafController::class, 'clientIndex'])->name('spaf.clientIndex')->middleware('role:Client');
-    Route::get('spaf/{spaf}', [SpafController::class, 'show'])->name('spaf.show');
+    Route::get('spaf/{spaf}', [SpafController::class, 'show'])->name('spaf.show')->middleware('permission:spaf.manage,spaf.approve');
     Route::resource('spaf', SpafController::class)->only(['update', 'edit'])->middleware('role:Supplier,Client');
 
 
@@ -55,24 +55,24 @@ Route::group(['middleware' => ['auth']], function()
     Route::resource('client', ClientController::class)->middleware('permission:client.manage')->parameters(['client' => 'user']);
     Route::group(['prefix' => 'template', 'as' => 'template.'], function()
     {
-        Route::group(['middleware' => 'permission:template.manage'], function()
+        Route::group([], function()
         {
             // template
-             Route::get('spaf/preview/{template}', [SpafTemplateController::class, 'preview'])->name('spaf.preview');
-             Route::get('spaf/delete/{template}', [SpafTemplateController::class, 'delete'])->name('spaf.delete');
-             Route::post('spaf/approve/{template}', [SpafTemplateController::class, 'approve'])->name('spaf.approve');
-             Route::post('spaf/clone/{template}', [SpafTemplateController::class, 'clone'])->name('spaf.clone');
-             Route::get('spaf/{type}', [SpafTemplateController::class, 'index'])->name('spaf.index');
-             Route::get('spaf/show/{template}', [SpafTemplateController::class, 'show'])->name('spaf.show');
-             Route::resource('spaf', SpafTemplateController::class)->parameters(['spaf' => 'template'])->except(['index', 'show']);
+             Route::get('spaf/preview/{template}', [SpafTemplateController::class, 'preview'])->name('spaf.preview')->middleware('permission:template.manage');
+             Route::get('spaf/delete/{template}', [SpafTemplateController::class, 'delete'])->name('spaf.delete')->middleware('permission:template.manage');
+             Route::post('spaf/approve/{template}', [SpafTemplateController::class, 'approve'])->name('spaf.approve')->middleware('permission:template.approve');
+             Route::post('spaf/clone/{template}', [SpafTemplateController::class, 'clone'])->name('spaf.clone')->middleware('permission:template.manage');
+             Route::get('spaf/{type}', [SpafTemplateController::class, 'index'])->name('spaf.index')->middleware('permission:template.manage,template.approve');
+             Route::get('spaf/show/{template}', [SpafTemplateController::class, 'show'])->name('spaf.show')->middleware('permission:template.manage,template.approve');
+             Route::resource('spaf', SpafTemplateController::class)->parameters(['spaf' => 'template'])->except(['index', 'show'])->middleware('permission:template.manage');
              // group
-             Route::post('group/updateSort/{template}', [GroupController::class, 'updateSort'])->name('group.updateSort');
-             Route::post('group/clone/{group}', [GroupController::class, 'clone'])->name('group.clone');
-             Route::get('group/create/{template}', [GroupController::class, 'create'])->name('group.create');
-             Route::post('group/{template}', [GroupController::class, 'store'])->name('group.store');
-             Route::get('group/delete/{group}', [GroupController::class, 'delete'])->name('group.delete');
+             Route::post('group/updateSort/{template}', [GroupController::class, 'updateSort'])->name('group.updateSort')->middleware('permission:template.manage');
+             Route::post('group/clone/{group}', [GroupController::class, 'clone'])->name('group.clone')->middleware('permission:template.manage');
+             Route::get('group/create/{template}', [GroupController::class, 'create'])->name('group.create')->middleware('permission:template.manage');
+             Route::post('group/{template}', [GroupController::class, 'store'])->name('group.store')->middleware('permission:template.manage');
+             Route::get('group/delete/{group}', [GroupController::class, 'delete'])->name('group.delete')->middleware('permission:template.manage');
              Route::get('group/preview/{template}', [GroupController::class, 'preview'])->name('group.preview');
-             Route::resource('group', GroupController::class)->except(['create', 'store']);
+             Route::resource('group', GroupController::class)->except(['create', 'store'])->middleware('permission:template.manage');
         });
 
 

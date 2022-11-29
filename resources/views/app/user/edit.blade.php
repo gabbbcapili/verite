@@ -55,7 +55,7 @@
                         <div class="col-lg-6 col-xs-12">
                           <div class="form-group">
                               <label for="name">Role:</label>
-                              <select class="form-control select2Modal"name="suppliers[]" id="suppliers">
+                              <select class="form-control select2Modal" name="role" id="role">
                                 @foreach($roles as $role)
                                   <option value="{{ $role->name }}" {{ $user->getRoleNames()->first() == $role->name ? 'selected' : '' }}>{{ $role->name }}</option>
                                 @endforeach

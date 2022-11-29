@@ -169,12 +169,16 @@ class UserController extends Controller
                 foreach($request->clients as $c){
                     ClientSuppliers::create(['supplier_id' => $user->id, 'client_id' => $c]);
                 }
+            }else{
+                ClientSuppliers::where('supplier_id', $user->id)->delete();
             }
             if($request->has('suppliers')){
                 ClientSuppliers::where('client_id', $user->id)->delete();
                 foreach($request->suppliers as $c){
                     ClientSuppliers::create(['client_id' => $user->id, 'supplier_id' => $c]);
                 }
+            }else{
+                ClientSuppliers::where('client_id', $user->id)->delete();
             }
             if($request->has('role')){
                 $user->syncRoles([$request->role]);

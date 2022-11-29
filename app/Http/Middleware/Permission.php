@@ -13,11 +13,12 @@ class Permission
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next, $permission)
+    public function handle($request, Closure $next, ... $permissions)
     {
-        if(! $request->user()->can($permission)){
-                abort(403, 'Unauthorized Access');
+        foreach($permissions as $permission) {
+            if($request->user()->can($permission))
+                return $next($request);
         }
-        return $next($request);
+        abort(403, 'Unauthorized Access');
     }
 }

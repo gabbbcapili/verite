@@ -100,8 +100,8 @@
                             <a href="{{ route('spaf.edit', $spaf) }}" class="btn btn-outline-secondary">Edit <i data-feather="arrow-right"></i></a>
                           @endif
                           @if(request()->user()->can('spaf.approve') && in_array($spaf->status, ['answered']))
-                            <a data-action="{{ route('spaf.approve', ['spaf' => $spaf, 'approve' => false]) }}" data-confirmbutton="Disapprove" data-title="Are you sure to DISAPPROVE this spaf?" class="btn btn-danger confirmWithNotes" data-text="You can add notes on the input below"><i data-feather="x-circle"></i> Disapprove</a>
-                            <a data-action="{{ route('spaf.approve', ['spaf' => $spaf, 'approve' => true]) }}" data-confirmbutton="Approve" data-title="Are you sure to APPROVE this spaf?" class="btn btn-success confirmWithNotes" data-text="You can add notes on the input below"><i data-feather="check-circle"></i> Approve</a>
+                            <a data-action="{{ route('spaf.approve', ['spaf' => $spaf, 'approve' => false]) }}" data-confirmbutton="Disapprove" data-title="Are you sure to DISAPPROVE this SPAF?" class="btn btn-danger confirmWithNotes" data-text="You can add notes on the input below"><i data-feather="x-circle"></i> Disapprove</a>
+                            <a data-action="{{ route('spaf.approve', ['spaf' => $spaf, 'approve' => true]) }}" data-confirmbutton="Approve" data-title="Are you sure to APPROVE this SPAF?" class="btn btn-success confirmWithNotes" data-text="You can add notes on the input below"><i data-feather="check-circle"></i> Approve</a>
                           @endif
 
 

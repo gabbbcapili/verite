@@ -6,7 +6,7 @@
         <span>Home</span>
       </a>
   </li>
-  @can('template.manage')
+  @if( $request->user()->can('template.manage') || $request->user()->can('template.approve'))
   <li class="nav-item has-sub" style=""><a class="d-flex align-items-center" href="#">
     <i data-feather="file"></i>
     <span class="menu-title text-truncate">Templates</span><span class="badge badge-light-warning rounded-pill ms-auto me-1" id="badge_templates"></span></a>
@@ -33,8 +33,8 @@
       </li>
     </ul>
   </li>
-  @endcan
-  @if( $request->user()->can('user.manage') || $request->user()->can('supplier.manage') || $request->user()->can('role.manage'))
+  @endif
+  @if( $request->user()->can('user.manage') || $request->user()->can('role.manage'))
   <li class="nav-item has-sub" style=""><a class="d-flex align-items-center" href="#">
     <i data-feather="users"></i>
     <span class="menu-title text-truncate">Users</span></a>
@@ -102,17 +102,15 @@
   </li>
   @endcan
 
-  @can('spaf.manage')
+  @if( $request->user()->can('spaf.manage') || $request->user()->can('spaf.approve'))
   <li class="nav-item has-sub" style=""><a class="d-flex align-items-center" href="#">
     <i data-feather="columns"></i>
     <span class="menu-title text-truncate">Assessment Forms</span><span class="badge badge-light-warning rounded-pill ms-auto me-1" id="badge_assessment_forms_admin"></span></a>
     <ul class="menu-content">
-      @can('spaf.manage')
         <li class="nav-item {{ $request->segment(1) == 'spaf' && $request->segment(2) == '' ? 'active' : '' }}">
           <a class="d-flex align-items-center" href="{{ route('spaf.index') }}"><i data-feather="align-justify"></i>
           <span class="menu-item text-truncate">List Assessments</span></a>
         </li>
-      @endcan
 
       @can('spaf.manage')
         <li class="nav-item {{ $request->segment(1) == 'spaf' && $request->segment(2) == 'create' ? 'active' : '' }}">

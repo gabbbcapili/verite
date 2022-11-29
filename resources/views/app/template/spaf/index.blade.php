@@ -11,6 +11,7 @@
 @endsection
 
 @section('content')
+@can('template.manage')
 <section id="card-actions">
   <div class="row">
     <div class="col-md-12 col-sm-12">
@@ -55,6 +56,7 @@
     </div>
   </div>
 </section>
+@endcan
 <section id="basic-datatable">
   <div class="row">
     <div class="col-12">

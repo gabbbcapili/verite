@@ -132,6 +132,46 @@
       </tbody>
       <thead>
         <tr>
+          <th>Dashboard</th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td></td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="radio" value="dashboard.default" name="permissions[]" {{ isset($roleList) ? in_array('dashboard.default', $roleList) ? 'checked' : '' : 'checked' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="circle" class="vs-icon"></i></span>
+              </span>
+              <span class="">Default</span>
+            </div></fieldset>
+          </td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="radio" value="dashboard.supplier" name="permissions[]" {{ isset($roleList) ? in_array('dashboard.supplier', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="circle" class="vs-icon"></i></span>
+              </span>
+              <span class="">Supplier</span>
+            </div></fieldset>
+          </td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="radio" value="dashboard.client" name="permissions[]" {{ isset($roleList) ? in_array('dashboard.client', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="circle" class="vs-icon"></i></span>
+              </span>
+              <span class="">Client</span>
+            </div></fieldset>
+          </td>
+        </tr>
+      </tbody>
+      <thead>
+        <tr>
           <th>Settings</th>
           <th></th>
           <th></th>

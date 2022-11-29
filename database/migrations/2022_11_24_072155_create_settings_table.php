@@ -16,14 +16,14 @@ class CreateSettingsTable extends Migration
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
 
-            $table->string('email_footer');
+            $table->longText('email_footer');
             // emails
-            $table->string('spaf_completed');
-            $table->string('spaf_reminder');
-            $table->string('spaf_create');
-            $table->string('spaf_resend');
-            $table->string('user_reset');
-            $table->string('user_welcome');
+            $table->longText('spaf_completed');
+            $table->longText('spaf_reminder');
+            $table->longText('spaf_create');
+            $table->longText('spaf_resend');
+            $table->longText('user_reset');
+            $table->longText('user_welcome');
             $table->timestamps();
         });
     }

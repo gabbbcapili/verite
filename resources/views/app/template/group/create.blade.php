@@ -56,7 +56,7 @@
                           </td>
                           <td>
                             <div class="form-check">
-                              <input class="form-check-input for_required" type="checkbox" value="1" name="question[1][required]" id="question.1.required" checked>
+                              <input class="form-check-input for_required" type="checkbox" value="1" name="question[1][required]" id="question.1.required">
                               <label class="form-check-label">
                                 Required
                               </label>
@@ -114,7 +114,7 @@
           select.closest('tr').find('.for_next_line').prop('checked', true);
         }else{
           select.closest('tr').find('.for_required').removeAttr('disabled');
-          select.closest('tr').find('.for_required').prop('checked', true);
+          select.closest('tr').find('.for_required').prop('checked', false);
           select.closest('tr').find('.for_next_line').removeAttr('disabled');
           select.closest('tr').find('.for_next_line').prop('checked', true);
         }
@@ -144,7 +144,7 @@
         $tr += '<tr>';
         $tr += '<td><textarea name="question['+ row +'][text]" id="question.'+ row +'.text" class="form-control"></textarea></td>';
         $tr += '<td><select class="form-control selectType" name="question['+ row +'][type]" id="question.'+ row +'.type"><option value="input">Text</option><option value="checkbox">Check Box</option><option value="radio">Radio Button</option><option value="title">Title</option><option value="email">Email</option><option value="number">Number</option><option value="textarea">Long Text</option></select></td>';
-        $tr += '<td><div class="form-check"><input class="form-check-input for_required" type="checkbox" value="1" name="question['+ row +'][required]" id="question.'+ row +'.required" checked><label class="form-check-label">Required</label></div></td>';
+        $tr += '<td><div class="form-check"><input class="form-check-input for_required" type="checkbox" value="1" name="question['+ row +'][required]" id="question.'+ row +'.required"><label class="form-check-label">Required</label></div></td>';
         $tr += '<td><div class="form-check"><input class="form-check-input for_next_line" type="checkbox" value="1" name="question['+ row +'][next_line]" id="question.'+ row +'.next_line" checked><label class="form-check-label">Next Line</label></div></td>';
         $tr += '<td><textarea name="question['+ row +'][for_checkbox]" id="question.'+ row +'.for_checkbox" class="form-control for_checkbox" placeholder="Management|Direct|Outsource|Dispatch" disabled></textarea></td>';
         $tr += '<td><div class="d-flex justify-content-end"><div class="btn-group" role="group"><button type="button" class="btn btn-sm btn-outline-success delete_row" data-bs-toggle-modal="tooltip" title="Delete"><i data-feather="delete"></i></button><span role="button" class="btn btn-sm btn-outline-success cursor-move ui-icon" data-bs-toggle-modal="tooltip" title="Move"><i class="" data-feather="move"></i></span></div></div></td>';
