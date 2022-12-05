@@ -63,9 +63,9 @@
           <thead>
             <tr>
               <th>Id</th>
-              <th>Name</th>
-              <th>Created At</th>
-              <th>Update At</th>
+              <th>Role</th>
+              <th>Created</th>
+              <th>Updated</th>
               <th>Action</th>
             </tr>
           </thead>
