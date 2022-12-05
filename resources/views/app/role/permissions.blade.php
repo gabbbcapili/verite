@@ -124,7 +124,7 @@
               <span class="vs-checkbox">
                 <span class="vs-checkbox--check"><i data-feather="user-check" class="vs-icon"></i></span>
               </span>
-              <span class="">Roles & Priviledges</span>
+              <span class="">Roles & Privileges</span>
             </div></fieldset>
           </td>
           <td></td>

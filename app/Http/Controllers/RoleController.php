@@ -22,7 +22,7 @@ class RoleController extends Controller
     public function index(Request $request)
     {
         $breadcrumbs = [
-            ['link'=>"/",'name'=>"Home"],['link'=> route('role.index'), 'name'=>"Roles & Priviledges"], ['name'=>"list of Roles"]
+            ['link'=>"/",'name'=>"Home"],['link'=> route('role.index'), 'name'=>"Roles & Privileges"], ['name'=>"List of Roles"]
         ];
         if (request()->ajax()) {
             $role = Role::where('is_deleted', 0)->orderBy('updated_at', 'desc');
