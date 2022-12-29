@@ -66,7 +66,7 @@
               <th>Role</th>
               <th>Created</th>
               <th>Updated</th>
-              <th>Action</th>
+              <th class="noexport">Action</th>
             </tr>
           </thead>
         </table>
