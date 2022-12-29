@@ -15,6 +15,23 @@
   <div class="row">
     <div class="col-12">
       <div class="card">
+        @can('spaf.manage')
+        <div class="card-body">
+          <div class="row">
+            <div class="col-3">
+              <div class="form-group">
+                <select class="form-control select2 selectFilter" id="status">
+                  <option value="all">ALL STATUS</option>
+                  <option value="pending">Pending</option>
+                  <option value="answered">Waiting for Admin Approval</option>
+                  <option value="additional">Additional Info Needed</option>
+                  <option value="completed">Completed</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        @endcan
         <table class="datatables-basic table" id="assessment_table">
           <thead>
             <tr>
@@ -24,9 +41,9 @@
               <th>Template</th>
               <th>Type</th>
               <th>Status</th>
-              <th>Created At</th>
-              <th>Update At</th>
-              <th>Action</th>
+              <th>Created</th>
+              <th>Updated</th>
+              <th class="noexport">Action</th>
             </tr>
           </thead>
         </table>
@@ -67,7 +84,7 @@
     var table_route = {
           url: url,
           data: function (data) {
-                // data.status = $("#status").val();
+                data.status = $("#status").val();
             }
         };
       var columnns = [
@@ -83,6 +100,30 @@
         ];
       @if($request->user()->can('spaf.manage'))
       var buttons = [
+            {
+                text: '<i data-feather="printer"></i> Print',
+                extend: 'print',
+                className: 'btn btn-secondary',
+                exportOptions: {
+                    columns: ':not(.noexport)'
+                }
+            },
+            {
+              text: '<i data-feather="file"></i> Excel',
+                extend: 'excel',
+                className: 'btn btn-secondary',
+                exportOptions: {
+                    columns: ':not(.noexport)'
+                }
+            },
+            {
+                text: '<i data-feather="file-text"></i> PDF',
+                extend: 'pdf',
+                className: 'btn btn-secondary',
+                exportOptions: {
+                    columns: ':not(.noexport)'
+                }
+            },
             {
                 text: '<i data-feather="plus"></i> Create New',
                 className: 'btn btn-primary',

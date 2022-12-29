@@ -22,6 +22,10 @@ class SettingSeeder extends Seeder
             'spaf_resend' => 'Thank you for your time answering spaf however Veritè needs additional info,',
             'user_reset' => 'Please change your password immediately.',
             'user_welcome' => 'Hello thank you for registering in our site, please wait for our admin to change your role according to your position.',
+            'welcome_client' => 'Welcome Client',
+            'welcome_supplier' => 'Welcome Supplier',
+            'user_changed_role' => 'Hello! administrator changed your role click the button below to visit the site',
+            'admin_change_role_of' => 'Please change the role of the user below',
         ]);
     }
 }

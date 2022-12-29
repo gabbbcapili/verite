@@ -1,6 +1,6 @@
 @inject('request', 'Illuminate\Http\Request')
 @extends('layouts/contentLayoutMaster')
-@section('title', 'Add Client')
+@section('title', 'Create New Client')
 
 @section('vendor-style')
 

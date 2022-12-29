@@ -1,6 +1,6 @@
 @inject('request', 'Illuminate\Http\Request')
 @extends('layouts/contentLayoutMaster')
-@section('title', 'Add Assessment')
+@section('title', 'Create New Assessment')
 
 @section('vendor-style')
 
@@ -23,7 +23,7 @@
                       <div class="col-lg-4 col-xs-12">
                         <div class="form-group">
                             <label for="name">Client:</label>
-                            <select class="form-control select2" name="client_id" id="client">
+                            <select class="form-control select2" name="client_company_id" id="client_company">
                               <option disabled selected></option>
                               @foreach($clients as $client)
                                 <option value="{{ $client->id }}">{{ $client->companyDetails }}</option>
@@ -32,13 +32,32 @@
                         </div>
                       </div>
                       <div class="col-lg-4 col-xs-12">
+                        <div class="form-group" id="fg_client_cp">
+                            <label for="name">Contact Person:</label>
+                            <select class="form-control select2" name="client_id" id="client">
+                            </select>
+                        </div>
+                      </div>
+
+                    </div>
+                    <hr>
+                    <div class="row mb-2">
+                      <div class="col-lg-4 col-xs-12">
                         <div class="form-group" id="fg_supplier">
                             <label for="name">Supplier:</label>
+                            <select class="form-control select2" name="supplier_company_id" id="supplier_company">
+                            </select>
+                        </div>
+                      </div>
+                      <div class="col-lg-4 col-xs-12">
+                        <div class="form-group" id="fg_supplier_cp">
+                            <label for="name">Contact Person:</label>
                             <select class="form-control select2" name="supplier_id" id="supplier">
                             </select>
                         </div>
                       </div>
                     </div>
+                    <hr>
                     <div class="row mb-2">
                       <div class="col-lg-4 col-xs-12">
                         <div class="form-group">
@@ -87,8 +106,7 @@
   <script type="text/javascript">
       $(document).ready(function(){
         $('.select2').select2();
-
-        $('#client').change(function(){
+        $(document).on('change', '#client_company', function(){
           var url = '{{ route("spaf.loadSuppliers", ":id") }}';
                       url = url.replace(':id', $(this).val());
           $.ajax({
@@ -96,13 +114,43 @@
               method: "POST",
               success:function(result)
               {
-                console.log(result);
                 $('#fg_supplier').html(result);
                 $('.select2').select2();
               }
           });
+
+          var url = '{{ route("spaf.loadClientContactPersons", ":id") }}';
+                      url = url.replace(':id', $(this).val());
+          $.ajax({
+              url: url,
+              method: "POST",
+              success:function(result)
+              {
+                $('#fg_client_cp').html(result);
+                $('.select2').select2();
+              }
+          });
         });
+
+        $(document).on('change', '#supplier_company', function(){
+          var url = '{{ route("spaf.loadSupplierContactPersons", ":id") }}';
+                      url = url.replace(':id', $(this).val());
+          $.ajax({
+              url: url,
+              method: "POST",
+              success:function(result)
+              {
+                $('#fg_supplier_cp').html(result);
+                $('.select2').select2();
+              }
+          });
+        });
+
+
+
       });
   </script>
   <script src="{{ asset('js/scripts/forms-validation/form-normal.js') }}"></script>
 @endsection
+
+

@@ -120,3 +120,11 @@
 .bblack {
   background: #000000 !important;
 }
+
+@media print
+{
+    .no-print, .no-print *
+    {
+        display: none !important;
+    }
+}

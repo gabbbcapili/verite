@@ -20,12 +20,13 @@
             <tr>
               <th>Id</th>
               <th>Company</th>
-              <th>Name</th>
-              <th>Email</th>
+              <th class="noexport">Contact Persons</th>
+              <th>Contact Persons</th>
+              <th class="noexport">Suppliers</th>
               <th>Suppliers</th>
-              <th>Created At</th>
-              <th>Update At</th>
-              <th>Action</th>
+              <th>Created</th>
+              <th>Updated</th>
+              <th class="noexport">Action</th>
             </tr>
           </thead>
         </table>
@@ -66,22 +67,48 @@
         };
       var columnns = [
             { data: 'id', name: 'id'},
-            { data: 'company_name', name: 'company_name'},
-            { data: 'fullName', name: 'fullName'},
-            { data: 'email', name: 'email'},
-            { data: 'suppliers', name: 'suppliers'},
+            { data: 'company_display', name: 'company_name'},
+            { data: 'contact_persons', name: 'contact_persons', 'orderable' : false},
+            { data: 'contactPersonsExport', name: 'contactPersonsExport', visible: false},
+            { data: 'suppliers', name: 'suppliers', 'orderable' : false},
+            { data: 'suppliersExport', name: 'suppliersExport', visible: false},
             { data: 'created_at', name: 'created_at'},
-            { data: 'updated_at', name: 'updated_at'},
+            { data: 'updated_at', name: 'updated_at', export: 'created_at'},
             { data: 'action', name: 'action', 'orderable' : false}
         ];
       var buttons = [
+            {
+                text: '<i data-feather="printer"></i> Print',
+                extend: 'print',
+                className: 'btn btn-secondary',
+                exportOptions: {
+                    columns: ':not(.noexport)'
+                }
+            },
+            {
+              text: '<i data-feather="file"></i> Excel',
+                extend: 'excel',
+                className: 'btn btn-secondary',
+                exportOptions: {
+                    columns: ':not(.noexport)'
+                }
+            },
+            {
+                text: '<i data-feather="file-text"></i> PDF',
+                extend: 'pdf',
+                className: 'btn btn-secondary',
+                exportOptions: {
+                    columns: ':not(.noexport)'
+                }
+            },
             {
                 text: '<i data-feather="plus"></i> Create New',
                 className: 'btn btn-primary',
                 action: function ( e, dt, node, config ) {
                     window.location.href = '{{ route("client.create") }}';
                 }
-            }
+            },
+
         ];
       var drawCallback = function( settings ) {
         $('[data-bs-toggle="tooltip"]').tooltip();
@@ -89,6 +116,7 @@
           width: 14,height: 14
         });
       };
+
       $(document).ready(function(){
         $('.select2').select2();
       });

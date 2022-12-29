@@ -2,9 +2,7 @@
 $(function () {
   'use strict';
   var dt_basic_table = $('#' + table_id);
-  if (typeof(order) === '1ined') {
-    var order = [];
-  }
+
 
   if (dt_basic_table.length) {
     var dt_basic = dt_basic_table.DataTable({
@@ -12,14 +10,39 @@ $(function () {
       serverSide: true,
       "scrollX": true,
       ajax: table_route,
-      "aaSorting": [],
-      order: order,
+      order: typeof(order) === 'undefined' ? [[ 0, "desc" ]] : order,
       columns: columnns,
       dom: '<"card-header border-bottom p-1"<"head-label"><"dt-action-buttons text-end"B>><"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"li><"col-sm-12 col-md-6"p>>',
       // dom: '<"d-flex justify-content-between align-items-center mx-0 row"<"col-sm-12 col-md-6"><"col-sm-12 col-md-6"f>>t<"d-flex justify-content-between mx-0 row"<"col-sm-12 col-md-6"li><"col-sm-12 col-md-6"p>>',
       displayLength: typeof(displayLength) === 'undefined' ? 7 : displayLength,
       lengthMenu: typeof(lengthMenu) === 'undefined' ? [7, 10, 25, 50, 75, 100] : lengthMenu,
-      buttons: typeof(buttons) === 'undefined' ? [] : buttons,
+      buttons: typeof(buttons) === 'undefined' ? [
+            {
+                text: '<i data-feather="printer"></i> Print',
+                extend: 'print',
+                className: 'btn btn-secondary',
+                exportOptions: {
+                    columns: ':not(.noexport)'
+                }
+            },
+            {
+              text: '<i data-feather="file"></i> Excel',
+                extend: 'excel',
+                className: 'btn btn-secondary',
+                exportOptions: {
+                    columns: ':not(.noexport)'
+                }
+            },
+            {
+                text: '<i data-feather="file-text"></i> PDF',
+                extend: 'pdf',
+                className: 'btn btn-secondary',
+                exportOptions: {
+                    columns: ':not(.noexport)'
+                }
+            },
+        ]
+       : buttons,
       language: {
         paginate: {
           // remove previous & next text from pagination

@@ -23,7 +23,7 @@
                 </div>
                 <div class="row">
                   <div class="d-flex justify-content-end mb-1">
-                    <button class="btn btn-primary" type="button" id="add_row_question"><i data-feather="plus-circle"></i> Add Question</button>
+                    <button class="btn btn-primary" type="button" id="add_row_question"><i data-feather="plus-circle"></i> Add Item</button>
                   </div>
                   <div class="table-responsive">
                     <input type="hidden" id="question_row_count" value="1">

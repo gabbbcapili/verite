@@ -6,6 +6,78 @@
         <span>Home</span>
       </a>
   </li>
+
+  @if( $request->user()->can('user.manage') || $request->user()->can('role.manage'))
+  <li class="nav-item has-sub" style=""><a class="d-flex align-items-center" href="#">
+    <i data-feather="users"></i>
+    <span class="menu-title text-truncate">Users</span></a>
+    <ul class="menu-content">
+      @can('user.manage')
+      <li class="nav-item {{ $request->segment(1) == 'user' && $request->segment(2) == '' ? 'active' : '' }}">
+        <a class="d-flex align-items-center" href="{{ route('user.index') }}"><i data-feather="align-justify"></i>
+        <span class="menu-item text-truncate">List Users</span></a>
+      </li>
+      @endcan
+
+      @can('role.manage')
+      <li class="nav-item {{ $request->segment(1) == 'role' && $request->segment(2) == '' ? 'active' : '' }}">
+        <a class="d-flex align-items-center" href="{{ route('role.index') }}"><i data-feather="circle"></i>
+        <span class="menu-item text-truncate">Roles & Privileges</span></a>
+      </li>
+      @endcan
+    </ul>
+  </li>
+  @endif
+
+
+
+
+
+  @can('client.manage')
+  <li class="nav-item has-sub" style=""><a class="d-flex align-items-center" href="#">
+    <i data-feather="award"></i>
+    <span class="menu-title text-truncate">Clients</span></a>
+    <ul class="menu-content">
+      @can('client.manage')
+        <li class="nav-item {{ $request->segment(1) == 'client' && $request->segment(2) == '' ? 'active' : '' }}">
+          <a class="d-flex align-items-center" href="{{ route('client.index') }}"><i data-feather="align-justify"></i>
+          <span class="menu-item text-truncate">List Clients</span></a>
+        </li>
+      @endcan
+
+      @can('client.manage')
+        <li class="nav-item {{ $request->segment(1) == 'client' && $request->segment(2) == 'create' ? 'active' : '' }}">
+          <a class="d-flex align-items-center" href="{{ route('client.create') }}"><i data-feather="plus-circle"></i>
+          <span class="menu-item text-truncate">Create New Client</span></a>
+        </li>
+      @endcan
+    </ul>
+  </li>
+  @endcan
+
+
+  @can('supplier.manage')
+  <li class="nav-item has-sub" style=""><a class="d-flex align-items-center" href="#">
+    <i data-feather="package"></i>
+    <span class="menu-title text-truncate">Suppliers</span></a>
+    <ul class="menu-content">
+      @can('supplier.manage')
+        <li class="nav-item {{ $request->segment(1) == 'supplier' && $request->segment(2) == '' ? 'active' : '' }}">
+          <a class="d-flex align-items-center" href="{{ route('supplier.index') }}"><i data-feather="align-justify"></i>
+          <span class="menu-item text-truncate">List Suppliers</span></a>
+        </li>
+      @endcan
+
+      @can('supplier.manage')
+        <li class="nav-item {{ $request->segment(1) == 'supplier' && $request->segment(2) == 'create' ? 'active' : '' }}">
+          <a class="d-flex align-items-center" href="{{ route('supplier.create') }}"><i data-feather="plus-circle"></i>
+          <span class="menu-item text-truncate">Create New Supplier</span></a>
+        </li>
+      @endcan
+    </ul>
+  </li>
+  @endcan
+
   @if( $request->user()->can('template.manage') || $request->user()->can('template.approve'))
   <li class="nav-item has-sub" style=""><a class="d-flex align-items-center" href="#">
     <i data-feather="file"></i>
@@ -34,73 +106,6 @@
     </ul>
   </li>
   @endif
-  @if( $request->user()->can('user.manage') || $request->user()->can('role.manage'))
-  <li class="nav-item has-sub" style=""><a class="d-flex align-items-center" href="#">
-    <i data-feather="users"></i>
-    <span class="menu-title text-truncate">Users</span></a>
-    <ul class="menu-content">
-      @can('user.manage')
-      <li class="nav-item {{ $request->segment(1) == 'user' && $request->segment(2) == '' ? 'active' : '' }}">
-        <a class="d-flex align-items-center" href="{{ route('user.index') }}"><i data-feather="align-justify"></i>
-        <span class="menu-item text-truncate">List Users</span></a>
-      </li>
-      @endcan
-
-      @can('role.manage')
-      <li class="nav-item {{ $request->segment(1) == 'role' && $request->segment(2) == '' ? 'active' : '' }}">
-        <a class="d-flex align-items-center" href="{{ route('role.index') }}"><i data-feather="circle"></i>
-        <span class="menu-item text-truncate">Roles & Privileges</span></a>
-      </li>
-      @endcan
-    </ul>
-  </li>
-  @endif
-
-
-  @can('client.manage')
-  <li class="nav-item has-sub" style=""><a class="d-flex align-items-center" href="#">
-    <i data-feather="award"></i>
-    <span class="menu-title text-truncate">Clients</span></a>
-    <ul class="menu-content">
-      @can('client.manage')
-        <li class="nav-item {{ $request->segment(1) == 'client' && $request->segment(2) == '' ? 'active' : '' }}">
-          <a class="d-flex align-items-center" href="{{ route('client.index') }}"><i data-feather="align-justify"></i>
-          <span class="menu-item text-truncate">List Clients</span></a>
-        </li>
-      @endcan
-
-      @can('client.manage')
-        <li class="nav-item {{ $request->segment(1) == 'client' && $request->segment(2) == 'create' ? 'active' : '' }}">
-          <a class="d-flex align-items-center" href="{{ route('client.create') }}"><i data-feather="plus-circle"></i>
-          <span class="menu-item text-truncate">Add Client</span></a>
-        </li>
-      @endcan
-    </ul>
-  </li>
-  @endcan
-
-
-  @can('supplier.manage')
-  <li class="nav-item has-sub" style=""><a class="d-flex align-items-center" href="#">
-    <i data-feather="package"></i>
-    <span class="menu-title text-truncate">Suppliers</span></a>
-    <ul class="menu-content">
-      @can('supplier.manage')
-        <li class="nav-item {{ $request->segment(1) == 'supplier' && $request->segment(2) == '' ? 'active' : '' }}">
-          <a class="d-flex align-items-center" href="{{ route('supplier.index') }}"><i data-feather="align-justify"></i>
-          <span class="menu-item text-truncate">List Suppliers</span></a>
-        </li>
-      @endcan
-
-      @can('supplier.manage')
-        <li class="nav-item {{ $request->segment(1) == 'supplier' && $request->segment(2) == 'create' ? 'active' : '' }}">
-          <a class="d-flex align-items-center" href="{{ route('supplier.create') }}"><i data-feather="plus-circle"></i>
-          <span class="menu-item text-truncate">Add Supplier</span></a>
-        </li>
-      @endcan
-    </ul>
-  </li>
-  @endcan
 
   @if( $request->user()->can('spaf.manage') || $request->user()->can('spaf.approve'))
   <li class="nav-item has-sub" style=""><a class="d-flex align-items-center" href="#">
@@ -115,7 +120,7 @@
       @can('spaf.manage')
         <li class="nav-item {{ $request->segment(1) == 'spaf' && $request->segment(2) == 'create' ? 'active' : '' }}">
           <a class="d-flex align-items-center" href="{{ route('spaf.create') }}"><i data-feather="plus-circle"></i>
-          <span class="menu-item text-truncate">Add Assessment</span></a>
+          <span class="menu-item text-truncate">Create New Assessment</span></a>
         </li>
       @endcan
     </ul>

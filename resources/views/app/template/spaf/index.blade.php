@@ -17,7 +17,7 @@
     <div class="col-md-12 col-sm-12">
       <div class="card">
         <div class="card-header">
-          <h4 class="card-title">Add Template</h4>
+          <h4 class="card-title">Create New Template</h4>
           <div class="heading-elements">
             <ul class="list-inline mb-0">
               <li>
@@ -66,10 +66,10 @@
             <tr>
               <th>Id</th>
               <th>Name</th>
-              <th>Created At</th>
-              <th>Update At</th>
+              <th>Created</th>
+              <th>Updated</th>
               <th>Status</th>
-              <th>Action</th>
+              <th class="noexport">Action</th>
             </tr>
           </thead>
         </table>
@@ -131,6 +131,7 @@
           width: 14,height: 14
         });
       };
+      var order =  [[ 0, "desc" ]];
   </script>
   <script src="{{ asset('js/scripts/tables/table-datatables-basic.js') }}"></script>
   <script src="{{ asset('js/scripts/forms-validation/form-normal.js') }}"></script>

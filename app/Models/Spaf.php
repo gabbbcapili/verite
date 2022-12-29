@@ -7,14 +7,32 @@ use Illuminate\Database\Eloquent\Model;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 use App\Models\Utilities;
+use App\Traits\CreatedUpdatedBy;
 
 class Spaf extends Model
 {
     use HasFactory;
+    use CreatedUpdatedBy;
 
     protected $table = 'spaf';
 
     protected $fillable = ['client_id', 'supplier_id', 'template_id', 'status','completed_at','approved_at', 'notes'];
+
+    public function created_by_user(){
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updated_by_user(){
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function getCreatedByNameAttribute(){
+        return $this->created_by_user ?  $this->created_by_user->fullName : null;
+    }
+
+    public function getUpdatedByNameAttribute(){
+        return $this->updated_by_user ? $this->updated_by_user->fullName : null;
+    }
 
 
     public function client(){
@@ -56,6 +74,7 @@ class Spaf extends Model
                             }else{
                                 if(in_array($spaf->status, ['pending'])){
                                     $html .= '<a href="#" data-bs-toggle="tooltip" data-placement="top" title="Send Reminder Email" data-action="'. route('spaf.sendReminder', $spaf) .'" class="me-75 confirm" data-title="Are you sure to send reminder email?" ><i data-feather="send"></i></a>';
+                                    $html .= Utilities::actionButtons([['route' => route('spaf.show', $spaf->id), 'name' => 'Show', 'type' => 'href']]);
                                 }
                                 if(in_array($spaf->status, ['answered', 'completed'])){
                                     $html .= Utilities::actionButtons([['route' => route('spaf.show', $spaf->id), 'name' => 'Show', 'type' => 'href']]);
@@ -81,11 +100,26 @@ class Spaf extends Model
                             return $spaf->statusDisplay;
                         })
             ->editColumn('created_at', function (Spaf $spaf) {
-                return $spaf->created_at->format('M d, Y');
+                return $spaf->created_at->format('M d, Y'). ' | ' . $spaf->createdByName;
             })
             ->editColumn('updated_at', function (Spaf $spaf) {
-                return $spaf->updated_at->diffForHumans();
+                return $spaf->updated_at->diffForHumans(). ' | ' . $spaf->updatedByName;
             })
+            ->filterColumn('clientName', function($query, $keyword) {
+                    $query->whereHas("client", function($q) use($keyword) {
+                            $q->whereRaw('CONCAT(first_name," ",last_name)  like ?', ["%{$keyword}%"]);
+                        });
+                })
+            ->filterColumn('supplierName', function($query, $keyword) {
+                    $query->whereHas("supplier", function($q) use($keyword) {
+                            $q->whereRaw('CONCAT(first_name," ",last_name)  like ?', ["%{$keyword}%"]);
+                        });
+                })
+            ->filterColumn('templateName', function($query, $keyword) {
+                    $query->whereHas("template", function($q) use($keyword) {
+                            $q->whereRaw('name  like ?', ["%{$keyword}%"]);
+                        });
+                })
             ->rawColumns(['action', 'status', 'clients'])
             ->make(true);
     }

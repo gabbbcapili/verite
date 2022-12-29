@@ -16,7 +16,7 @@
     <div class="col-md-12 col-sm-12">
       <div class="card">
         <div class="card-header">
-          <h4 class="card-title">Add User</h4>
+          <h4 class="card-title">Create New User</h4>
           <div class="heading-elements">
             <ul class="list-inline mb-0">
               <li>
@@ -82,6 +82,20 @@
   <div class="row">
     <div class="col-12">
       <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-3">
+              <div class="form-group">
+                <select class="form-control select2 selectFilter" id="role">
+                  <option value="all">ALL ROLES</option>
+                  @foreach($roles as $role)
+                    <option value="{{ $role->id }}">{{ $role->name }}</option>
+                  @endforeach
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
         <table class="datatables-basic table" id="user_table">
           <thead>
             <tr>
@@ -89,8 +103,9 @@
               <th>Full Name</th>
               <th>Email</th>
               <th>Role</th>
-              <th>Update At</th>
-              <th>Action</th>
+              <th>Created</th>
+              <th>Updated</th>
+              <th class="noexport">Action</th>
             </tr>
           </thead>
         </table>
@@ -126,7 +141,7 @@
     var table_route = {
           url: '{{ route('user.index') }}',
           data: function (data) {
-                // data.field = $("#field").val();
+                data.role = $("#role").val();
             }
         };
       var columnns = [
@@ -134,8 +149,9 @@
             { data: 'fullName', name: 'fullName'},
             { data: 'email', name: 'email'},
             { data: 'role', name: 'role'},
+            { data: 'created_at', name: 'created_at'},
             { data: 'updated_at', name: 'updated_at'},
-            { data: 'action', name: 'action', 'orderable' : false}
+            { data: 'action', name: 'action', 'orderable' : false, 'printable' : false}
         ];
       var drawCallback = function( settings ) {
         $('[data-bs-toggle="tooltip"]').tooltip();
@@ -143,6 +159,33 @@
           width: 14,height: 14
         });
       };
+      var order =  [[ 0, "desc" ]];
+      var buttons = [
+            {
+                text: '<i data-feather="printer"></i> Print',
+                extend: 'print',
+                className: 'btn btn-secondary',
+                exportOptions: {
+                    columns: ':not(.noexport)'
+                }
+            },
+            {
+              text: '<i data-feather="file"></i> Excel',
+                extend: 'excel',
+                className: 'btn btn-secondary',
+                exportOptions: {
+                    columns: ':not(.noexport)'
+                }
+            },
+            {
+                text: '<i data-feather="file-text"></i> PDF',
+                extend: 'pdf',
+                className: 'btn btn-secondary',
+                exportOptions: {
+                    columns: ':not(.noexport)'
+                }
+            },
+        ];
 
       $(document).ready(function(){
         $('.select2').select2();

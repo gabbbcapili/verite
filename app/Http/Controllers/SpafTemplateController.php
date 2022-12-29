@@ -28,7 +28,7 @@ class SpafTemplateController extends Controller
             ['link'=>"/",'name'=>"Home"],['link'=> route('template.spaf.index', ['type' => $type]), 'name'=> strtoupper(str_replace('_', ' ', $type)) ], ['name'=>"list of Templates"]
         ];
         if (request()->ajax()) {
-            $template = Template::where('is_deleted', 0)->where('type', $type)->orderBy('updated_at', 'desc');
+            $template = Template::where('is_deleted', 0)->where('type', $type);
             return Datatables::eloquent($template)
             ->addColumn('action', function(Template $template) {
                             $html = '';
@@ -57,10 +57,10 @@ class SpafTemplateController extends Controller
                             return $html;
                         })
             ->editColumn('created_at', function (Template $template) {
-                return $template->created_at->format('M d, Y');
+                return $template->created_at->format('M d, Y') . ' | ' . $template->createdByName;
             })
             ->editColumn('updated_at', function (Template $template) {
-                return $template->updated_at->diffForHumans();
+                return $template->updated_at->diffForHumans() . ' | ' . $template->updatedByName;
             })
             ->addColumn('is_approved', function (Template $template) {
                 if($template->is_approved){

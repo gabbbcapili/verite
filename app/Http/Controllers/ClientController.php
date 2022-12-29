@@ -13,9 +13,12 @@ use Validator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ResetPassword;
+use App\Mail\Auth\WelcomeClient;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Models\ClientSuppliers;
+use App\Models\Company;
+
 
 class ClientController extends Controller
 {
@@ -27,34 +30,54 @@ class ClientController extends Controller
     public function index(Request $request)
     {
         $breadcrumbs = [
-            ['link'=>"/",'name'=>"Home"],['link'=> route('supplier.index'), 'name'=>"Client Management"], ['name'=>"list of Client"]
+            ['link'=>"/",'name'=>"Home"],['link'=> route('supplier.index'), 'name'=>"Clients"], ['name'=>"list of Clients"]
         ];
         if (request()->ajax()) {
-            $user = User::with("roles")->whereHas("roles", function($q) {
-                $q->where("name", 'Client');
-            })->orderBy('updated_at', 'desc');
-            return Datatables::eloquent($user)
-            ->addColumn('action', function(User $user) {
-                            return Utilities::actionButtons([['route' => route('user.edit', $user->id), 'name' => 'Edit']]);
+            $company = Company::where('type', 'client');
+            return Datatables::eloquent($company)
+            ->addColumn('action', function(Company $company) {
+                            return Utilities::actionButtons([['route' => route('supplier.addContact', $company->id), 'name' => 'Add', 'title' => 'Add Contact Person'],['route' => route('supplier.edit', $company->id), 'name' => 'Edit']]);
                         })
-            ->addColumn('fullName', function(User $user) {
-                            return $user->fullName;
-                        })
-            ->addColumn('suppliers', function(User $user) {
+            ->addColumn('suppliers', function(Company $company) {
                             $html = '<div class="avatar-group">';
-                            foreach($user->suppliers as $c){
-                                $html .= '<div data-bs-toggle="tooltip" data-popup="tooltip-custom"data-bs-placement="top"class="avatar pull-up my-0"title="'. $c->companyDetails . '"><img src="'. $c->profile_photo_url .'" alt="Avatar" height="26" width="26"/></div>';
+                            foreach($company->suppliers as $c){
+                                $html .= '<a data-action="'. route('supplier.edit', $c->id) .'" class="modal_button"><div data-bs-toggle="tooltip" data-popup="tooltip-custom"data-bs-placement="top"class="avatar pull-up my-0"title="'. $c->companyDetails . '"><img src="'. $c->profilePhotoUrl .'" alt="Avatar" height="26" width="26"/></div></a>';
                             }
                             $html .= '</div>';
                             return $html;
                         })
-            ->editColumn('created_at', function (User $user) {
-                return $user->created_at->format('M d, Y');
+            ->addColumn('suppliersExport', function(Company $company) {
+                            $html = '';
+                            foreach($company->suppliers as $c){
+                                $html .= $c->companyDetails . ', ';
+                            }
+                            return $html;
+                        })
+            ->addColumn('company_display', function(Company $company) {
+                            return $company->companyDisplay;
+                        })
+            ->addColumn('contact_persons', function(Company $company) {
+                        $html = '<div class="avatar-group">';
+                            foreach($company->users as $c){
+                                $html .= '<a data-action="'. route('user.edit', $c->id) .'" class="modal_button"><div data-bs-toggle="tooltip" data-popup="tooltip-custom"data-bs-placement="top"class="avatar pull-up my-0"title="'. $c->fullName . '"><img src="'. $c->profilePhotoUrl .'" alt="Avatar" height="26" width="26"/></div></a>';
+                            }
+                            $html .= '</div>';
+                            return $html;
+                        })
+            ->addColumn('contactPersonsExport', function(Company $company) {
+                            $html = '';
+                            foreach($company->users as $c){
+                                $html .= $c->fullName . ', ';
+                            }
+                            return $html;
+                        })
+            ->editColumn('created_at', function (Company $company) {
+                return $company->created_at->format('M d, Y'). ' | ' . $company->createdByName;
             })
-            ->editColumn('updated_at', function (User $user) {
-                return $user->updated_at->diffForHumans();
+            ->editColumn('updated_at', function (Company $company) {
+                return $company->updated_at->diffForHumans(). ' | ' . $company->updatedByName;
             })
-            ->rawColumns(['action', 'status', 'suppliers'])
+            ->rawColumns(['action', 'suppliers', 'contact_persons', 'company_display'])
             ->make(true);
         }
         return view('app.client.index', [
@@ -70,11 +93,9 @@ class ClientController extends Controller
     public function create()
     {
         $breadcrumbs = [
-            ['link'=>"/",'name'=>"Home"],['link'=> route('client.index'), 'name'=>"List Clients"], ['name'=>"Add Client"]
+            ['link'=>"/",'name'=>"Home"],['link'=> route('client.index'), 'name'=>"List Clients"], ['name'=>"Create New Client"]
         ];
-        $suppliers = User::with("roles")->whereHas("roles", function($q) {
-                $q->where("name", 'Supplier');
-            })->get();
+        $suppliers = Company::where('type', 'supplier')->get();
         return view('app.client.create', compact('breadcrumbs', 'suppliers'));
     }
 
@@ -87,26 +108,38 @@ class ClientController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
+            'company_name' => ['required'],
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'logo' => ['mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()]);
         }
         try {
             DB::beginTransaction();
-            $data = $request->all();
-            $data['password'] = Hash::make(Str::random(10));
-            $user =  User::create($data);
+            $companyData = $request->only(['company_name', 'website', 'contact_number', 'address', 'logo']);
+            $companyData['type'] = 'client';
+            if($request->hasFile('logo')){
+              $photo = $companyData['logo'];
+              $new_name = 'logo_'  . sha1(time()) . '.' . $photo->getClientOriginalExtension();
+              $photo->move(public_path('images/company/logos/') , $new_name);
+              $companyData['logo'] = $new_name;
+            }
+            $company = Company::create($companyData);
+            $userData = $request->only(['first_name', 'last_name', 'email']);
+            $userData['password'] = Hash::make(Str::random(10));
+            $user = $company->users()->create($userData);
             $user->assignRole('Client');
             if($request->has('suppliers')){
                 foreach($request->suppliers as $s){
-                    ClientSuppliers::create(['client_id' => $user->id, 'supplier_id' => $s]);
+                    ClientSuppliers::create(['client_id' => $company->id, 'supplier_id' => $s]);
                 }
             }
             $token = $user->generatePassworResetToken();
             Mail::to($user)->send(new ResetPassword($user, $token));
+            Mail::to($user)->send(new WelcomeClient($user));
             DB::commit();
             $output = ['success' => 1,
                         'msg' => 'Client added successfully!',

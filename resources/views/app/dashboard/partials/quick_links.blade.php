@@ -7,14 +7,7 @@
   <div class="card-body">
     <div class="row g-1">
       @if($request->user()->can('tempalte.manage') || $request->user()->can('user.manage') || $request->user()->can('supplier.manage') || $request->user()->can('client.manage'))
-        @can('template.manage')
-        <div class="col-lg-1 col-md-2 col-xs-6">
-            <a class="bblue cwhite quick-button small" href="{{ route('template.spaf.index', ['type' => 'spaf']) }}">
-                <i data-feather="file" class="feather-20 mb-50"></i>
-                <h5 class="cwhite">Templates</h5>
-            </a>
-        </div>
-        @endcan
+
         @can('user.manage')
         <div class="col-lg-1 col-md-2 col-xs-6">
             <a class="bmGreen cwhite quick-button small" href="{{ route('user.index') }}">
@@ -36,6 +29,14 @@
             <a class="borange cwhite quick-button small" href="{{ route('supplier.index') }}">
                 <i data-feather="package" class="feather-20 mb-50"></i>
                 <h5 class="cwhite">Suppliers</h5>
+            </a>
+        </div>
+        @endcan
+        @can('template.manage')
+        <div class="col-lg-1 col-md-2 col-xs-6">
+            <a class="bblue cwhite quick-button small" href="{{ route('template.spaf.index', ['type' => 'spaf']) }}">
+                <i data-feather="file" class="feather-20 mb-50"></i>
+                <h5 class="cwhite">Templates</h5>
             </a>
         </div>
         @endcan

@@ -14,7 +14,10 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\ClientSuppliers;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ResetPassword;
+use App\Mail\Auth\ChangedRole;
 use Illuminate\Support\Str;
+use Laravel\Fortify\Rules\Password;
+use App\Mail\Welcome;
 
 class UserController extends Controller
 {
@@ -26,12 +29,17 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $breadcrumbs = [
-            ['link'=>"/",'name'=>"Home"],['link'=> route('user.index'), 'name'=>"User Management"], ['name'=>"list of Users"]
+            ['link'=>"/",'name'=>"Home"],['link'=> route('user.index'), 'name'=>"Users"], ['name'=>"list of Users"]
         ];
         if (request()->ajax()) {
             $user = User::with('roles')->whereHas("roles", function($q) {
                 $q->whereNotIn('id', [3,4]);
-            })->orderBy('updated_at', 'desc');
+            });
+            if($request->role != "all"){
+                $user = $user->whereHas("roles", function($q) use($request) {
+                            $q->where('id', $request->role);
+                        });
+            }
             return Datatables::eloquent($user)
             ->addColumn('action', function(User $user) {
                             return Utilities::actionButtons([['route' => route('user.edit', $user->id), 'name' => 'Edit']]);
@@ -43,8 +51,14 @@ class UserController extends Controller
                             return $user->getRoleNames()->first();
                         })
             ->editColumn('updated_at', function (User $user) {
-                return $user->updated_at->diffForHumans();
+                return $user->updated_at->diffForHumans() . ' | ' . $user->updatedByName;
             })
+            ->editColumn('created_at', function (User $user) {
+                return $user->created_at->format('M d, Y') . ' | ' . $user->createdByName;
+            })
+            ->filterColumn('fullName', function($query, $keyword) {
+                    $query->whereRaw('CONCAT(first_name," ",last_name)  like ?', ["%{$keyword}%"]);
+                })
             ->rawColumns(['action'])
             ->make(true);
         }
@@ -77,7 +91,7 @@ class UserController extends Controller
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'role' => ['required', 'exists:roles,name']
+            'role' => ['required', 'exists:roles,name'],
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()]);
@@ -90,10 +104,12 @@ class UserController extends Controller
                 'last_name' => $data['last_name'],
                 'email' => $data['email'],
                 'password' => Hash::make(Str::random(10)),
+                'company_id' => 1,
             ]);
             $user->assignRole($request->role);
             $token = $user->generatePassworResetToken();
             Mail::to($user)->send(new ResetPassword($user, $token));
+            Mail::to($user)->send(new Welcome($user));
             DB::commit();
             $output = ['success' => 1,
                         'msg' => 'User added successfully!',
@@ -128,13 +144,7 @@ class UserController extends Controller
     public function edit(User $user)
     {
         $roles = Role::where('is_deleted', false)->whereNotIn('id', [3,4])->get();
-        $clients = User::with("roles")->whereHas("roles", function($q) {
-                $q->where("name", 'Client');
-            })->get();
-        $suppliers = User::with("roles")->whereHas("roles", function($q) {
-                $q->where("name", 'Supplier');
-            })->get();
-        return view('app.user.edit', compact('user', 'roles', 'suppliers', 'clients'));
+        return view('app.user.edit', compact('user', 'roles'));
     }
 
     /**
@@ -151,37 +161,30 @@ class UserController extends Controller
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
             // 'role' => ['required', 'exists:roles,name']
+            'password' => ['nullable', 'string', (new Password)->requireUppercase()
+                            ->length(8)
+                            ->requireNumeric()
+                            ->requireSpecialCharacter()]
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()]);
         }
         try {
             DB::beginTransaction();
-            $data = $request->only(['first_name','last_name','email', 'company_name', 'website', 'contact_number', 'address']);
+            $data = $request->only(['first_name','last_name','email']);
             if($request->has('password')){
                 if($request->password != null){
                     $data['password'] = Hash::make($request->password);
                 }
             }
+            $previousRole = $user->roles()->first()->name;
             $user->update($data);
-            if($request->has('clients')){
-                ClientSuppliers::where('supplier_id', $user->id)->delete();
-                foreach($request->clients as $c){
-                    ClientSuppliers::create(['supplier_id' => $user->id, 'client_id' => $c]);
-                }
-            }else{
-                ClientSuppliers::where('supplier_id', $user->id)->delete();
-            }
-            if($request->has('suppliers')){
-                ClientSuppliers::where('client_id', $user->id)->delete();
-                foreach($request->suppliers as $c){
-                    ClientSuppliers::create(['client_id' => $user->id, 'supplier_id' => $c]);
-                }
-            }else{
-                ClientSuppliers::where('client_id', $user->id)->delete();
-            }
             if($request->has('role')){
                 $user->syncRoles([$request->role]);
+                if($previousRole != $request->role){
+                    Mail::to($user)->send(new ChangedRole($user));
+                }
+
             }
             DB::commit();
             $output = ['success' => 1,

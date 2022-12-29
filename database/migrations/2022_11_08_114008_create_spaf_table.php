@@ -22,6 +22,9 @@ class CreateSpafTable extends Migration
             $table->dateTime('completed_at')->nullable();
             $table->dateTime('approved_at')->nullable();
             $table->string('notes')->nullable();
+
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
         });
     }

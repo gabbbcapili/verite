@@ -64,6 +64,34 @@
                     </div>
                   </div>
                 </div>
+                <div class="row mb-2">
+                  <div class="col-lg-6 col-xs-12">
+                    <div class="form-group">
+                        <label for="name">Client Welcome:</label>
+                        <textarea class="form-control trumbowyg" name="welcome_client">{!! $setting->welcome_client !!}</textarea>
+                    </div>
+                  </div>
+                  <div class="col-lg-6 col-xs-12">
+                    <div class="form-group">
+                        <label for="name">Supplier Welcome:</label>
+                        <textarea class="form-control trumbowyg" name="welcome_supplier">{!! $setting->welcome_supplier !!}</textarea>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-lg-6 col-xs-12">
+                    <div class="form-group">
+                        <label for="name">Admin Change Role Of User (Reminder):</label>
+                        <textarea class="form-control trumbowyg" name="admin_change_role_of">{!! $setting->admin_change_role_of !!}</textarea>
+                    </div>
+                  </div>
+                  <div class="col-lg-6 col-xs-12">
+                    <div class="form-group">
+                        <label for="name">Changed Role:</label>
+                        <textarea class="form-control trumbowyg" name="user_changed_role">{!! $setting->user_changed_role !!}</textarea>
+                    </div>
+                  </div>
+                </div>
                 <hr>
                 <div class="row mb-2">
                 <h4 class="card-title">Footer</h4>

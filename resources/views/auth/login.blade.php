@@ -48,7 +48,7 @@
                 <label class="form-label" for="login-password">Password</label>
                 @if (Route::has('password.request'))
                   <a href="{{ route('password.request') }}">
-                    <small>Forgot Password?</small>
+                    <small>Reset Password</small>
                   </a>
                 @endif
               </div>

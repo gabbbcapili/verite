@@ -13,6 +13,7 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Traits\CreatedUpdatedBy;
 
 class User extends Authenticatable
 {
@@ -22,6 +23,7 @@ class User extends Authenticatable
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
+    use CreatedUpdatedBy;
 
     /**
      * The attributes that are mass assignable.
@@ -34,10 +36,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'company_name',
-        'address',
-        'contact_number',
-        'website',
+        'company_id',
     ];
 
     /**
@@ -70,6 +69,22 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
+    public function created_by_user(){
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updated_by_user(){
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function getCreatedByNameAttribute(){
+        return $this->created_by_user ?  $this->created_by_user->fullName : null;
+    }
+
+    public function getUpdatedByNameAttribute(){
+        return $this->updated_by_user ? $this->updated_by_user->fullName : null;
+    }
+
     public static function roleList(){
         return [
                 'Main' => ['template.manage'],
@@ -83,11 +98,15 @@ class User extends Authenticatable
     }
 
     public function getCompanyDetailsAttribute(){
-        if($this->company_name){
-            return $this->company_name . ' - ' . $this->first_name . ' ' . $this->last_name;
+        if($this->company){
+            return $this->company->company_name . ' - ' . $this->first_name . ' ' . $this->last_name;
         }else{
             return $this->first_name . ' ' . $this->last_name;
         }
+    }
+
+    public function company(){
+        return $this->belongsTo(Company::class, 'company_id');
     }
 
     public function spafSupplier(){
@@ -96,14 +115,6 @@ class User extends Authenticatable
 
     public function spafClient(){
         return $this->hasMany(Spaf::class, 'client_id');
-    }
-
-    public function suppliers(){
-        return $this->belongsToMany(User::class, 'client_suppliers', 'client_id', 'supplier_id');
-    }
-
-    public function clients(){
-        return $this->belongsToMany(User::class, 'client_suppliers', 'supplier_id', 'client_id');
     }
 
     public function generatePassworResetToken(){

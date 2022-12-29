@@ -19,6 +19,8 @@ class CreateTemplateTable extends Migration
             $table->string('type');
             $table->boolean('is_approved')->default(0);
             $table->boolean('is_deleted')->default(0);
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
         });
     }

@@ -24,6 +24,10 @@ class CreateSettingsTable extends Migration
             $table->longText('spaf_resend');
             $table->longText('user_reset');
             $table->longText('user_welcome');
+            $table->longText('user_changed_role');
+            $table->longText('admin_change_role_of');
+            $table->longText('welcome_client');
+            $table->longText('welcome_supplier');
             $table->timestamps();
         });
     }

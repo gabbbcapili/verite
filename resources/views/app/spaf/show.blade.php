@@ -76,9 +76,9 @@
     <div class="row mb-2">
         <div class="col-lg-12 col-md-12 col-sm-12">
             <div class="card">
-                <div class="card-header">
+                <!-- <div class="card-header"> -->
                   <!-- <h4 class="card-title text-center">Template Preview</h4> -->
-                </div>
+                <!-- </div> -->
                 <div class="card-content">
                     <div class="card-body">
                         <div class="row mb-2" id="template_preview">

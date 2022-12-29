@@ -23,12 +23,10 @@ return new class extends Migration
             $table->rememberToken();
             $table->foreignId('current_team_id')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();
+            $table->unsignedBigInteger('company_id');
 
-            // company_details
-            $table->string('company_name')->nullable();
-            $table->string('address')->nullable();
-            $table->string('contact_number')->nullable();
-            $table->string('website')->nullable();
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->timestamps();
         });
     }

@@ -44,6 +44,7 @@ $(".modal .form").submit(function(e) {
            $('.error').remove();
               $.each(result.error, function(index, val){
               $('[name="'+ index +'"]').after('<label class="text-danger error">' + val + '</label>');
+              $('[id="'+ index +'"]').after('<label class="text-danger error">' + val + '</label>');
               });
         }
         $('.btn_save').prop('disabled', false);

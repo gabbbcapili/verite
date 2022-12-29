@@ -66,7 +66,8 @@
                             <div class="row">
                             <div class="col-12 align-items-center justify-content-center text-center">
                               <!-- <button type="submit" class="btn btn-primary me-1 btn_save">Submit</button> -->
-                              <a href="{{ route('template.spaf.index', ['type' => $template->type]) }}" class="btn btn-outline-secondary"><i data-feather="arrow-left"></i> Go Back</a>
+                              <a href="{{ route('template.spaf.index', ['type' => $template->type]) }}" class="btn btn-outline-secondary me-1"><i data-feather="arrow-left"></i> Go Back</a>
+                              <button class="btn btn-primary modal_button" type="button" data-action="{{ route('template.group.create', $template) }}"><i data-feather="plus"></i> Add Group / Question</button>
                             </div>
                           </div>
                         </div>

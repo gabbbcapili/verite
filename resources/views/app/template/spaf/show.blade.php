@@ -1,7 +1,7 @@
 @inject('request', 'Illuminate\Http\Request')
 
 <div class="modal-dialog modal-lg">
-  <div class="modal-content">
+  <div class="modal-content" id="printThis">
     <div class="modal-header">
       <h5 class="modal-title">
         View Template {{ $template->name }}
@@ -19,7 +19,7 @@
                         <div class="card-content">
                             <div class="card-body">
                                 <div class="row" id="template_preview">
-                                    @include('app.template.spaf.preview', ['template' => $template])
+                                    @include('app.template.spaf.preview', ['template' => $template, 'disabled' => true])
                                 </div>
                             </div>
                     </div>
@@ -29,12 +29,13 @@
         </div>
     </div>
     <div class="modal-footer">
-
+        <button type="submit" class="btn btn-primary no-print btn_print"><i data-feather="printer"></i> Print
+          </button>
     </div>
   </div>
 </div>
 <script type="text/javascript">
-    $(document).ready(function(){
-      $('input[name="permissions[]"]').attr('disabled', 'disabled');
+    $('.btn_print').click(function(){
+        $('#printThis').printThis();
     });
 </script>

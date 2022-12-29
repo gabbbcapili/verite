@@ -29,6 +29,7 @@
 @stack('modals')
 @livewireScripts
 <script defer src="{{ asset(mix('vendors/js/alpinejs/alpine.js')) }}"></script>
+<script src="{{ asset('js/scripts/print/printThis.js') }}"></script>
 <script type="text/javascript">
   $(document).on('click', '.modal_button', function() {
       $.ajax({

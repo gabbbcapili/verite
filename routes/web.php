@@ -38,12 +38,18 @@ Route::group(['middleware' => ['auth']], function()
     Route::post('spaf/approve/{spaf}/', [SpafController::class, 'approve'])->name('spaf.approve')->middleware('permission:spaf.approve');
     Route::get('spaf', [SpafController::class, 'index'])->name('spaf.index')->middleware('permission:spaf.manage,spaf.approve');
     Route::get('spaf/create', [SpafController::class, 'create'])->name('spaf.create')->middleware('permission:spaf.manage');
-    Route::post('spaf/loadSuppliers/{user}', [SpafController::class, 'loadSuppliers'])->name('spaf.loadSuppliers')->middleware('permission:spaf.manage');
+    Route::post('spaf/loadSuppliers/{company}', [SpafController::class, 'loadSuppliers'])->name('spaf.loadSuppliers')->middleware('permission:spaf.manage');
+    Route::post('spaf/loadClientContactPersons/{company}', [SpafController::class, 'loadClientContactPersons'])->name('spaf.loadClientContactPersons')->middleware('permission:spaf.manage');
+    Route::post('spaf/loadSupplierContactPersons/{company}', [SpafController::class, 'loadSupplierContactPersons'])->name('spaf.loadSupplierContactPersons')->middleware('permission:spaf.manage');
+
+
+
+
     Route::post('spaf/sendReminder/{spaf}', [SpafController::class, 'sendReminder'])->name('spaf.sendReminder')->middleware('permission:spaf.manage');
     Route::post('spaf', [SpafController::class, 'store'])->name('spaf.store')->middleware('permission:spaf.manage');
     Route::get('spaf/supplierIndex', [SpafController::class, 'supplierIndex'])->name('spaf.supplierIndex')->middleware('role:Supplier');
     Route::get('spaf/clientIndex', [SpafController::class, 'clientIndex'])->name('spaf.clientIndex')->middleware('role:Client');
-    Route::get('spaf/{spaf}', [SpafController::class, 'show'])->name('spaf.show')->middleware('permission:spaf.manage,spaf.approve');
+    Route::get('spaf/{spaf}', [SpafController::class, 'show'])->name('spaf.show');
     Route::resource('spaf', SpafController::class)->only(['update', 'edit'])->middleware('role:Supplier,Client');
 
 
@@ -51,7 +57,9 @@ Route::group(['middleware' => ['auth']], function()
     Route::put('settings', [SettingController::class, 'update'])->name('settings.update')->middleware('permission:setting.manage');
 
     Route::resource('role', RoleController::class)->except('create')->middleware('permission:role.manage');
-    Route::resource('supplier', SupplierController::class)->middleware('permission:supplier.manage')->parameters(['supplier' => 'user']);
+    Route::get('supplier/{company}/addContact', [SupplierController::class, 'addContact'])->name('supplier.addContact')->middleware('permission:supplier.manage,client.manage');
+    Route::post('supplier/{company}/addContact', [SupplierController::class, 'storeContact'])->name('supplier.storeContact')->middleware('permission:supplier.manage,client.manage');
+    Route::resource('supplier', SupplierController::class)->middleware('permission:supplier.manage,client.manage')->parameters(['supplier' => 'company']);
     Route::resource('client', ClientController::class)->middleware('permission:client.manage')->parameters(['client' => 'user']);
     Route::group(['prefix' => 'template', 'as' => 'template.'], function()
     {

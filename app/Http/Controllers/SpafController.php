@@ -17,6 +17,7 @@ use App\Mail\Spaf\Completed;
 use App\Mail\Spaf\Reminder;
 use App\Models\Template;
 use App\Models\User;
+use App\Models\Company;
 
 class SpafController extends Controller
 {
@@ -31,7 +32,13 @@ class SpafController extends Controller
             ['link'=>"/",'name'=>"Home"],['link'=> route('spaf.index'), 'name'=>"Assessment Forms"], ['name'=>"list of Assessments"]
         ];
         if (request()->ajax()) {
-            $spaf = Spaf::orderBy('updated_at', 'desc');
+
+            $spaf = Spaf::query();
+            if($request->user()->can('spaf.manage')){
+                if($request->status != "all"){
+                    $spaf->where('status', $request->status);
+                }
+            }
             return Spaf::datatables($spaf, $request);
         }
         return view('app.spaf.index', [
@@ -44,7 +51,7 @@ class SpafController extends Controller
             ['link'=>"/",'name'=>"Home"],['link'=> route('spaf.index'), 'name'=>"Assessment Forms"], ['name'=>"list of Assessments"]
         ];
         if (request()->ajax()) {
-            $spaf = Spaf::where('client_id', $request->user()->id)->orderBy('updated_at', 'desc');
+            $spaf = Spaf::where('client_id', $request->user()->id);
             return Spaf::datatables($spaf, $request);
         }
         return view('app.spaf.index', [
@@ -57,7 +64,7 @@ class SpafController extends Controller
             ['link'=>"/",'name'=>"Home"],['link'=> route('spaf.index'), 'name'=>"Assessment Forms"], ['name'=>"list of Assessments"]
         ];
         if (request()->ajax()) {
-            $spaf = Spaf::where('supplier_id', $request->user()->id)->orderBy('updated_at', 'desc');
+            $spaf = Spaf::where('supplier_id', $request->user()->id);
             return Spaf::datatables($spaf, $request);
         }
         return view('app.spaf.index', [
@@ -73,18 +80,26 @@ class SpafController extends Controller
     public function create()
     {
         $breadcrumbs = [
-            ['link'=>"/",'name'=>"Home"],['link'=> route('spaf.index'), 'name'=>"List Assessment Forms"], ['name'=>"Add Assessment"]
+            ['link'=>"/",'name'=>"Home"],['link'=> route('spaf.index'), 'name'=>"List Assessment Forms"], ['name'=>"Create New Assessment"]
         ];
         $templates = Template::where('is_deleted', false)->where('is_approved', true)->get();
-        $clients = User::with("roles")->whereHas("roles", function($q) {
-                $q->where("name", 'Client');
-            })->get();
+        $clients = Company::where('type', 'client')->get();
         return view('app.spaf.create', compact('breadcrumbs', 'templates', 'clients'));
     }
 
-    public function loadSuppliers(User $user){
-        $suppliers = $user->suppliers;
+    public function loadSuppliers(Company $company){
+        $suppliers = $company->suppliers;
         return view('app.spaf.load.suppliers', compact('suppliers'));
+    }
+
+    public function loadClientContactPersons(Company $company){
+        $contactPersons = $company->users;
+        return view('app.spaf.load.clientContactPersons', compact('contactPersons'));
+    }
+
+    public function loadSupplierContactPersons(Company $company){
+        $contactPersons = $company->users;
+        return view('app.spaf.load.supplierContactPersons', compact('contactPersons'));
     }
 
     /**
@@ -97,7 +112,10 @@ class SpafController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'client_id' => 'required',
+            'client_company_id' => 'required',
             'template_id' => 'required'
+        ],[
+            '*.required' => 'This field is required'
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()]);
@@ -148,6 +166,9 @@ class SpafController extends Controller
      */
     public function edit(Spaf $spaf)
     {
+        if($spaf->status == 'completed'){
+            return redirect(route('spaf.show', $spaf));
+        }
         $breadcrumbs = [
             ['link'=>"/",'name'=>"Home"],['link'=> route('spaf.edit', $spaf), 'name'=>"Supplier Pre-assessment Form"], ['name' => 'Please fill out all necessary fields']
         ];
@@ -180,8 +201,6 @@ class SpafController extends Controller
                 }
             }
         }
-
-        // dd($validation);
         $validator = Validator::make($request->all(),
             $validation,
         [
