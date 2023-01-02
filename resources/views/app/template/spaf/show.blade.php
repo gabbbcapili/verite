@@ -29,7 +29,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button type="submit" class="btn btn-primary no-print btn_print"><i data-feather="printer"></i> Print
+        <button type="button" class="btn btn-primary no-print btn_print"><i data-feather="printer"></i> Print
           </button>
     </div>
   </div>

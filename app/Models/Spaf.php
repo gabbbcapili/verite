@@ -83,11 +83,11 @@ class Spaf extends Model
                             return $html;
                         })
             ->addColumn('clientName', function(Spaf $spaf) {
-                            return $spaf->client->fullName;
+                            return $spaf->client->CompanyDetails;
                         })
             ->addColumn('supplierName', function(Spaf $spaf) {
                             if($spaf->supplier){
-                                return $spaf->supplier->fullName;
+                                return $spaf->supplier->CompanyDetails;
                             }
                         })
             ->addColumn('templateName', function(Spaf $spaf) {

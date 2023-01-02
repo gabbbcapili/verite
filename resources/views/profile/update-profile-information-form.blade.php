@@ -39,14 +39,13 @@
             {{ __('Remove Photo') }}
           </button>
         @endif
-
         <x-jet-input-error for="photo" class="mt-2" />
       </div>
     @endif
 
 
     @if(request()->user()->hasRole('Supplier') || request()->user()->hasRole('Client'))
-      <div class="mb-1">
+  <!--     <div class="mb-1">
         <x-jet-label class="form-label" for="company_name" value="{{ __('Company Name') }}" />
         <x-jet-input id="company_name" type="text" class="{{ $errors->has('company_name') ? 'is-invalid' : '' }}"
           wire:model.defer="state.company_name" autocomplete="company_name" />
@@ -72,7 +71,7 @@
         <x-jet-input id="address" type="text" class="{{ $errors->has('address') ? 'is-invalid' : '' }}"
           wire:model.defer="state.address" autocomplete="address" />
         <x-jet-input-error for="address" />
-      </div>
+      </div> -->
     @endif
 
     <!-- Name -->
