@@ -19,6 +19,9 @@ class AppServiceProvider extends ServiceProvider
                            ->mixedCase()
                            ->uncompromised();
         });
+        if(config('app.env') === 'production') {
+            \URL::forceScheme('https');
+        }
     }
 
     /**
