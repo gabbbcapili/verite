@@ -33,9 +33,9 @@ class StaterkitController extends Controller
                 $data['badge_assessment_forms'] = $user->spafClient()->whereIn('status', ['pending', 'additional'])->count();
             }else{
                 if($request->user()->can('template.manage') || $request->user()->can('template.approve')){
-                    $data['badge_spaf'] = Template::where('type', 'spaf')->where('is_approved', false)->count();
-                    $data['badge_spaf_extension'] = Template::where('type', 'spaf_extension')->where('is_approved', false)->count();
-                    $data['badge_risk_management'] = Template::where('type', 'risk_management')->where('is_approved', false)->count();
+                    $data['badge_spaf'] = Template::where('type', 'spaf')->where('is_deleted', false)->where('is_approved', false)->count();
+                    $data['badge_spaf_extension'] = Template::where('type', 'spaf_extension')->where('is_deleted', false)->where('is_approved', false)->count();
+                    $data['badge_risk_management'] = Template::where('type', 'risk_management')->where('is_deleted', false)->where('is_approved', false)->count();
                     $data['badge_templates'] = $data['badge_spaf'] + $data['badge_spaf_extension'] + $data['badge_risk_management'];
                 }
                 if($request->user()->can('spaf.manage') || $request->user()->can('spaf.approve')){
