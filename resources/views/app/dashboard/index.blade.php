@@ -52,19 +52,6 @@
             </div>
             <div class="col-xl-3 col-sm-6 col-12 mb-2 mb-xl-0">
               <div class="d-flex flex-row">
-                <div class="avatar bg-light-primary me-2">
-                  <div class="avatar-content">
-                    <i data-feather="package" class="avatar-icon"></i>
-                  </div>
-                </div>
-                <div class="my-auto">
-                  <h4 class="fw-bolder mb-0">{{ $totals['suppliers'] }}</h4>
-                  <p class="card-text font-small-3 mb-0">Suppliers</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-3 col-sm-6 col-12 mb-2 mb-xl-0">
-              <div class="d-flex flex-row">
                 <div class="avatar bg-light-info me-2">
                   <div class="avatar-content">
                     <i data-feather="award" class="avatar-icon"></i>
@@ -73,6 +60,19 @@
                 <div class="my-auto">
                   <h4 class="fw-bolder mb-0">{{ $totals['clients'] }}</h4>
                   <p class="card-text font-small-3 mb-0">Clients</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 col-12 mb-2 mb-xl-0">
+              <div class="d-flex flex-row">
+                <div class="avatar bg-light-primary me-2">
+                  <div class="avatar-content">
+                    <i data-feather="package" class="avatar-icon"></i>
+                  </div>
+                </div>
+                <div class="my-auto">
+                  <h4 class="fw-bolder mb-0">{{ $totals['suppliers'] }}</h4>
+                  <p class="card-text font-small-3 mb-0">Suppliers</p>
                 </div>
               </div>
             </div>

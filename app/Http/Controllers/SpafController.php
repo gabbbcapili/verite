@@ -82,7 +82,7 @@ class SpafController extends Controller
         $breadcrumbs = [
             ['link'=>"/",'name'=>"Home"],['link'=> route('spaf.index'), 'name'=>"List Assessment Forms"], ['name'=>"Create New Assessment"]
         ];
-        $templates = Template::where('is_deleted', false)->where('is_approved', true)->get();
+        $templates = Template::where('is_deleted', false)->where('is_approved', true)->where('status', true)->get();
         $clients = Company::where('type', 'client')->get();
         return view('app.spaf.create', compact('breadcrumbs', 'templates', 'clients'));
     }
@@ -93,12 +93,12 @@ class SpafController extends Controller
     }
 
     public function loadClientContactPersons(Company $company){
-        $contactPersons = $company->users;
+        $contactPersons = $company->users->where('status', true);
         return view('app.spaf.load.clientContactPersons', compact('contactPersons'));
     }
 
     public function loadSupplierContactPersons(Company $company){
-        $contactPersons = $company->users;
+        $contactPersons = $company->users->where('status', true);
         return view('app.spaf.load.supplierContactPersons', compact('contactPersons'));
     }
 

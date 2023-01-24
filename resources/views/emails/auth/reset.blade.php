@@ -8,7 +8,7 @@
 @endcomponent
 
 @component('mail::button', ['url' => route('password.reset', $token)])
-Go to Site
+Reset Password
 @endcomponent
 
 {!! Helper::settings()->email_footer !!}

@@ -59,6 +59,23 @@
                           </div>
                         </div>
                         @endif
+                        <div class="col-lg-6 col-xs-12">
+                          <div class="form-group">
+                              <label for="name">Status:</label>
+                              <select class="form-control select2Modal" name="status">
+                                <option value="1" {{ $user->status == 1 ? 'selected' : '' }}>Active</option>
+                                <option value="0" {{ $user->status == 0 ? 'selected' : '' }}>Inactive</option>
+                              </select>
+                          </div>
+                        </div>
+                  </div>
+                  <div class="row mb-2">
+                    <div class="col-lg-12 col-xs-12">
+                          <div class="form-group">
+                              <label for="name">Notes:</label>
+                              <textarea class="form-control" name="notes" id="notes">{{ $user->notes }}</textarea>
+                          </div>
+                        </div>
                   </div>
                 </div>
               </div>

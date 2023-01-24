@@ -45,7 +45,7 @@ class SpafTemplateController extends Controller
                                 }else{
                                     $html .= Utilities::actionButtons([
                                         ['route' => route('template.spaf.show', ['template' => $template->id]), 'name' => 'Show'],
-                                        ['route' => route('template.spaf.delete', $template->id), 'name' => 'Delete'],
+                                        ['route' => route('template.spaf.changeStatus', $template->id), 'name' => 'archive', 'type' => 'confirm', 'title' => 'Are you sure to change status to ' . $template->statusText . '?', 'text' => 'Change Status'],
                                         ['route' => route('template.spaf.clone', $template->id), 'type' => 'confirmWithNotes', 'name' => 'confirmWithNotes', 'title' => 'Clone', 'text' => 'Template Name:', 'confirmButtonText' => 'Clone']
                                     ]);
                                 }
@@ -62,6 +62,9 @@ class SpafTemplateController extends Controller
             ->editColumn('updated_at', function (Template $template) {
                 return $template->updated_at->diffForHumans() . ' | ' . $template->updatedByName;
             })
+            ->addColumn('statusText', function (Template $template) {
+                return $template->status ? '<span class="text-success">Active</span>' : '<span class="text-danger">Inactive</span>';
+            })
             ->addColumn('is_approved', function (Template $template) {
                 if($template->is_approved){
                  return '<span class="badge rounded-pill badge-light-success  me-1">Approved</span>';
@@ -69,7 +72,7 @@ class SpafTemplateController extends Controller
                     return '<span class="badge rounded-pill badge-light-danger  me-1">Waiting for Approval</span>';
                 }
             })
-            ->rawColumns(['action', 'is_approved'])
+            ->rawColumns(['action', 'is_approved', 'statusText'])
             ->make(true);
         }
         return view('app.template.spaf.index', [
@@ -176,6 +179,25 @@ class SpafTemplateController extends Controller
             DB::commit();
             $output = ['success' => 1,
                         'msg' => 'Template successfully deleted!'
+                    ];
+        } catch (\Exception $e) {
+            \Log::emergency("File:" . $e->getFile(). " Line:" . $e->getLine(). " Message:" . $e->getMessage());
+            $output = ['success' => 0,
+                        'msg' => env('APP_DEBUG') ? $e->getMessage() : 'Sorry something went wrong, please try again later.'
+                    ];
+             DB::rollBack();
+        }
+        return response()->json($output);
+    }
+
+    public function changeStatus(Template $template)
+    {
+        try {
+            DB::beginTransaction();
+            $template->update(['status' => $template->status ? false : true]);
+            DB::commit();
+            $output = ['success' => 1,
+                        'msg' => 'Template successfully changed status!'
                     ];
         } catch (\Exception $e) {
             \Log::emergency("File:" . $e->getFile(). " Line:" . $e->getLine(). " Message:" . $e->getMessage());

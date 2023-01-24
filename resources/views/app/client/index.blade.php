@@ -20,8 +20,10 @@
             <tr>
               <th>Id</th>
               <th>Company</th>
-              <th class="noexport">Contact Persons</th>
-              <th>Contact Persons</th>
+              <th class="noexport">Active Contact Persons</th>
+              <th class="noexport">Inactive Contact Persons</th>
+              <th>Active Contact Persons</th>
+              <th>Inactive Contact Persons</th>
               <th class="noexport">Suppliers</th>
               <th>Suppliers</th>
               <th>Created</th>
@@ -69,7 +71,9 @@
             { data: 'id', name: 'id'},
             { data: 'company_display', name: 'company_name'},
             { data: 'contact_persons', name: 'contact_persons', 'orderable' : false},
+            { data: 'contact_persons_inactive', name: 'contact_persons_inactive', 'orderable' : false},
             { data: 'contactPersonsExport', name: 'contactPersonsExport', visible: false},
+            { data: 'contactPersonsInactiveExport', name: 'contactPersonsInactiveExport', visible: false},
             { data: 'suppliers', name: 'suppliers', 'orderable' : false},
             { data: 'suppliersExport', name: 'suppliersExport', visible: false},
             { data: 'created_at', name: 'created_at'},

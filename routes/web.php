@@ -30,7 +30,7 @@ Route::group(['middleware' => ['auth']], function()
 
 
     Route::get('user/delete/{user}', [UserController::class, 'delete'])->name('user.delete');
-    Route::resource('user', UserController::class)->except('show', 'create')->middleware('permission:user.manage');
+    Route::resource('user', UserController::class)->except('show')->middleware('permission:user.manage');
     Route::get('role/delete/{role}', [RoleController::class, 'delete'])->name('role.delete');
 
     // Route::get('spaf/edit/{spaf}', [SpafController::class, 'edit'])->name('spaf.edit')->middleware('role:Supplier');
@@ -56,7 +56,7 @@ Route::group(['middleware' => ['auth']], function()
     Route::get('settings', [SettingController::class, 'index'])->name('settings.index')->middleware('permission:setting.manage');
     Route::put('settings', [SettingController::class, 'update'])->name('settings.update')->middleware('permission:setting.manage');
 
-    Route::resource('role', RoleController::class)->except('create')->middleware('permission:role.manage');
+    Route::resource('role', RoleController::class)->middleware('permission:role.manage');
     Route::get('supplier/{company}/addContact', [SupplierController::class, 'addContact'])->name('supplier.addContact')->middleware('permission:supplier.manage,client.manage');
     Route::post('supplier/{company}/addContact', [SupplierController::class, 'storeContact'])->name('supplier.storeContact')->middleware('permission:supplier.manage,client.manage');
     Route::resource('supplier', SupplierController::class)->middleware('permission:supplier.manage,client.manage')->parameters(['supplier' => 'company']);
@@ -68,6 +68,7 @@ Route::group(['middleware' => ['auth']], function()
             // template
              Route::get('spaf/preview/{template}', [SpafTemplateController::class, 'preview'])->name('spaf.preview')->middleware('permission:template.manage');
              Route::get('spaf/delete/{template}', [SpafTemplateController::class, 'delete'])->name('spaf.delete')->middleware('permission:template.manage');
+             Route::post('spaf/changeStatus/{template}', [SpafTemplateController::class, 'changeStatus'])->name('spaf.changeStatus')->middleware('permission:template.manage');
              Route::post('spaf/approve/{template}', [SpafTemplateController::class, 'approve'])->name('spaf.approve')->middleware('permission:template.approve');
              Route::post('spaf/clone/{template}', [SpafTemplateController::class, 'clone'])->name('spaf.clone')->middleware('permission:template.manage');
              Route::get('spaf/{type}', [SpafTemplateController::class, 'index'])->name('spaf.index')->middleware('permission:template.manage,template.approve');

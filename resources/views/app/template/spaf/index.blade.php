@@ -66,9 +66,10 @@
             <tr>
               <th>Id</th>
               <th>Name</th>
+              <th>Active</th>
+              <th>Status</th>
               <th>Created</th>
               <th>Updated</th>
-              <th>Status</th>
               <th class="noexport">Action</th>
             </tr>
           </thead>
@@ -111,9 +112,10 @@
       var columnns = [
             { data: 'id', name: 'id'},
             { data: 'name', name: 'name'},
+            { data: 'statusText', name: 'status'},
+            { data: 'is_approved', name: 'is_approved'},
             { data: 'created_at', name: 'created_at'},
             { data: 'updated_at', name: 'updated_at'},
-            { data: 'is_approved', name: 'is_approved'},
             { data: 'action', name: 'action', 'orderable' : false}
         ];
       // var buttons = [

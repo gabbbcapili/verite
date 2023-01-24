@@ -11,50 +11,6 @@
 @endsection
 
 @section('content')
-<section id="card-actions">
-  <div class="row">
-    <div class="col-md-12 col-sm-12">
-      <div class="card">
-        <div class="card-header">
-          <h4 class="card-title">Add Role</h4>
-          <div class="heading-elements">
-            <ul class="list-inline mb-0">
-              <li>
-                <a data-action="collapse"><i data-feather="chevron-down"></i></a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="card-content collapse">
-          <div class="card-body">
-            <form action="{{ route('role.store') }}" method="POST" class="form" enctype="multipart/form-data">
-              @csrf
-              <div class="form-body">
-                <div class="row mb-2">
-                    <div class="col-lg-4 col-xs-12">
-                      <div class="form-group">
-                          <label for="name">Role Name</label>
-                          <input type="text" class="form-control" name="name" placeholder="Role Name">
-                      </div>
-                    </div>
-                  </div>
-                  @include('app.role.permissions')
-                  <div class="row">
-                    <div class="col-6">
-                     <div class="col-12">
-                          <input type="submit" name="save_with_reload_table" class="btn btn-primary mr-1 mb-1 btn_save" value="Save">
-                          <!-- <button type="reset" class="btn btn-outline-warning mr-1 mb-1">Clear </button> -->
-                      </div>
-                    </div>
-                  </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 <section id="basic-datatable">
   <div class="row">
     <div class="col-12">
@@ -64,6 +20,7 @@
             <tr>
               <th>Id</th>
               <th>Role</th>
+              <th>Privileges</th>
               <th>Created</th>
               <th>Updated</th>
               <th class="noexport">Action</th>
@@ -108,9 +65,43 @@
       var columnns = [
             { data: 'id', name: 'id'},
             { data: 'name', name: 'name'},
+            { data: 'privileges', name: 'privileges', 'orderable' : false, visible : false},
             { data: 'created_at', name: 'created_at'},
             { data: 'updated_at', name: 'updated_at'},
             { data: 'action', name: 'action', 'orderable' : false}
+        ];
+      var buttons = [
+            {
+                text: '<i data-feather="printer"></i> Print',
+                extend: 'print',
+                className: 'btn btn-secondary',
+                exportOptions: {
+                    columns: ':not(.noexport)'
+                }
+            },
+            {
+              text: '<i data-feather="file"></i> Excel',
+                extend: 'excel',
+                className: 'btn btn-secondary',
+                exportOptions: {
+                    columns: ':not(.noexport)'
+                }
+            },
+            {
+                text: '<i data-feather="file-text"></i> PDF',
+                extend: 'pdf',
+                className: 'btn btn-secondary',
+                exportOptions: {
+                    columns: ':not(.noexport)'
+                }
+            },
+            {
+                text: '<i data-feather="plus"></i> Create New',
+                className: 'btn btn-primary',
+                action: function ( e, dt, node, config ) {
+                    window.location.href = '{{ route("role.create") }}';
+                }
+            },
         ];
       var drawCallback = function( settings ) {
         $('[data-bs-toggle="tooltip"]').tooltip();

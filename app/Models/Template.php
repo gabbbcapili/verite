@@ -13,7 +13,7 @@ class Template extends Model
 
     protected $table = 'template';
 
-    protected $fillable = ['name', 'type', 'is_deleted', 'is_approved'];
+    protected $fillable = ['name', 'type', 'is_deleted', 'is_approved', 'status'];
 
     public static $typeList = ['spaf', 'spaf_extension', 'risk_management'];
 
@@ -47,6 +47,10 @@ class Template extends Model
 
     public function getTypeDisplayAttribute(){
         return strtoupper(str_replace('_', ' ', $this->type));
+    }
+
+    public function getStatusTextAttribute(){
+        return $this->status ? 'Inactive' : 'Active';
     }
 
 }

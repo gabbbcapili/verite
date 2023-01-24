@@ -16,6 +16,7 @@ trait PasswordValidationRules
         return ['required', 'string', (new Password)->requireUppercase()
         ->length(8)
         ->requireNumeric()
-        ->requireSpecialCharacter(), 'confirmed',];
+        ->requireSpecialCharacter(), 'confirmed',
+    ];
     }
 }

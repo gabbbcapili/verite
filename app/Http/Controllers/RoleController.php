@@ -34,6 +34,9 @@ class RoleController extends Controller
                                 return Utilities::actionButtons([['route' => route('role.show', $role->id), 'name' => 'Show'],]);
                             }
                         })
+            ->editColumn('privileges', function (Role $role) {
+                return implode(', ', $role->permissions->pluck('display')->toArray());
+            })
             ->editColumn('created_at', function (Role $role) {
                 return $role->created_at->format('M d, Y');
             })
@@ -72,6 +75,7 @@ class RoleController extends Controller
             DB::commit();
             $output = ['success' => 1,
                         'msg' => 'Role added successfully!',
+                        'redirect' => route('role.index'),
                     ];
         } catch (\Exception $e) {
             \Log::emergency("File:" . $e->getFile(). " Line:" . $e->getLine(). " Message:" . $e->getMessage());
@@ -81,6 +85,13 @@ class RoleController extends Controller
              DB::rollBack();
         }
         return response()->json($output);
+    }
+
+    public function create(){
+        $breadcrumbs = [
+            ['link'=>"/",'name'=>"Home"],['link'=> route('role.index'), 'name'=>"Roles & Privileges"], ['name'=>"Create New Role"]
+        ];
+        return view('app.role.create', compact('breadcrumbs'));
     }
 
     public function show(Role $role){

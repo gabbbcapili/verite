@@ -1,6 +1,6 @@
 @inject('request', 'Illuminate\Http\Request')
 @extends('layouts/contentLayoutMaster')
-@section('title', 'User Management')
+@section('title', 'Users')
 
 @section('vendor-style')
   <link rel="stylesheet" href="{{ asset('vendors/css/tables/datatable/dataTables.bootstrap5.min.css') }}">
@@ -11,73 +11,6 @@
 @endsection
 
 @section('content')
-<section id="card-actions">
-  <div class="row">
-    <div class="col-md-12 col-sm-12">
-      <div class="card">
-        <div class="card-header">
-          <h4 class="card-title">Create New User</h4>
-          <div class="heading-elements">
-            <ul class="list-inline mb-0">
-              <li>
-                <a data-action="collapse"><i data-feather="chevron-down"></i></a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="card-content collapse">
-          <div class="card-body">
-            <form action="{{ route('user.store') }}" method="POST" class="form" enctype="multipart/form-data">
-              @csrf
-              <div class="form-body">
-                <div class="row mb-2">
-                    <div class="col-lg-4 col-xs-12">
-                      <div class="form-group">
-                          <label for="name">First Name:</label>
-                          <input type="text" class="form-control" name="first_name" placeholder="First Name">
-                      </div>
-                    </div>
-                    <div class="col-lg-4 col-xs-12">
-                      <div class="form-group">
-                          <label for="name">Last Name:</label>
-                          <input type="text" class="form-control" name="last_name" placeholder="Last Name">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row mb-2">
-                    <div class="col-lg-4 col-xs-12">
-                      <div class="form-group">
-                          <label for="name">Email:</label>
-                          <input type="text" class="form-control" name="email" placeholder="Email">
-                      </div>
-                    </div>
-                    <div class="col-lg-4 col-xs-12">
-                      <div class="form-group">
-                          <label for="name">Role:</label>
-                          <select class="form-control select2" name="role">
-                            @foreach($roles as $role)
-                              <option value="{{ $role->name }}">{{ $role->name }}</option>
-                            @endforeach
-                          </select>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-6">
-                     <div class="col-12">
-                          <input type="submit" name="save_with_reload_table" class="btn btn-primary mr-1 mb-1 btn_save" value="Save">
-                          <button type="reset" class="btn btn-outline-warning mr-1 mb-1">Clear </button>
-                      </div>
-                    </div>
-                  </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 <section id="basic-datatable">
   <div class="row">
     <div class="col-12">
@@ -103,6 +36,7 @@
               <th>Full Name</th>
               <th>Email</th>
               <th>Role</th>
+              <th>Status</th>
               <th>Created</th>
               <th>Updated</th>
               <th class="noexport">Action</th>
@@ -149,6 +83,7 @@
             { data: 'fullName', name: 'fullName'},
             { data: 'email', name: 'email'},
             { data: 'role', name: 'role'},
+            { data: 'statusText', name: 'status'},
             { data: 'created_at', name: 'created_at'},
             { data: 'updated_at', name: 'updated_at'},
             { data: 'action', name: 'action', 'orderable' : false, 'printable' : false}
@@ -183,6 +118,13 @@
                 className: 'btn btn-secondary',
                 exportOptions: {
                     columns: ':not(.noexport)'
+                }
+            },
+            {
+                text: '<i data-feather="plus"></i> Create New',
+                className: 'btn btn-primary',
+                action: function ( e, dt, node, config ) {
+                    window.location.href = '{{ route("user.create") }}';
                 }
             },
         ];

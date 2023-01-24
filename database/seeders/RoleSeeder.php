@@ -33,18 +33,18 @@ class RoleSeeder extends Seeder
         ]);
 
         $permissions = [
-            ['name' => 'user.manage'],
-            ['name' => 'template.manage'],
-            ['name' => 'supplier.manage'],
-            ['name' => 'client.manage'],
-            ['name' => 'spaf.manage'],
-            ['name' => 'spaf.approve'],
-            ['name' => 'role.manage'],
-            ['name' => 'template.approve'],
-            ['name' => 'dashboard.default'],
-            ['name' => 'dashboard.supplier'],
-            ['name' => 'dashboard.client'],
-            ['name' => 'setting.manage'],
+            ['name' => 'user.manage', 'display' => 'Manage Users'],
+            ['name' => 'template.manage', 'display' => 'Manage Template'],
+            ['name' => 'supplier.manage', 'display' => 'Manage Suppliers'],
+            ['name' => 'client.manage', 'display' => 'Manage Clients'],
+            ['name' => 'spaf.manage', 'display' => 'Manage Assesment Forms'],
+            ['name' => 'spaf.approve', 'display' => 'Approve Assesment Forms'],
+            ['name' => 'role.manage', 'display' => 'Roles & Privileges'],
+            ['name' => 'template.approve', 'display' => 'Approve Template'],
+            ['name' => 'dashboard.default', 'display' => 'Dashboard Default'],
+            ['name' => 'dashboard.supplier', 'display' => 'Dashboard Supplier'],
+            ['name' => 'dashboard.client', 'display' => 'Dashboard Client'],
+            ['name' => 'setting.manage', 'display' => 'Manage Settings'],
         ];
         foreach($permissions as $p){
             Permission::create($p);

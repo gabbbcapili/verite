@@ -51,6 +51,9 @@ $(function () {
         }
       },
       "drawCallback": typeof(drawCallback) === 'undefined' ? function(){} : drawCallback,
+      "language": {
+        "emptyTable": "No data available"
+      },
     });
     // $('div.head-label').html('<h6 class="mb-0"> ' + table_title +' </h6>');
   }

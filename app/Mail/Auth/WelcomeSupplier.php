@@ -29,6 +29,6 @@ class WelcomeSupplier extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.auth.welcome_supplier', ['user' => $this->user])->subject('Welcome to ' . env('APP_NAME') . '!');
+        return $this->markdown('emails.auth.welcome_supplier', ['user' => $this->user])->subject('Welcome to ' . env('APP_NAME_DETAIL') . '!');
     }
 }

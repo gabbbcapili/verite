@@ -16,7 +16,7 @@ class CreateQuestionTable extends Migration
         Schema::create('question', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('group_id');
-            $table->string('text')->nullable();
+            $table->longText('text')->nullable();
             $table->string('type');
             $table->string('for_checkbox')->nullable();
             $table->boolean('next_line')->default(0);

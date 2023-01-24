@@ -56,10 +56,13 @@ class UserController extends Controller
             ->editColumn('created_at', function (User $user) {
                 return $user->created_at->format('M d, Y') . ' | ' . $user->createdByName;
             })
+            ->addColumn('statusText', function (User $user) {
+                return $user->status ? '<span class="text-success">Active</span>' : '<span class="text-danger">Inactive</span>';
+            })
             ->filterColumn('fullName', function($query, $keyword) {
                     $query->whereRaw('CONCAT(first_name," ",last_name)  like ?', ["%{$keyword}%"]);
                 })
-            ->rawColumns(['action'])
+            ->rawColumns(['action', 'statusText'])
             ->make(true);
         }
         $roles = Role::where('is_deleted', false)->whereNotIn('id', [3,4])->get();
@@ -76,7 +79,11 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        $breadcrumbs = [
+            ['link'=>"/",'name'=>"Home"],['link'=> route('user.index'), 'name'=>"Users"], ['name'=>"Create New User"]
+        ];
+        $roles = Role::where('is_deleted', false)->whereNotIn('id', [3,4])->get();
+        return view('app.user.create', compact('breadcrumbs', 'roles'));
     }
 
     /**
@@ -113,6 +120,7 @@ class UserController extends Controller
             DB::commit();
             $output = ['success' => 1,
                         'msg' => 'User added successfully!',
+                        'redirect' => route('user.index'),
                     ];
         } catch (\Exception $e) {
             \Log::emergency("File:" . $e->getFile(). " Line:" . $e->getLine(). " Message:" . $e->getMessage());
@@ -161,17 +169,29 @@ class UserController extends Controller
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
             // 'role' => ['required', 'exists:roles,name']
-            'password' => ['nullable', 'string', (new Password)->requireUppercase()
+            'password' => ['nullable',
+            function ($attribute, $value, $fail) use($user) {
+            if (Hash::check($value, $user->password)) {
+                $fail('New Password cannot be the same with the old password');
+            }
+        }, 'string', (new Password)->requireUppercase()
                             ->length(8)
                             ->requireNumeric()
                             ->requireSpecialCharacter()]
         ]);
+        if($request->has('status')){
+            if($request->status == false){
+                if(! $user->canSetToInactive()){
+                    return response()->json(['error' => ['status' => 'This user has an active spaf to be completed and cannot be set to inactive.']]);
+                }
+            }
+        }
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()]);
         }
         try {
             DB::beginTransaction();
-            $data = $request->only(['first_name','last_name','email']);
+            $data = $request->only(['first_name','last_name','email', 'notes', 'status']);
             if($request->has('password')){
                 if($request->password != null){
                     $data['password'] = Hash::make($request->password);

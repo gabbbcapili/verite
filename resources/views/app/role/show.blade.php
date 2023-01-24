@@ -1,7 +1,7 @@
 @inject('request', 'Illuminate\Http\Request')
 
 <div class="modal-dialog modal-xl">
-  <div class="modal-content">
+  <div class="modal-content" id="printThis">
     <div class="modal-header">
       <h5 class="modal-title">
         View Role
@@ -25,12 +25,16 @@
       </div>
     </div>
     <div class="modal-footer">
-
+      <button type="button" class="btn btn-primary no-print btn_print"><i data-feather="printer"></i> Print
+          </button>
     </div>
   </div>
 </div>
 <script type="text/javascript">
     $(document).ready(function(){
       $('input[name="permissions[]"]').attr('disabled', 'disabled');
+      $('.btn_print').click(function(){
+        $('#printThis').printThis();
+    });
     });
 </script>

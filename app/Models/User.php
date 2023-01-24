@@ -37,6 +37,8 @@ class User extends Authenticatable
         'password',
         'role',
         'company_id',
+        'status',
+        'notes',
     ];
 
     /**
@@ -115,6 +117,22 @@ class User extends Authenticatable
 
     public function spafClient(){
         return $this->hasMany(Spaf::class, 'client_id');
+    }
+
+    public function canSetToInactive(){
+        $role = $this->roles()->first()->name;
+        if($role == 'Supplier'){
+            if($this->spafSupplier->where('status', '!=' , 'completed')->count() > 0){
+                return false;
+            }
+        }else if($role == 'Client'){
+            if($this->spafClient->where('status', '!=' , 'completed')->count() > 0){
+                return false;
+            }
+        }else{
+            return true;
+        }
+        return true;
     }
 
     public function generatePassworResetToken(){

@@ -54,19 +54,34 @@ class SupplierController extends Controller
                             }
                             return $html;
                         })
+            ->addColumn('contact_persons', function(Company $company) {
+                        $html = '<div class="avatar-group">';
+                            foreach($company->users->where('status', 1) as $c){
+                                $html .= '<a data-action="'. route('user.edit', $c->id) .'" class="modal_button"><div data-bs-toggle="tooltip" data-popup="tooltip-custom"data-bs-placement="top"class="avatar pull-up my-0"title="'. $c->fullName . '"><img src="'. $c->profilePhotoUrl .'" alt="Avatar" height="26" width="26"/></div></a>';
+                            }
+                            $html .= '</div>';
+                            return $html;
+                        })
+            ->addColumn('contact_persons_inactive', function(Company $company) {
+                        $html = '<div class="avatar-group">';
+                            foreach($company->users->where('status', 0) as $c){
+                                $html .= '<a data-action="'. route('user.edit', $c->id) .'" class="modal_button"><div data-bs-toggle="tooltip" data-popup="tooltip-custom"data-bs-placement="top"class="avatar pull-up my-0"title="'. $c->fullName . '"><img src="'. $c->profilePhotoUrl .'" alt="Avatar" height="26" width="26"/></div></a>';
+                            }
+                            $html .= '</div>';
+                            return $html;
+                        })
             ->addColumn('contactPersonsExport', function(Company $company) {
                             $html = '';
-                            foreach($company->users as $c){
+                            foreach($company->users->where('status', 1) as $c){
                                 $html .= $c->fullName . ', ';
                             }
                             return $html;
                         })
-            ->addColumn('contact_persons', function(Company $company) {
-                        $html = '<div class="avatar-group">';
-                            foreach($company->users as $c){
-                                $html .= '<a data-action="'. route('user.edit', $c->id) .'" class="modal_button"><div data-bs-toggle="tooltip" data-popup="tooltip-custom"data-bs-placement="top"class="avatar pull-up my-0"title="'. $c->fullName . '"><img src="'. $c->profilePhotoUrl .'" alt="Avatar" height="26" width="26"/></div></a>';
+            ->addColumn('contactPersonsInactiveExport', function(Company $company) {
+                            $html = '';
+                            foreach($company->users->where('status', 0) as $c){
+                                $html .= $c->fullName . ', ';
                             }
-                            $html .= '</div>';
                             return $html;
                         })
             ->editColumn('created_at', function (Company $company) {
@@ -75,7 +90,7 @@ class SupplierController extends Controller
             ->editColumn('updated_at', function (Company $company) {
                 return $company->updated_at->diffForHumans(). ' | ' . $company->updatedByName;
             })
-            ->rawColumns(['action', 'clients', 'contact_persons', 'company_display'])
+            ->rawColumns(['action', 'clients', 'contact_persons', 'company_display', 'contact_persons_inactive'])
             ->make(true);
         }
         return view('app.supplier.index', [
