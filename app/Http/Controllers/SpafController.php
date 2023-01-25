@@ -194,10 +194,10 @@ class SpafController extends Controller
                 }
 
                 if($q->type == 'email'){
-                    $validation['question.'. $q->id] = $q->required ? ['required', 'email'] : 'email';
+                    $validation['question.'. $q->id] = $q->required ? ['required', 'email'] : ['nullable', 'email'];
                 }
                 if($q->type == 'number'){
-                    $validation['question.'. $q->id] = $q->required ? ['required', 'numeric'] : 'numeric';
+                    $validation['question.'. $q->id] = $q->required ? ['required', 'numeric'] : ['nullable', 'numeric'];
                 }
             }
         }

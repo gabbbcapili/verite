@@ -6,7 +6,7 @@
 @component('mail::panel')
 <p>Client Name: {{ $spaf->client->fullName }}</p>
 @if($spaf->supplier)
-<p>Client Name: {{ $spaf->supplier->fullName }}</p>
+<p>Supplier Name: {{ $spaf->supplier->fullName }}</p>
 @endif
 <p>Form: {{ $spaf->template->name }}</p>
 <p>Assessment Type: {{ $spaf->template->typeDisplay }}</p>
