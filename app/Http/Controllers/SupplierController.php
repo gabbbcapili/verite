@@ -153,8 +153,8 @@ class SupplierController extends Controller
             }
 
             $token = $user->generatePassworResetToken();
-            Mail::to($user)->send(new ResetPassword($user, $token));
-            Mail::to($user)->send(new WelcomeSupplier($user));
+            // Mail::to($user)->send(new ResetPassword($user, $token));
+            // Mail::to($user)->send(new WelcomeSupplier($user, $token));
             DB::commit();
             $output = ['success' => 1,
                         'msg' => 'Supplier added successfully!',
@@ -278,7 +278,7 @@ class SupplierController extends Controller
                 $user->assignRole('Supplier');
             }
             $token = $user->generatePassworResetToken();
-            Mail::to($user)->send(new ResetPassword($user, $token));
+            // Mail::to($user)->send(new ResetPassword($user, $token));
             DB::commit();
             $output = ['success' => 1,
                         'msg' => 'Contact added successfully!',

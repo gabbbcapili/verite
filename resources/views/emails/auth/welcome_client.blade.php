@@ -2,8 +2,13 @@
 # Welcome to {{ env('APP_NAME') }}
 
 {!! Helper::settings()->welcome_client !!}
-@component('mail::button', ['url' => route('home'), 'color' => 'success'])
-Go to Site
+
+@component('mail::panel')
+<p>Your Email: {{ $user->email }}</p>
+<p>You will be prompted to change your password immediately</p>
+@endcomponent
+@component('mail::button', ['url' => route('password.reset', $token)])
+Reset Password
 @endcomponent
 
 {!! Helper::settings()->email_footer !!}

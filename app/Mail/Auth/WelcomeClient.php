@@ -17,9 +17,10 @@ class WelcomeClient extends Mailable
      *
      * @return void
      */
-    public function __construct(User $user)
+    public function __construct(User $user, $token)
     {
         $this->user = $user;
+        $this->token = $token;
     }
 
     /**
@@ -29,6 +30,6 @@ class WelcomeClient extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.auth.welcome_client', ['user' => $this->user])->subject('Welcome to ' . env('APP_NAME_DETAIL') . '!');
+        return $this->markdown('emails.auth.welcome_client', ['user' => $this->user,'token' => $this->token])->subject('Welcome to ' . env('APP_NAME_DETAIL') . '!');
     }
 }

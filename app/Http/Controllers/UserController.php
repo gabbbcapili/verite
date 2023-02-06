@@ -18,6 +18,8 @@ use App\Mail\Auth\ChangedRole;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Rules\Password;
 use App\Mail\Welcome;
+use App\Mail\Auth\WelcomeClient;
+use App\Mail\Auth\WelcomeSupplier;
 
 class UserController extends Controller
 {
@@ -229,5 +231,31 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         //
+    }
+
+    public function sendReset(User $user){
+        try {
+            DB::beginTransaction();
+            $token = $user->generatePassworResetToken();
+            if($user->hasRole('Supplier')){
+                Mail::to($user)->send(new WelcomeSupplier($user, $token));
+            }elseif($user->hasRole('Client')){
+                Mail::to($user)->send(new WelcomeClient($user, $token));
+            }
+            else{
+                Mail::to($user)->send(new ResetPassword($user, $token));
+            }
+            DB::commit();
+            $output = ['success' => 1,
+                        'msg' => 'Reset Password Email Sent Successfully!',
+                    ];
+        } catch (\Exception $e) {
+            \Log::emergency("File:" . $e->getFile(). " Line:" . $e->getLine(). " Message:" . $e->getMessage());
+            $output = ['success' => 0,
+                        'msg' => env('APP_DEBUG') ? $e->getMessage() : 'Sorry something went wrong, please try again later.'
+                    ];
+             DB::rollBack();
+        }
+        return response()->json($output);
     }
 }

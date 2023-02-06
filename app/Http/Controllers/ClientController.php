@@ -153,8 +153,8 @@ class ClientController extends Controller
                 }
             }
             $token = $user->generatePassworResetToken();
-            Mail::to($user)->send(new ResetPassword($user, $token));
-            Mail::to($user)->send(new WelcomeClient($user));
+            // Mail::to($user)->send(new ResetPassword($user, $token));
+            // Mail::to($user)->send(new WelcomeClient($user, $token));
             DB::commit();
             $output = ['success' => 1,
                         'msg' => 'Client added successfully!',

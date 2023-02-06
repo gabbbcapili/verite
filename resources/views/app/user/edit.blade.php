@@ -84,6 +84,7 @@
         </div>
       </div>
       <div class="modal-footer">
+          <a href="#" data-action="{{ route('user.sendReset', $user) }}" data-bs-toggle="tooltip" data-title="Send Reset Password Email to {{ $user->fullname }}" data-placement="top" title="Reset Password" class="btn btn-warning confirm"><i data-feather="send"></i> Send Reset Password</a>
           <button type="submit" class="btn btn-primary no-print btn_save"><i data-feather="save"></i> Save
           </button>
       </div>
