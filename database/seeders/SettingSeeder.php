@@ -4,6 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Setting;
+use App\Models\AuditModel;
+use App\Models\ScheduleStatus;
+use App\Models\Country;
 
 class SettingSeeder extends Seeder
 {
@@ -26,6 +29,46 @@ class SettingSeeder extends Seeder
             'welcome_supplier' => 'Welcome Supplier',
             'user_changed_role' => 'Hello! administrator changed your role click the button below to visit the site',
             'admin_change_role_of' => 'Please change the role of the user below',
+            'schedule_cf_1' => 'Custom Field 1',
+            'schedule_cf_2' => 'Custom Field 2',
+            'schedule_cf_3' => 'Custom Field 3',
+            'schedule_cf_4' => 'Custom Field 4',
+            'schedule_cf_5' => 'Custom Field 5',
+        ]);
+        AuditModel::create([
+            'name' => 'Comprehensive',
+            'color' => '#13FB22'
+        ]);
+        AuditModel::create([
+            'name' => 'Focused Investigation',
+            'color' => '#FB1313'
+        ]);
+        AuditModel::create([
+            'name' => 'Post-Assessment',
+            'color' => '#D400FF'
+        ]);
+
+        ScheduleStatus::create([
+            'name' => 'Completed',
+            'color' => '#00FF9D'
+        ]);
+        ScheduleStatus::create([
+            'name' => 'Cancelled',
+            'color' => '#DF111B'
+        ]);
+        ScheduleStatus::create([
+            'name' => 'Re-schedule',
+            'color' => '#7E5525'
+        ]);
+
+        Country::create([
+            'name' => 'Philippines',
+            'timezone' => 'GMT+08:00 Kuala Lumpur, Singapore'
+        ]);
+
+        Country::create([
+            'name' => 'Australia',
+            'timezone' => 'GMT+12:00 Fiji Islands, Kamchatka, Marshall Islands'
         ]);
     }
 }

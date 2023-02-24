@@ -1,3 +1,61 @@
+event
+    id
+    start_date
+    end_date
+    type ('Audit Schedule')
+
+event_users
+    id
+    event_id
+    modelable_id
+    modelable_type
+    role (lead auditor, interpreter, none)
+
+schedule
+    id
+    title
+    event_id
+    client_id (from company)
+    status (from status masterlist)
+    audit_model (audit_model masterlist)
+    city (text)
+    country (from countries masterlist)
+    timezone (from countries masterlist)
+    due_date (date time)
+    report_submitted (date time)
+    custom_field_1
+    custom_field_2
+    custom_field_3
+    custom_field_4
+    custom_field_5
+
+
+
+
+add alias, country_id to user
+
+Calendar filters
+status
+companies default vsea search box
+audit model
+
+skills
+role, sub role e.g Auditor - 1st Auditor
+
+cms
+    -audit model transactional
+    -schedule status transactional
+    -country name, timezone -> city transactionals
+
+role
+can make schedule
+can approve schedule
+can be selected as auditor
+
+Client preference, Language, Accreditation
+
+
+
 /usr/local/bin/ea-php81
 check dashboard client / supplier ok
 edit users role sql error ok

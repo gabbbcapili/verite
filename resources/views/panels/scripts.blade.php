@@ -121,11 +121,44 @@
                 $(".view_modal").trigger("hidden.bs.modal");
               }
           });
-
         }
       })
-
   });
+
+  $(document).on('click', '.confirmDelete', function(){
+    Swal.fire({
+        title:$(this).data('title'),
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $.ajax({
+              url: $(this).data('action'),
+              method: "DELETE",
+              success:function(result)
+              {
+                Swal.fire({
+                  icon: 'success',
+                  title: result.msg,
+                  showConfirmButton: false,
+                  timer: 1500,
+                  showClass: {
+                    popup: 'animate__animated animate__fadeIn'
+                  },
+                });
+                $(".view_modal").trigger("hidden.bs.modal");
+
+                if($('#view_modal').hasClass('show')){
+                  $('#view_modal').modal('toggle');
+                }
+                }
+          });
+        }
+      })
+  });
+
 
   $(document).on('click', '.modal_button_overlap', function() {
       $.ajax({

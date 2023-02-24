@@ -12,6 +12,10 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SpafController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\Schedule\CountryController;
+use App\Http\Controllers\Schedule\ScheduleStatusController;
+use App\Http\Controllers\Schedule\AuditModelController;
+use App\Http\Controllers\ScheduleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,7 +32,7 @@ Route::group(['middleware' => ['auth']], function()
     Route::get('/', [StaterkitController::class, 'home'])->name('home');
     Route::get('/getBadges', [StaterkitController::class, 'getBadges'])->name('getBadges');
 
-
+    Route::post('/user/sendReset/{user}', [UserController::class, 'sendReset'])->name('user.sendReset');
     Route::get('user/delete/{user}', [UserController::class, 'delete'])->name('user.delete');
     Route::resource('user', UserController::class)->except('show')->middleware('permission:user.manage');
     Route::get('role/delete/{role}', [RoleController::class, 'delete'])->name('role.delete');
@@ -38,7 +42,7 @@ Route::group(['middleware' => ['auth']], function()
     Route::post('spaf/approve/{spaf}/', [SpafController::class, 'approve'])->name('spaf.approve')->middleware('permission:spaf.approve');
     Route::get('spaf', [SpafController::class, 'index'])->name('spaf.index')->middleware('permission:spaf.manage,spaf.approve');
     Route::get('spaf/create', [SpafController::class, 'create'])->name('spaf.create')->middleware('permission:spaf.manage');
-    Route::post('spaf/loadSuppliers/{company}', [SpafController::class, 'loadSuppliers'])->name('spaf.loadSuppliers')->middleware('permission:spaf.manage');
+    Route::post('spaf/loadSuppliers/{company}', [SpafController::class, 'loadSuppliers'])->name('spaf.loadSuppliers');
     Route::post('spaf/loadClientContactPersons/{company}', [SpafController::class, 'loadClientContactPersons'])->name('spaf.loadClientContactPersons')->middleware('permission:spaf.manage');
     Route::post('spaf/loadSupplierContactPersons/{company}', [SpafController::class, 'loadSupplierContactPersons'])->name('spaf.loadSupplierContactPersons')->middleware('permission:spaf.manage');
 
@@ -52,9 +56,24 @@ Route::group(['middleware' => ['auth']], function()
     Route::get('spaf/{spaf}', [SpafController::class, 'show'])->name('spaf.show');
     Route::resource('spaf', SpafController::class)->only(['update', 'edit'])->middleware('role:Supplier,Client');
 
+    Route::resource('schedule', ScheduleController::class)->except(['show'])->parameters(['schedule' => 'event']);
+    Route::get('schedule/getEvents', [ScheduleController::class, 'getEvents'])->name('schedule.getEvents');
 
-    Route::get('settings', [SettingController::class, 'index'])->name('settings.index')->middleware('permission:setting.manage');
-    Route::put('settings', [SettingController::class, 'update'])->name('settings.update')->middleware('permission:setting.manage');
+    Route::post('loadAvailableUsers', [ScheduleController::class, 'loadAvailableUsers'])->name('schedule.loadAvailableUsers')->middleware('permission:schedule.manage');
+    Route::post('loadAvailableSuppliers/{company}', [ScheduleController::class, 'loadAvailableSuppliers'])->name('schedule.loadAvailableSuppliers')->middleware('permission:schedule.manage');
+
+    Route::group(['prefix' => 'settings'], function()
+    {
+        Route::get('email', [SettingController::class, 'email'])->name('settings.email')->middleware('permission:settings.email.manage');
+        Route::put('emailUpdate', [SettingController::class, 'emailUpdate'])->name('settings.emailUpdate')->middleware('permission:settings.email.manage');
+        Route::get('schedule', [SettingController::class, 'schedule'])->name('settings.schedule')->middleware('permission:settings.schedule.manage');
+        Route::put('scheduleUpdate', [SettingController::class, 'scheduleUpdate'])->name('settings.scheduleUpdate')->middleware('permission:settings.schedule.manage');
+
+        Route::resource('country', CountryController::class, ['names' => 'settings.country'])->middleware('permission:settings.country.manage');
+        Route::resource('scheduleStatus', ScheduleStatusController::class, ['names' => 'settings.scheduleStatus'])->middleware('permission:settings.scheduleStatus.manage');
+        Route::resource('auditModel', AuditModelController::class, ['names' => 'settings.auditModel'])->middleware('permission:settings.auditModel.manage');
+    });
+
 
     Route::resource('role', RoleController::class)->middleware('permission:role.manage');
     Route::get('supplier/{company}/addContact', [SupplierController::class, 'addContact'])->name('supplier.addContact')->middleware('permission:supplier.manage,client.manage');

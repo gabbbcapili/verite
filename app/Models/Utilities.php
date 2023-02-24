@@ -54,7 +54,10 @@ class Utilities extends Model
               $html .= '<a href="#" data-bs-toggle="tooltip" data-placement="top" title="'. $title .'" data-action="'. $action['route'] . '" class="me-75 confirm" data-title="Are you sure to approve this?" ><i data-feather="'. $icons[$action['name']] .'"></i></a>';
             }elseif($type == 'confirm'){
               $html .= '<a href="#" data-bs-toggle="tooltip" data-placement="top" title="'. $text .'" data-action="'. $action['route'] . '" class="me-75 confirm" data-title="'. $title .'" ><i data-feather="'. $icons[$action['name']] .'"></i></a>';
-            }elseif($type == 'confirmWithNotes'){
+            }elseif($type == 'confirmDelete'){
+              $html .= '<a href="#" data-bs-toggle="tooltip" data-placement="top" title="'. $text .'" data-action="'. $action['route'] . '" class="me-75 confirmDelete" data-title="'. $title .'" ><i data-feather="'. $icons[$action['name']] .'"></i></a>';
+            }
+            elseif($type == 'confirmWithNotes'){
               $html .= '<a href="#" data-bs-toggle="tooltip" data-placement="top" data-title="'. $title .'" data-text="'. $text .'" data-confirmbutton="'. $confirmButtonText .'" title="'. $title .'"" data-action="'. $action['route'] . '" class="me-75 confirmWithNotes"><i data-feather="'. $icons[$action['name']] .'"></i></a>';
             }else{
               $html .= '<a href="'. $action['route'] .'" data-bs-toggle="tooltip" data-placement="top" title="'. $title .'" data-href="'. $action['route'] . '" class="me-50"><i data-feather="'. $icons[$action['name']] .'"></i></a>';

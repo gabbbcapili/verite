@@ -123,3 +123,4 @@ var events = [
     }
   }
 ];
+console.log(events);

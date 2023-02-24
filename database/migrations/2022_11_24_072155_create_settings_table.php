@@ -15,7 +15,6 @@ class CreateSettingsTable extends Migration
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
-
             $table->longText('email_footer');
             // emails
             $table->longText('spaf_completed');
@@ -28,6 +27,12 @@ class CreateSettingsTable extends Migration
             $table->longText('admin_change_role_of');
             $table->longText('welcome_client');
             $table->longText('welcome_supplier');
+            // schedules
+            $table->string('schedule_cf_1');
+            $table->string('schedule_cf_2');
+            $table->string('schedule_cf_3');
+            $table->string('schedule_cf_4');
+            $table->string('schedule_cf_5');
             $table->timestamps();
         });
     }

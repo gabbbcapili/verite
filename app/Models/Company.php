@@ -43,7 +43,45 @@ class Company extends Model
         return $this->belongsToMany(Company::class, 'client_suppliers', 'supplier_id', 'client_id');
     }
 
+    public function getAvailableSuppliers($date){
+        $date = explode(' to ', $date);
+        $from = $date[0];
+        $to = array_key_exists(1, $date) ? $date[1] : $date[0];
+        $companies = $this->suppliers;
+        foreach($companies as $key => $company){
+            $hasEvents = $company->events()->whereHas('event', function ($q) use($from,$to){
+                $q->where('start_date', '>=', $from);
+                $q->where('end_date', '<=', $to);
+            })->count();
+            if($hasEvents > 0){
+                $companies->forget($key);
+            }
+        }
+        return $companies;
+    }
+    public static function getAvailableClient($date){
+        $date = explode(' to ', $date);
+        $from = $date[0];
+        $to = array_key_exists(1, $date) ? $date[1] : $date[0];
+        $companies = Company::where('type', 'client')->get();
+        foreach($companies as $key => $company){
+            $hasEvents = $company->events()->whereHas('event', function ($q) use($from,$to){
+                $q->where('start_date', '>=', $from);
+                $q->where('end_date', '<=', $to);
+                $q->where('blockable', true);
+            })->count();
+            if($hasEvents > 0){
+                $companies->forget($key);
+            }
+        }
+        return $companies;
+    }
+
     public function getCompanyDetailsAttribute(){
+        return $this->company_name;
+    }
+
+    public function getDisplayNameAttribute(){
         return $this->company_name;
     }
 
@@ -60,8 +98,22 @@ class Company extends Model
               <div class="avatar bg-light-red me-1"><img src="'. $this->ProfilePhotoUrl .'" alt="Avatar" width="26" height="26"></div><div class="d-flex flex-column"><span class="emp_name text-truncate fw-bold">'. $this->company_name . '</span></div></div>';
     }
 
+    public function events(){
+        return $this->morphMany(EventUser::class, 'modelable');
+    }
 
-
-
-
+    public function isAvailableOn($date){
+        $date = explode(' to ', $date);
+        $from = $date[0];
+        $to = array_key_exists(1, $date) ? $date[1] : $date[0];
+        $event = $this->events()->whereHas('event', function ($q) use($from,$to){
+            $q->where('start_date', '>=', $from);
+            $q->where('end_date', '<=', $to);
+            $q->where('blockable', true);
+        })->first();
+        if($event){
+            return $event;
+        }
+        return false;
+    }
 }

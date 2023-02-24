@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSpafTable extends Migration
+class CreateAuditModelTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,13 @@ class CreateSpafTable extends Migration
      */
     public function up()
     {
-        Schema::create('spaf', function (Blueprint $table) {
+        Schema::create('audit_model', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('client_id');
-            $table->unsignedBigInteger('supplier_id')->nullable();
-            $table->unsignedBigInteger('template_id');
-            $table->string('status')->default('pending');
-            $table->dateTime('completed_at')->nullable();
-            $table->dateTime('approved_at')->nullable();
-            $table->string('notes')->nullable();
+            $table->string('name');
+            $table->string('color');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -35,6 +31,6 @@ class CreateSpafTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('spaf');
+        Schema::dropIfExists('audit_model');
     }
 }

@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Traits\CreatedUpdatedBy;
+use Spatie\Permission\Models\Permission;
 
 class User extends Authenticatable
 {
@@ -69,6 +70,7 @@ class User extends Authenticatable
      */
     protected $appends = [
         'profile_photo_url',
+        'displayName',
     ];
 
     public function created_by_user(){
@@ -99,12 +101,20 @@ class User extends Authenticatable
         return $this->first_name . ' ' . $this->last_name;
     }
 
+    public function getDisplayNameAttribute(){
+        return $this->fullName;
+    }
+
     public function getCompanyDetailsAttribute(){
         if($this->company){
             return $this->company->company_name . ' - ' . $this->first_name . ' ' . $this->last_name;
         }else{
             return $this->first_name . ' ' . $this->last_name;
         }
+    }
+
+    public function events(){
+        return $this->morphMany(EventUser::class, 'modelable');
     }
 
     public function company(){
@@ -138,5 +148,37 @@ class User extends Authenticatable
     public function generatePassworResetToken(){
         $token = \Illuminate\Support\Facades\Password::broker('users')->createToken($this);
         return $token;
+    }
+
+    public static function getAvailableAuditor($date){
+        $date = explode(' to ', $date);
+        $from = $date[0];
+        $to = array_key_exists(1, $date) ? $date[1] : $date[0];
+        $roleswithPermission = Permission::find(18)->getRoleNames(); //Selectable as Auditor
+        $users = User::role($roleswithPermission)->get();
+        foreach($users as $key => $user){
+            $hasEvents = $user->events()->whereHas('event', function ($q) use($from,$to){
+                $q->where('start_date', '>=', $from);
+                $q->where('end_date', '<=', $to);
+            })->count();
+            if($hasEvents > 0){
+                $users->forget($key);
+            }
+        }
+        return $users;
+    }
+
+    public function isAvailableOn($date){
+        $date = explode(' to ', $date);
+        $from = $date[0];
+        $to = array_key_exists(1, $date) ? $date[1] : $date[0];
+        $event = $this->events()->whereHas('event', function ($q) use($from,$to){
+            $q->where('start_date', '>=', $from);
+            $q->where('end_date', '<=', $to);
+        })->first();
+        if($event){
+            return $event;
+        }
+        return false;
     }
 }

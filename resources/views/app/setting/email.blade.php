@@ -1,6 +1,6 @@
 @inject('request', 'Illuminate\Http\Request')
 @extends('layouts/contentLayoutMaster')
-@section('title', 'Settings')
+@section('title', 'Email Settings')
 
 @section('page-style')
 <link rel="stylesheet" href="{{ asset(mix('vendors/css/trumbowyg/trumbowyg.min.css')) }}">
@@ -8,7 +8,7 @@
 
 @section('content')
 <section id="card-actions">
-  <form action="{{ route('settings.update') }}" method="POST" class="form" enctype="multipart/form-data">
+  <form action="{{ route('settings.emailUpdate') }}" method="POST" class="form" enctype="multipart/form-data">
     @csrf
     @method('put')
     <div class="row">
@@ -115,7 +115,6 @@
                         <div class="row">
                         <div class="col-12 align-items-center justify-content-center text-center">
                           <input type="submit" name="no_action" class="btn btn-primary me-1 btn_save" value="Save">
-                          <button type="reset" class="btn btn-outline-warning mr-1">Clear </button>
                         </div>
                       </div>
                     </div>
