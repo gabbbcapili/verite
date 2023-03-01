@@ -22,7 +22,14 @@
                     </div>
                     <div class="col-lg-4 col-xs-12">
                        <label class="form-label">Color</label>
-                       <input type="color" class="form-control form-control-color" name="color" value="#086287" title="Choose color">
+                       <select  class="form-control select2" name="color" title="Choose color">
+                        <option selected disabled></option>
+                        @foreach(App\Models\ScheduleStatus::$colors as $color)
+                            <option value="{{ $color}}" data-color="{{ $color }}">
+                                <span class="text-{{ $color }}">{{ $color }}</span>
+                            </option>
+                        @endforeach
+                        </select>
                   </div>
                   <div class="row">
                         <div class="col-12 align-items-center justify-content-center text-center">
@@ -45,7 +52,27 @@
     <script src="{{ asset('js/scripts/forms-validation/form-normal.js') }}"></script>
     <script type="text/javascript">
         $(document).ready(function(){
-            $('.select2').select2();
+            $(".select2").select2({
+                templateResult: formatState,
+                templateSelection: formatState
           });
+
+            function formatState (opt) {
+                if (!opt.id) {
+                    return opt.text.toUpperCase();
+                }
+
+                var color = $(opt.element).attr('data-color');
+                console.log(color)
+                if(!color){
+                   return opt.text.toUpperCase();
+                } else {
+                    var $opt = $(
+                       '<span class="text-white bg-' + color + '">' + opt.text.toUpperCase() + '</span>'
+                    );
+                    return $opt;
+                }
+            };
+        });
     </script>
 @endsection

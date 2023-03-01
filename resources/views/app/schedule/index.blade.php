@@ -1,6 +1,6 @@
 @extends('layouts/contentLayoutMaster')
 
-@section('title', 'App Calender')
+@section('title', 'Calendar')
 
 @section('vendor-style')
   <!-- Vendor css files -->
@@ -29,15 +29,16 @@
               <span class="align-middle">Add Schedule</span>
             </button>
           </div>
+          @can('schedule.manage')
           <div class="card-body pb-0">
             <h5 class="section-label mb-1">
               <span class="align-middle">Filter</span>
             </h5>
-            <div class="form-check mb-1">
+            <div class="form-check mb-1 d-none">
               <input type="checkbox" class="form-check-input select-all" id="select-all" checked />
               <label class="form-check-label" for="select-all">View All</label>
             </div>
-            <div class="calendar-events-filter">
+            <div class="calendar-events-filter d-none">
               <div class="form-check form-check-danger mb-1">
                 <input
                   type="checkbox"
@@ -77,7 +78,37 @@
                 <label class="form-check-label" for="etc">ETC</label>
               </div>
             </div>
+            <div class="row mt-2">
+              <div class="col-12">
+                <div class="form-group">
+                  <select class="form-control select2 eventFilter" id="companyFilter">
+                    <option selected disabled value="null">Select Client/Supplier</option>
+                    @foreach($companies as $company)
+                      <option value="{{ $company->id }}">{{ $company->displayName }}</option>
+                    @endforeach
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-1">
+              <div class="col-12">
+                <div class="form-group">
+                  <select class="form-control select2 eventFilter" id="auditorFilter">
+                    <option selected disabled value="null">Select Auditor</option>
+                    @foreach($auditors as $auditor)
+                      <option value="{{ $auditor->id }}">{{ $auditor->fullName }}</option>
+                    @endforeach
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="card-body d-flex justify-content-center">
+            <button class="btn btn-warning btn-toggle-sidebar w-100" id="resetValuesButton">
+              <span class="align-middle">Reset Filters</span>
+            </button>
           </div>
+          </div>
+          @endcan
         </div>
         <div class="mt-auto">
           <img
@@ -117,43 +148,28 @@
 @section('page-script')
   <!-- Page js files -->
   <script type="text/javascript">
+    $('.select2').select2();
     var route = "{{ route('schedule.create') }}";
     'use-strict';
+
+
 
     document.addEventListener('DOMContentLoaded', function () {
       var calendarEl = document.getElementById('calendar'),
         eventToUpdate,
         sidebar = $('.event-sidebar'),
         calendarsColor = {
-          Business: 'primary',
-          Holiday: 'success',
-          Personal: 'danger',
-          Family: 'warning',
-          ETC: 'info'
+          primary: 'primary',
+          secondary: 'secondary',
+          success: 'success',
+          warning: 'warning',
+          info: 'info',
+          danger: 'danger'
         },
         eventForm = $('.event-form'),
-        addEventBtn = $('.add-event-btn'),
-        cancelBtn = $('.btn-cancel'),
-        updateEventBtn = $('.update-event-btn'),
         selectAll = $('.select-all'),
         calEventFilter = $('.calendar-events-filter'),
         filterInput = $('.input-filter');
-
-      // --------------------------------------------
-      // On add new item, clear sidebar-right field fields
-      // --------------------------------------------
-      $('.add-event button').on('click', function (e) {
-        $('.event-sidebar').addClass('show');
-        $('.sidebar-left').removeClass('show');
-        $('.app-calendar .body-content-overlay').addClass('show');
-      });
-
-
-      // Event click function
-      function eventClick(info) {
-
-      }
-
 
       // Selected Checkboxes
       function selectedCalendars() {
@@ -170,116 +186,100 @@
       // --------------------------------------------------------------------------------------------------
 
 
-      // Calendar plugins
-      var calendar = new FullCalendar.Calendar(calendarEl, {
-        eventStartEditable: false,
-        displayEventTime: false,
-        initialView: 'dayGridMonth',
-        events : "{{ route('schedule.getEvents') }}",
-        // events: function(start,end,successCallback){
-        //   $.ajax(
-        //   {
-        //     url: "{{ route('schedule.getEvents') }}",
-        //     type: 'GET',
-        //     dataType: 'JSON',
-        //     success: function (result) {
-        //       console.log('test');
-        //       // Get requested calendars as Array
-        //       var calendars = selectedCalendars();
-        //       var events = [];
-        //       $.map( result.events, function( r ) {
-        //           events.push({
-        //               title: r.title,
-        //               // start: new Date(r.start),
-        //               // end: new Date(r.end)
-        //               start : r.start,
-        //               end : r.end
-        //           });
-        //       });
-        //       console.log(events);
-        //       successCallback(events);
-        //       return [result.events.filter(event => calendars.includes(event.extendedProps.calendar))];
-        //     },
-        //     error: function (error) {
-        //       console.log(error);
-        //     }
-        //   }
-        // );
-        // },
-        editable: true,
-        dragScroll: true,
-        dayMaxEvents: 2,
-        eventResizableFromStart: true,
-        customButtons: {
-          sidebarToggle: {
-            text: 'Sidebar'
-          }
-        },
-        headerToolbar: {
-          start: 'sidebarToggle, prev,next, title',
-          end: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
-        },
-        direction: 'ltr',
-        initialDate: new Date(),
-        navLinks: true, // can click day/week names to navigate views
-        eventClassNames: function ({ event: calendarEvent }) {
-          const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar];
-          return [
-            // Background Color
-            'bg-light-' + colorName,
-            'modal_button'
-          ];
-        },
-        dateClick: function (info) {
-          // $('#addEventButton').click();
-        },
-        eventClick: function (info) {
-          eventClick(info);
-        },
-        datesSet: function () {
-        },
-        viewDidMount: function () {
-        },
-        eventDidMount: function(data) {
-          var url ="{{ route('schedule.edit', ':id') }}";
-          url = url.replace(':id', data.event._def.publicId);
-            data.el.setAttribute("data-action", url);
-        },
-        select: function( start, end, allDay, jsEvent, view ) {
-          console.log(start);
-        },
+      function renderCalendar(company,auditor){
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          eventStartEditable: false,
+          displayEventTime: false,
+          initialView: 'dayGridMonth',
+          events: {
+              type: 'POST',
+              url: "{{ route('schedule.getEvents') }}",
+              extraParams: function(){
+                return {
+                  company: company,
+                  auditor: auditor,
+                }
+              },
+              error: function () {
+                  alert('there was an error while fetching events!');
+              },
+          },
+          editable: true,
+          dragScroll: true,
+          dayMaxEvents: 2,
+          eventResizableFromStart: true,
+          eventOverlap: false,
+          customButtons: {
+            sidebarToggle: {
+              text: 'Sidebar'
+            }
+          },
+          headerToolbar: {
+            start: 'sidebarToggle, prev,next, title',
+            end: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+          },
+          direction: 'ltr',
+          initialDate: new Date(),
+          navLinks: true, // can click day/week names to navigate views
+          eventClassNames: function ({ event: calendarEvent }) {
+            const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar];
+            return [
+              // Background Color
+              'bg-light-' + colorName,
+              'modal_button'
+            ];
+          },
+          dateClick: function (info) {
+            $.ajax({
+              url: "{{ route('schedule.create') }}",
+              data: {
+                'date' :info.dateStr,
+              },
+              method: "GET",
+              success:function(result)
+              {
+                $('#view_modal').html(result);
+                  if($('#view_modal').is(':visible')){
+                  }else{
+                    $('#view_modal').modal({backdrop: 'static', keyboard: false}).modal('toggle');
+                  }
+                  if (feather) {
+                    feather.replace({
+                      width: 14, height: 14
+                    });
+                  }
+              }
+          });
+          },
+          eventDidMount: function(data) {
+            var url ="{{ route('schedule.edit', ':id') }}";
+            url = url.replace(':id', data.event._def.publicId);
+              data.el.setAttribute("data-action", url);
+          },
+        });
+        // Render calendar
+        calendar.render();
+      }
+
+      renderCalendar(null, null);
+
+      $(document).on('change', '.eventFilter', function(){
+        var company = $('#companyFilter').find(":selected").val();
+        var auditor = $('#auditorFilter').find(":selected").val();
+        renderCalendar(company,auditor);
       });
 
-
-
-      // Render calendar
-      calendar.render();
-      // updateEventClass();
+      $('#resetValuesButton').click(function(){
+        $("#companyFilter").val("null").trigger('change');
+        $("#auditorFilter").val("null").trigger('change');
+      });
 
 
       $(document).on('hidden.bs.modal', '#view_modal', function () {
-        calendar.refetchEvents();
+        var company = $('#companyFilter').find(":selected").val();
+        var auditor = $('#auditorFilter').find(":selected").val();
+        renderCalendar(company,auditor);
       });
-      // ------------------------------------------------
-      // addEvent
-      // ------------------------------------------------
-      function addEvent(eventData) {
-        calendar.refetchEvents();
-      }
-
-      // ------------------------------------------------
-      // updateEvent
-      // ------------------------------------------------
-      function updateEvent(eventData) {
-        calendar.refetchEvents();
-      }
-
-      // ------------------------------------------------
-      // removeEvent
-      // ------------------------------------------------
-      function removeEvent(eventId) {
-        removeEventInCalendar(eventId);
-      }
 
       // Select all & filter functionality
       if (selectAll.length) {
@@ -304,46 +304,6 @@
         });
       }
     });
-
-
-// function fetchEvents(start, end, successCallback) {
-      //   // Fetch Events from API endpoint reference
-      //   $.ajax(
-      //     {
-      //       url: "{{ route('schedule.getEvents') }}",
-      //       type: 'GET',
-      //       success: function (result) {
-      //         // Get requested calendars as Array
-      //         var calendars = selectedCalendars();
-      //         var events = [];
-      //         $.map( result.events, function( r ) {
-      //             events.push({
-      //                 title: r.title,
-      //                 start: r.start,
-      //                 end: r.start
-      //             });
-      //         });
-      //         successCallback(events);
-      //         // return [result.events.filter(event => calendars.includes(event.extendedProps.calendar))];
-      //       },
-      //       error: function (error) {
-      //         console.log(error);
-      //       }
-      //     }
-      //   );
-
-      //   // var calendars = selectedCalendars();
-      //   // // We are reading event object from app-calendar-events.js file directly by including that file above app-calendar file.
-      //   // // You should make an API call, look into above commented API call for reference
-      //   // selectedEvents = events.filter(function (event) {
-      //   //   // console.log(event.extendedProps.calendar.toLowerCase());
-      //   //   return calendars.includes(event.extendedProps.calendar.toLowerCase());
-      //   // });
-      //   // // if (selectedEvents.length > 0) {
-      //   // successCallback(selectedEvents);
-      //   // // }
-      // }
-
   </script>
   <script src="{{ asset(mix('js/scripts/pages/app-calendar-events.js')) }}"></script>
 @endsection

@@ -77,6 +77,28 @@
                           </div>
                         </div>
                   </div>
+                  @if(! $user->hasRole('Supplier') && ! $user->hasRole('Client'))
+                  <div class="row mb-2">
+                    <div class="col-lg-12 col-xs-12">
+                      <div class="form-group">
+                          <label for="name">Skills and Proficiency:</label>
+                          <textarea class="form-control" name="skills" id="skills">{{ $user->skills }}</textarea>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row mb-2">
+                    <div class="col-lg-12 col-xs-12">
+                      <div class="form-group">
+                          <label for="name">Client Preference:</label>
+                          <select class="form-control select2Modal" name="client_preference[]" multiple>
+                            @foreach($companies as $company)
+                              <option value="{{ $company->id }}">{{ $company->company_name }}</option>
+                            @endforeach
+                          </select>
+                      </div>
+                    </div>
+                  </div>
+                  @endif
                 </div>
               </div>
             </div>

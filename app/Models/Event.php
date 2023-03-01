@@ -34,7 +34,7 @@ class Event extends Model
                 $owner = $this->users->first();
                 if($owner){
                     if($owner->modelable){
-                        return $owner->modelable->displayName . ' - ' . $this->type;
+                        return $owner->modelable->fullName . ' - ' . $this->type;
                     }
                 }
             }

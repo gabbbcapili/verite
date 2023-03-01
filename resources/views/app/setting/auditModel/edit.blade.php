@@ -23,12 +23,12 @@
                           <input type="text" class="form-control" name="name" placeholder="Name" value="{{ $auditModel->name }}">
                       </div>
                     </div>
-                    <div class="col-lg-6 col-xs-12">
+              <!--       <div class="col-lg-6 col-xs-12">
                       <div class="form-group">
                           <label class="form-label">Color</label>
                           <input type="color" class="form-control form-control-color" name="color" value="{{ $auditModel->color }}" title="Choose color">
                       </div>
-                    </div>
+                    </div> -->
                   </div>
                 </div>
               </div>

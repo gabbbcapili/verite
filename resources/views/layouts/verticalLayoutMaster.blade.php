@@ -75,7 +75,7 @@ data-asset-path="{{ asset('/')}}">
   </script>
 
   <div class="modal fade view_modal" tabindex="-1" role="dialog"
-    aria-labelledby="#modal-title" aria-hidden="true" data-backdrop="static" id="view_modal">
+    aria-labelledby="#modal-title" aria-hidden="true" data-backdrop="static" id="view_modal" style="overflow-y:scroll">
   </div>
 
   <div class="modal fade show_modal" tabindex="-1" role="dialog"

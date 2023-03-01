@@ -20,6 +20,7 @@ use Laravel\Fortify\Rules\Password;
 use App\Mail\Welcome;
 use App\Mail\Auth\WelcomeClient;
 use App\Mail\Auth\WelcomeSupplier;
+use App\Models\Company;
 
 class UserController extends Controller
 {
@@ -154,7 +155,8 @@ class UserController extends Controller
     public function edit(User $user)
     {
         $roles = Role::where('is_deleted', false)->whereNotIn('id', [3,4])->get();
-        return view('app.user.edit', compact('user', 'roles'));
+        $companies = Company::where('type', 'Client')->orWhere('type', 'Supplier')->get();
+        return view('app.user.edit', compact('user', 'roles', 'companies'));
     }
 
     /**
@@ -193,11 +195,15 @@ class UserController extends Controller
         }
         try {
             DB::beginTransaction();
-            $data = $request->only(['first_name','last_name','email', 'notes', 'status']);
+            $data = $request->only(['first_name','last_name','email', 'notes', 'status', 'skills', 'client_preference']);
             if($request->has('password')){
                 if($request->password != null){
                     $data['password'] = Hash::make($request->password);
                 }
+            }
+
+            if($request->has('client_preference')){
+                $data['client_preference'] = implode(',', $request->client_preference);
             }
             $previousRole = $user->roles()->first()->name;
             $user->update($data);

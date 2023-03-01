@@ -85,6 +85,10 @@ class Company extends Model
         return $this->company_name;
     }
 
+    public function getFullNameAttribute(){
+        return $this->company_name;
+    }
+
     public function getProfilePhotoUrlAttribute(){
         if($this->logo){
             return asset('images/company/logos/' . $this->logo);

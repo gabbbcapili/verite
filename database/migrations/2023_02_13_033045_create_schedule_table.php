@@ -19,7 +19,10 @@ class CreateScheduleTable extends Migration
             $table->unsignedInteger('event_id');
             $table->unsignedInteger('client_id');
             $table->string('status');
+            $table->string('status_color');
             $table->string('audit_model');
+            $table->string('audit_model_type');
+            $table->boolean('with_completed_spaf')->default(0);
             $table->string('country');
             $table->string('timezone');
             $table->string('city')->nullable();

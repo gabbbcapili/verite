@@ -18,7 +18,8 @@ class AuditModel extends Model
     protected $fillable = ['name', 'color', 'created_by', 'updated_by'];
 
     public function getNameDisplayAttribute(){
-        return '<span style="color:'. $this->color .'">'. $this->name .'</span>';
+        // return '<span style="color:'. $this->color .'">'. $this->name .'</span>';
+        return $this->name;
     }
 
     public function created_by_user(){

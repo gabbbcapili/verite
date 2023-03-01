@@ -36,6 +36,18 @@
                       </select>
                     </div>
                   </div>
+                  <div id="rowLeave" class="d-none">
+                    <div class="row mb-2 justify-content-md-center">
+                      <div class="col-lg-6">
+                        <label>Company</label>
+                        <select name="company_id" class="form-control select2Modal">
+                          @foreach($companies as $company)
+                            <option value="{{ $company->id }}" {{ $event->users()->first()->modelable_id == $company->id ? 'selected' : '' }}>{{ $company->displayName }}</option>
+                          @endforeach
+                        </select>
+                      </div>
+                    </div>
+                  </div>
                   <div id="rowSchedule" class="d-none">
                     <div class="row mb-2">
                       <div class="col-lg-4 col-xs-12">
@@ -60,7 +72,7 @@
                     </div>
                     <div class="row mb-2">
                       <div class="col-lg-4 col-xs-12">
-                        <div class="form-group">
+                          <div class="form-group">
                             <label for="name">Audit Model:</label>
                             <select class="form-control select2Modal" name="audit_model">
                               <option disabled selected></option>
@@ -68,7 +80,18 @@
                                 <option value="{{ $audit_model->name }}" {{ $schedule->audit_model == $audit_model->name ? 'selected' : '' }}>{{ $audit_model->name }}</option>
                               @endforeach
                             </select>
+                          </div>
                         </div>
+                        <div class="col-lg-4 col-xs-12">
+                          <div class="form-group">
+                              <label for="name">Audit Model Type:</label>
+                              <select class="form-control select2Modal" name="audit_model_type">
+                                <option disabled selected></option>
+                                @foreach(Helper::settings()->schedule_audit_model_types() as $type)
+                                  <option value="{{ $type }}" {{ $type == $schedule->audit_model_type ? 'selected' : '' }}>{{ $type }}</option>
+                                @endforeach
+                              </select>
+                          </div>
                       </div>
                       <div class="col-lg-4 col-xs-12">
                         <div class="form-group">
@@ -81,6 +104,8 @@
                             </select>
                         </div>
                       </div>
+                    </div>
+                    <div class="row mb-2">
                       <div class="col-lg-4 col-xs-12">
                         <div class="form-group">
                             <label for="name">Country:</label>
@@ -92,12 +117,20 @@
                             </select>
                         </div>
                       </div>
-                    </div>
-                    <div class="row mb-2">
                       <div class="col-lg-4 col-xs-12">
                         <label>City:</label>
                         <input type="text" name="city" class="form-control" value="{{ $schedule->city }}">
                       </div>
+                      <div class="col-lg-4 col-xs-12">
+                        <div class="form-group p-1">
+                          <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" value="1" name="with_completed_spaf" {{ $schedule->with_completed_spaf ? 'checked' : ''}} />
+                            <label class="form-check-label">With Compelted SPAF?</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row mb-2">
                       <div class="col-lg-4 col-xs-12">
                         <label>Due Date:</label>
                         <input type="text" name="due_date" id="date_due_date" class="form-control">
@@ -264,11 +297,12 @@
       function loadCurrentUser(){
         var currentSelection = '';
         @foreach($event->users->where('role', '!=', 'Client')->where('role', '!=', 'Supplier') as $user)
-          currentSelection += '<option value="{{ $user->modelable->id }}" selected>{{ $user->modelable->displayName }}</option>';
+
         @endforeach
         @foreach($event->users->where('role', '!=', 'Client')->where('role', '!=', 'Supplier') as $user)
+        currentSelection = '<option value="{{ $user->modelable->id }}" selected>{{ $user->modelable->displayName }}</option>';
         var $tr = '';
-          $tr += '<tr>';
+          $tr += '<tr><input type="hidden" name="users[100{{ $loop->iteration }}][event_user_id]" value="{{ $user->id }}">';
           $tr += '<td><select class="form-control select2Table userSelection" name="users[100{{ $loop->iteration }}][id]" id="users.100{{ $loop->iteration }}.id">'+ userSelection + currentSelection +'</select></td>';
           $tr += '<td><select class="form-control select2Table" name="users[100{{ $loop->iteration }}][role]" id="users.100{{ $loop->iteration }}.role">'+ roleTypesSelection +'</select></td>';
           $tr += '<td><div class="d-flex justify-content-end"><div class="btn-group" role="group"><button type="button" class="btn btn-sm btn-outline-success delete_row" data-bs-toggle-modal="tooltip" title="Delete"><i data-feather="delete"></i></button></div></div></td>';
@@ -292,9 +326,14 @@
         if($('#SelectType').find(":selected").val() == 'Audit Schedule'){
           $('#rowSchedule').removeClass('d-none');
           loadData(false);
-          console.log(false);
+          @can('schedule.manage')
+            $('#rowLeave').addClass('d-none');
+          @endcan
         }else{
           $('#rowSchedule').addClass('d-none');
+          @can('schedule.manage')
+            $('#rowLeave').removeClass('d-none');
+          @endcan
         }
       }
 

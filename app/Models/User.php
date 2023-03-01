@@ -40,6 +40,8 @@ class User extends Authenticatable
         'company_id',
         'status',
         'notes',
+        'skills',
+        'client_preference',
     ];
 
     /**
@@ -102,7 +104,19 @@ class User extends Authenticatable
     }
 
     public function getDisplayNameAttribute(){
-        return $this->fullName;
+        $skills = '';
+        $client_preference = '';
+        if($this->skills){
+            $skills = '('. $this->skills . ')';
+        }
+        if($this->client_preference){
+            $companies = Company::whereIn('id', explode(',', $this->client_preference))->pluck('company_name');
+            if($companies->count() > 0){
+                $client_preference = '['. implode(',', $companies->toArray()) . ']';
+            }
+        }
+
+        return $this->fullName . ' ' . $skills . ' ' . $client_preference;
     }
 
     public function getCompanyDetailsAttribute(){
@@ -150,16 +164,29 @@ class User extends Authenticatable
         return $token;
     }
 
+    public static function auditors(){
+        $roleswithPermission = Permission::find(18)->getRoleNames(); //Selectable as Auditor
+        return User::role($roleswithPermission)->get();
+    }
+
     public static function getAvailableAuditor($date){
         $date = explode(' to ', $date);
         $from = $date[0];
         $to = array_key_exists(1, $date) ? $date[1] : $date[0];
-        $roleswithPermission = Permission::find(18)->getRoleNames(); //Selectable as Auditor
-        $users = User::role($roleswithPermission)->get();
+        $users = User::auditors();
         foreach($users as $key => $user){
             $hasEvents = $user->events()->whereHas('event', function ($q) use($from,$to){
                 $q->where('start_date', '>=', $from);
                 $q->where('end_date', '<=', $to);
+            })->count();
+            if($hasEvents > 0){
+                $users->forget($key);
+            }
+
+            $hasEvents = Event::where('start_date', '>=', $from)->where('end_date', '<=', $to)
+            ->whereHas('users', function ($q){
+                $q->where('modelable_id', 1);
+                $q->where('modelable_type', 'App\Models\Company');
             })->count();
             if($hasEvents > 0){
                 $users->forget($key);

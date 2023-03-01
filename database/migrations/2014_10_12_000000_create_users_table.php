@@ -28,6 +28,8 @@ return new class extends Migration
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->boolean('status')->default(1);
             $table->longText('notes')->nullable();
+            $table->longText('skills')->nullable();
+            $table->string('client_preference')->nullable();
             $table->timestamps();
         });
     }

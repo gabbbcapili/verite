@@ -13,7 +13,7 @@ class Schedule extends Model
 
     protected $table = 'schedule';
 
-    protected $fillable = ['title', 'event_id', 'client_id', 'status', 'audit_model', 'country', 'timezone', 'city', 'due_date', 'report_submitted', 'cf_1', 'cf_2', 'cf_3', 'cf_4', 'cf_5'];
+    protected $fillable = ['title', 'event_id', 'client_id', 'status', 'audit_model', 'audit_model_type', 'country', 'timezone', 'city', 'due_date', 'report_submitted', 'cf_1', 'cf_2', 'cf_3', 'cf_4', 'cf_5', 'with_completed_spaf', 'status_color'];
 
     public function client(){
         return $this->belongsTo(User::class, 'client_id');

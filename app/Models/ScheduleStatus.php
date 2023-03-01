@@ -17,8 +17,11 @@ class ScheduleStatus extends Model
 
     protected $fillable = ['name', 'color', 'created_by', 'updated_by'];
 
+    public static $colors = ['primary', 'secondary', 'success', 'warning', 'info'];
+
     public function getNameDisplayAttribute(){
-        return '<span style="color:'. $this->color .'">'. $this->name .'</span>';
+        return '<span class="text-'. $this->color .'">'. $this->name .'</span>';
+        return $this->name;
     }
 
     public function created_by_user(){

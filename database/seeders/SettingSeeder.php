@@ -50,15 +50,15 @@ class SettingSeeder extends Seeder
 
         ScheduleStatus::create([
             'name' => 'Completed',
-            'color' => '#00FF9D'
+            'color' => 'success'
         ]);
         ScheduleStatus::create([
             'name' => 'Cancelled',
-            'color' => '#DF111B'
+            'color' => 'warning'
         ]);
         ScheduleStatus::create([
             'name' => 'Re-schedule',
-            'color' => '#7E5525'
+            'color' => 'primary'
         ]);
 
         Country::create([

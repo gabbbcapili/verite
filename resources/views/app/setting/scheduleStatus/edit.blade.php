@@ -23,12 +23,17 @@
                           <input type="text" class="form-control" name="name" placeholder="Name" value="{{ $scheduleStatus->name }}">
                       </div>
                     </div>
-                    <div class="col-lg-6 col-xs-12">
-                      <div class="form-group">
-                          <label class="form-label">Color</label>
-                          <input type="color" class="form-control form-control-color" name="color" value="{{ $scheduleStatus->color }}" title="Choose color">
-                      </div>
-                    </div>
+                    <div class="col-lg-4 col-xs-12">
+                       <label class="form-label">Color</label>
+                       <select  class="form-control select2" name="color" title="Choose color">
+                        <option selected disabled></option>
+                        @foreach(App\Models\ScheduleStatus::$colors as $color)
+                            <option value="{{ $color}}" data-color="{{ $color }}" {{ $scheduleStatus->color == $color ? 'selected' : '' }}>
+                                <span class="text-{{ $color }}">{{ $color }}</span>
+                            </option>
+                        @endforeach
+                        </select>
+                  </div>
                   </div>
                 </div>
               </div>
@@ -46,8 +51,26 @@
 <script src="{{ asset(mix('js/scripts/forms-validation/form-modal.js')) }}"></script>
 <script type="text/javascript">
     $(document).ready(function(){
-      $('.select2Modal').select2({
-        dropdownParent: $("#view_modal")
-      });
-    });
+            $(".select2").select2({
+                templateResult: formatState,
+                templateSelection: formatState
+          });
+
+            function formatState (opt) {
+                if (!opt.id) {
+                    return opt.text.toUpperCase();
+                }
+
+                var color = $(opt.element).attr('data-color');
+                console.log(color)
+                if(!color){
+                   return opt.text.toUpperCase();
+                } else {
+                    var $opt = $(
+                       '<span class="text-white bg-' + color + '">' + opt.text.toUpperCase() + '</span>'
+                    );
+                    return $opt;
+                }
+            };
+        });
 </script>

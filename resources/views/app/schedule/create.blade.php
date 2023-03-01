@@ -36,6 +36,19 @@
                       </select>
                     </div>
                   </div>
+                  <div id="rowLeave" class="d-none">
+                    <div class="row mb-2 justify-content-md-center">
+                      <div class="col-lg-6">
+                        <label>Company</label>
+                        <select name="company_id" class="form-control select2Modal">
+                          <option disabled selected>Select Company</option>
+                          @foreach($companies as $company)
+                            <option value="{{ $company->id }}">{{ $company->displayName }}</option>
+                          @endforeach
+                        </select>
+                      </div>
+                    </div>
+                  </div>
                   <div id="rowSchedule" class="d-none">
                     <div class="row mb-2">
                       <div class="col-lg-4 col-xs-12">
@@ -72,6 +85,17 @@
                       </div>
                       <div class="col-lg-4 col-xs-12">
                         <div class="form-group">
+                            <label for="name">Audit Model Type:</label>
+                            <select class="form-control select2Modal" name="audit_model_type">
+                              <option disabled selected></option>
+                              @foreach(Helper::settings()->schedule_audit_model_types() as $type)
+                                <option value="{{ $type }}">{{ $type }}</option>
+                              @endforeach
+                            </select>
+                        </div>
+                      </div>
+                      <div class="col-lg-4 col-xs-12">
+                        <div class="form-group">
                             <label for="name">Status:</label>
                             <select class="form-control select2Modal" name="status">
                               <option disabled selected></option>
@@ -81,6 +105,8 @@
                             </select>
                         </div>
                       </div>
+                    </div>
+                    <div class="row mb-2">
                       <div class="col-lg-4 col-xs-12">
                         <div class="form-group">
                             <label for="name">Country:</label>
@@ -92,15 +118,23 @@
                             </select>
                         </div>
                       </div>
-                    </div>
-                    <div class="row mb-2">
                       <div class="col-lg-4 col-xs-12">
                         <label>City:</label>
                         <input type="text" name="city" class="form-control">
                       </div>
                       <div class="col-lg-4 col-xs-12">
-                        <label>Due Date:</label>
-                        <input type="text" name="due_date" class="form-control datePicker">
+                        <div class="form-group p-1">
+                          <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" value="1" checked name="with_completed_spaf"/>
+                            <label class="form-check-label">With Compelted SPAF?</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-lg-4 col-xs-12">
+                        <label>Turn Around Days:</label>
+                        <input type="text" name="turnaround_days" class="form-control">
                       </div>
                       <div class="col-lg-4 col-xs-12">
                         <label>Report Submitted:</label>
@@ -190,7 +224,7 @@
       $('.rangePicker').flatpickr({
         mode: 'range',
         altFormat: 'Y-m-d',
-        defaultDate: [new Date()],
+        defaultDate: ["{{ $date ? $date : Carbon\Carbon::now()->format('Y-m-d') }}"],
         onReady: function (selectedDates, dateStr, instance) {
           if (instance.isMobile) {
             $(instance.mobileInput).attr('step', null);
@@ -244,8 +278,15 @@
         if($(this).find(":selected").val() == 'Audit Schedule'){
           $('#rowSchedule').removeClass('d-none');
           loadData();
+          @can('schedule.manage')
+            $('#rowLeave').addClass('d-none');
+          @endcan
         }else{
+
           $('#rowSchedule').addClass('d-none');
+          @can('schedule.manage')
+          $('#rowLeave').removeClass('d-none');
+          @endcan
         }
       })
 

@@ -70,7 +70,7 @@ class AuditModelController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'name' => ['required', 'string', 'max:255', 'unique:audit_model,name,{id},id,deleted_at,NULL'],
-            'color' => ['required'],
+            // 'color' => ['required'],
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()]);
@@ -78,10 +78,11 @@ class AuditModelController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->all();
+            $data['color'] = '#086287';
             $auditModel = AuditModel::create($data);
             DB::commit();
             $output = ['success' => 1,
-                        'msg' => 'Schedule Status added successfully!',
+                        'msg' => 'Audit Model added successfully!',
                         'redirect' => route('settings.auditModel.index'),
                     ];
         } catch (\Exception $e) {
@@ -128,7 +129,7 @@ class AuditModelController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'name' => ['required', 'string', 'max:255', 'unique:audit_model,name,' . $auditModel->id . ',id,deleted_at,NULL'],
-            'color' => ['required'],
+            // 'color' => ['required'],
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()]);
