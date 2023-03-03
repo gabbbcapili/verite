@@ -56,7 +56,8 @@ class GroupController extends Controller
             $sort = $template->groups()->orderBy('sort', 'desc')->first() ? $template->groups()->orderBy('sort', 'desc')->first()->sort + 1 : 0;
             $group = $template->groups()->create([
                 'header' => $request->header,
-                'sort' => $sort
+                'sort' => $sort,
+                'displayed_on_schedule' => $request->has('displayed_on_schedule') ? 1 : 0,
             ]);
             $count = 0;
             foreach($request->question as $q){
@@ -122,7 +123,7 @@ class GroupController extends Controller
         }
         try {
             DB::beginTransaction();
-            $group->update(['header' => $request->header]);
+            $group->update(['header' => $request->header, 'displayed_on_schedule' => $request->has('displayed_on_schedule') ? 1 : 0,]);
             $count = 0;
             foreach($request->question as $q){
                 $q['sort'] = $count;

@@ -21,6 +21,12 @@
                     <label class="form-label">Header:</label>
                     <input type="text" name="header" placeholder="Header" class="form-control" value="{{ $group->header }}">
                   </div>
+                  <div class="col-3 mt-2">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" name="displayed_on_schedule" id="displayedOnSchedule" value="1" {{ $group->displayed_on_schedule ? 'checked' : '' }}/>
+                      <label class="form-check-label" for="displayedOnSchedule">Displayed on Schedule</label>
+                    </div>
+                  </div>
                 </div>
                 <div class="row">
                   <div class="d-flex justify-content-end mb-1">

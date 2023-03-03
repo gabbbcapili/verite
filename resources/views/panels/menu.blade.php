@@ -135,6 +135,12 @@
           <a class="d-flex align-items-center" href="{{ route('schedule.index') }}"><i data-feather="circle"></i>
           <span class="menu-item text-truncate">Calendar</span></a>
         </li>
+        @can('schedule.manage')
+        <li class="nav-item {{ $request->segment(1) == 'schedule' && $request->segment(2) == 'ganttChart' ? 'active' : '' }}">
+          <a class="d-flex align-items-center" href="{{ route('schedule.ganttChart') }}"><i data-feather="circle"></i>
+          <span class="menu-item text-truncate">Gantt Chart </span></a>
+        </li>
+        @endcan
     </ul>
   </li>
 
@@ -174,7 +180,7 @@
               @can('settings.scheduleStatus.manage')
               <li class="nav-item {{ $request->segment(1) == 'settings' && $request->segment(2) == 'scheduleStatus' ? 'active' : '' }}">
                 <a href="{{ route('settings.scheduleStatus.index') }}" class="d-flex align-items-center">
-                  <i data-feather="alert-circle"></i><span class="menu-item text-truncate">Statuses</span>
+                  <i data-feather="alert-circle"></i><span class="menu-item text-truncate">Status</span>
                 </a>
               </li>
               @endcan

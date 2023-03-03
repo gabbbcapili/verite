@@ -7,6 +7,12 @@
         </div>
       </div>
       <div class="col-lg-4 col-xs-12">
+        <div class="form-group">
+            <label for="name">Acronym:</label>
+            <input type="text" class="form-control" name="acronym" placeholder="Company Short Name" value="{{ isset($company) ? $company->acronym : '' }}">
+        </div>
+      </div>
+      <div class="col-lg-4 col-xs-12">
             <div class="form-group">
                 <label for="name">Website:</label>
                 <input type="text" class="form-control" name="website" placeholder="Website" value="{{ isset($company) ? $company->website : '' }}">

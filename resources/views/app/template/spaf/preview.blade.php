@@ -1,6 +1,6 @@
 
 @foreach($template->groups()->orderBy('sort')->get() as $group)
-<div class="row mb-2">
+<div class="row mb-2 {{ isset($displayed_on_schedule) ? $group->displayed_on_schedule == false ? 'd-none' : '' : '' }}">
     <h4>{{ $group->header }}</h4>
     <table class="table table-bordered">
         @foreach($group->questions()->orderBy('sort')->get() as $q)

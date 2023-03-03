@@ -42,6 +42,10 @@ class Event extends Model
         }
     }
 
+    public function getGanttTitleAttribute(){
+        return $this->titleComputed;
+    }
+
     public function created_by_user(){
         return $this->belongsTo(User::class, 'created_by');
     }

@@ -18,6 +18,7 @@ class CreateGroupTable extends Migration
             $table->unsignedBigInteger('template_id');
             $table->string('header')->nullable();
             $table->unsignedInteger('sort');
+            $table->boolean('displayed_on_schedule')->default(0);
             $table->timestamps();
         });
     }

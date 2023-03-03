@@ -133,7 +133,7 @@ class SupplierController extends Controller
         }
         try {
             DB::beginTransaction();
-            $companyData = $request->only(['company_name', 'website', 'contact_number', 'address', 'logo']);
+            $companyData = $request->only(['company_name', 'website', 'contact_number', 'address', 'logo', 'acronym']);
             $companyData['type'] = 'supplier';
             if($request->hasFile('logo')){
               $photo = $companyData['logo'];
@@ -217,7 +217,7 @@ class SupplierController extends Controller
         }
         try {
             DB::beginTransaction();
-            $companyData = $request->only(['company_name', 'website', 'contact_number', 'address', 'logo']);
+            $companyData = $request->only(['company_name', 'website', 'contact_number', 'address', 'logo', 'acronym']);
             if($request->hasFile('logo')){
               $photo = $companyData['logo'];
               $new_name = 'logo_'  . sha1(time()) . '.' . $photo->getClientOriginalExtension();

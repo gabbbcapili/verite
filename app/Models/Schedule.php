@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class Schedule extends Model
 {
@@ -21,6 +22,17 @@ class Schedule extends Model
 
     public function event(){
         return $this->belongsTo(Event::class);
+    }
+
+    public static function computeTitle($client, $supplier, $country_name, $start_date){
+        $title = $client->modelable->acronym . '-';
+
+        if($supplier){
+            $title .= $supplier->modelable->acronym . '-';
+        }
+        $title .= $country_name . '-' . Carbon::parse($start_date)->format('mdy');
+
+        return $title;
     }
 }
 

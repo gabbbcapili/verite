@@ -53,7 +53,7 @@
                     <div class="row mb-2">
                       <div class="col-lg-4 col-xs-12">
                           <label>Title</label>
-                        <input type="text" name="title" class="form-control">
+                        <input type="text" name="title" class="form-control" readonly disabled>
                       </div>
                       <div class="col-lg-4 col-xs-12">
                         <div class="form-group">
@@ -163,7 +163,7 @@
                         <input type="text" name="cf_5" class="form-control">
                       </div>
                     </div>
-                    <div class="row mb-2">
+                    <div class="row mb-5">
                       <div class="row">
                         <div class="d-flex justify-content-end mb-1">
                           <button class="btn btn-primary" type="button" id="add_user"><i data-feather="plus-circle"></i> Add User</button>
@@ -182,6 +182,11 @@
                             </tbody>
                           </table>
                         </div>
+                      </div>
+                    </div>
+                    <div class="row mb-2 align-items-center justify-content-center">
+                      <div class="col-6" id="rowSpaf">
+
                       </div>
                     </div>
                   </div>
@@ -250,9 +255,32 @@
                 $('#supplier_company').select2({
                   dropdownParent: $("#view_modal")
                 });
+                loadSpaf();
               }
           });
         });
+      $(document).on('change', '#supplier_company', function(){
+        loadSpaf();
+      });
+
+      function loadSpaf(){
+        var url = '{{ route("schedule.loadSpaf", ":id") }}';
+        var client = $('#client_company').val();
+        var supplier = $('#supplier_company').val();
+        if(supplier != null){
+          url = url.replace(':id', supplier);
+        }else{
+          url = url.replace(':id', client);
+        }
+        $.ajax({
+              url: url,
+              method: "POST",
+              success:function(result)
+              {
+                $('#rowSpaf').html(result);
+              }
+          });
+      }
 
       $('#add_user').click(function(){
         var row = parseInt($('#user_row_count').val()) + 1;
@@ -325,7 +353,7 @@
                 $('#client_company').find('option').remove().end().append(clientSelection).val('');
                 $('.userSelection').find('option').remove().end().append(userSelection).val('');
                 $('#supplier_company').find('option').remove().end().val('');
-
+                $('#rowSpaf').html('');
               }
           });
       }

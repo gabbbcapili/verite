@@ -20,7 +20,7 @@ class ScheduleStatusController extends Controller
     public function index()
     {
         $breadcrumbs = [
-            ['link'=>"/",'name'=>"Home"],['link'=> route('settings.scheduleStatus.index'), 'name'=>"Schedule Statuses"], ['name'=>"list of Schedule Statuses"]
+            ['link'=>"/",'name'=>"Home"],['link'=> route('settings.scheduleStatus.index'), 'name'=>"Schedule Status"], ['name'=>"list of Schedule Status"]
         ];
         if (request()->ajax()) {
             $schedulestatuses = ScheduleStatus::query();

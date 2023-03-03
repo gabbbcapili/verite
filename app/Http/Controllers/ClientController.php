@@ -134,7 +134,7 @@ class ClientController extends Controller
         }
         try {
             DB::beginTransaction();
-            $companyData = $request->only(['company_name', 'website', 'contact_number', 'address', 'logo']);
+            $companyData = $request->only(['company_name', 'website', 'contact_number', 'address', 'logo', 'acronym']);
             $companyData['type'] = 'client';
             if($request->hasFile('logo')){
               $photo = $companyData['logo'];

@@ -16,4 +16,9 @@ class SpafAnswer extends Model
     public function spaf(){
         return $this->belongsTo(Spaf::class, 'spaf_id');
     }
+
+    public function question(){
+        return $this->belongsTo(Question::class, 'question_id');
+    }
+
 }

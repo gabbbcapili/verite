@@ -62,11 +62,13 @@ class SettingSeeder extends Seeder
         ]);
 
         Country::create([
+            'acronym' => 'PH',
             'name' => 'Philippines',
             'timezone' => 'GMT+08:00 Kuala Lumpur, Singapore'
         ]);
 
         Country::create([
+            'acronym' => 'ASTL',
             'name' => 'Australia',
             'timezone' => 'GMT+12:00 Fiji Islands, Kamchatka, Marshall Islands'
         ]);

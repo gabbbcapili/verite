@@ -15,7 +15,7 @@ class Country extends Model
 
     protected $table = 'country';
 
-    protected $fillable = ['name', 'timezone', 'created_by', 'updated_by'];
+    protected $fillable = ['name', 'timezone', 'created_by', 'updated_by', 'acronym'];
 
     public static $timezones = [
         'GMT-12:00 International Date Line West',

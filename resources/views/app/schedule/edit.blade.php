@@ -52,7 +52,7 @@
                     <div class="row mb-2">
                       <div class="col-lg-4 col-xs-12">
                           <label>Title</label>
-                        <input type="text" name="title" class="form-control" value="{{ $schedule->title }}">
+                        <input type="text" name="title" class="form-control" value="{{ $schedule->title }}" readonly disabled>
                       </div>
                       <div class="col-lg-4 col-xs-12">
                         <div class="form-group">
@@ -162,7 +162,7 @@
                         <input type="text" name="cf_5" class="form-control" value="{{ $schedule->cf_5 }}">
                       </div>
                     </div>
-                    <div class="row mb-2">
+                    <div class="row mb-5">
                       <div class="row">
                         <div class="d-flex justify-content-end mb-1">
                           <button class="btn btn-primary" type="button" id="add_user"><i data-feather="plus-circle"></i> Add User</button>
@@ -181,6 +181,11 @@
                             </tbody>
                           </table>
                         </div>
+                      </div>
+                    </div>
+                    <div class="row mb-2 align-items-center justify-content-center">
+                      <div class="col-6" id="rowSpaf">
+
                       </div>
                     </div>
                   </div>
@@ -250,6 +255,29 @@
       $(document).on('change', '#client_company', function(){
           loadAvailableSuppliers();
         });
+
+      $(document).on('change', '#supplier_company', function(){
+        loadSpaf();
+      });
+
+      function loadSpaf(){
+        var url = '{{ route("schedule.loadSpaf", ":id") }}';
+        var client = $('#client_company').val();
+        var supplier = $('#supplier_company').val();
+        if(supplier != null){
+          url = url.replace(':id', supplier);
+        }else{
+          url = url.replace(':id', client);
+        }
+        $.ajax({
+              url: url,
+              method: "POST",
+              success:function(result)
+              {
+                $('#rowSpaf').html(result);
+              }
+          });
+      }
 
       function loadAvailableSuppliers(){
         var url = '{{ route("schedule.loadAvailableSuppliers", ":id") }}';
@@ -375,6 +403,7 @@
                 if(firstTime){
                   loadPreData();
                   loadCurrentUser();
+                  loadSpaf();
                 }
               }
           });

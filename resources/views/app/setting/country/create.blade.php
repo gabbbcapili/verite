@@ -22,6 +22,12 @@
                     </div>
                     <div class="col-lg-4 col-xs-12">
                       <div class="form-group">
+                          <label for="name">Acronym:</label>
+                          <input type="text" class="form-control" name="acronym" placeholder="Acronym">
+                      </div>
+                    </div>
+                    <div class="col-lg-4 col-xs-12">
+                      <div class="form-group">
                           <label for="name">Timezone:</label>
                           <select class="form-control select2" name="timezone">
                             @foreach(App\Models\Country::$timezones as $timezone)

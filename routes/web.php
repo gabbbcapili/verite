@@ -58,9 +58,11 @@ Route::group(['middleware' => ['auth']], function()
 
     Route::resource('schedule', ScheduleController::class)->except(['show'])->parameters(['schedule' => 'event']);
     Route::get('schedule/getEvents', [ScheduleController::class, 'getEvents'])->name('schedule.getEvents');
+    Route::get('schedule/ganttChart', [ScheduleController::class, 'ganttChart'])->name('schedule.ganttChart');
 
     Route::post('loadAvailableUsers', [ScheduleController::class, 'loadAvailableUsers'])->name('schedule.loadAvailableUsers')->middleware('permission:schedule.manage');
     Route::post('loadAvailableSuppliers/{company}', [ScheduleController::class, 'loadAvailableSuppliers'])->name('schedule.loadAvailableSuppliers')->middleware('permission:schedule.manage');
+    Route::post('loadSpaf/{company}', [ScheduleController::class, 'loadSpaf'])->name('schedule.loadSpaf')->middleware('permission:schedule.manage');
 
     Route::group(['prefix' => 'settings'], function()
     {

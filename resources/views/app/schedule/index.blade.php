@@ -24,10 +24,17 @@
       <!-- Sidebar -->
       <div class="col app-calendar-sidebar flex-grow-0 overflow-hidden d-flex flex-column" id="app-calendar-sidebar">
         <div class="sidebar-wrapper">
-          <div class="card-body d-flex justify-content-center">
+          <div class="p-1 d-flex justify-content-center">
             <button class="btn btn-primary btn-toggle-sidebar w-100 modal_button" id="addEventButton" data-action="{{ route('schedule.create') }}">
               <span class="align-middle">Add Schedule</span>
             </button>
+
+          </div>
+          <div class="px-1 d-flex justify-content-center">
+            <a class="btn btn-primary btn-toggle-sidebar w-100" target="_blank" href="{{ route('schedule.ganttChart') }}">
+              <span class="align-middle">View Gantt Chart</span>
+            </a>
+
           </div>
           @can('schedule.manage')
           <div class="card-body pb-0">

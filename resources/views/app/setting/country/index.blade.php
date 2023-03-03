@@ -20,6 +20,7 @@
             <tr>
               <th>Id</th>
               <th>Name</th>
+              <th>Acronym</th>
               <th>Timezone</th>
               <th>Created</th>
               <th>Updated</th>
@@ -65,6 +66,7 @@
       var columnns = [
             { data: 'id', name: 'id'},
             { data: 'name', name: 'name'},
+            { data: 'acronym', name: 'acronym'},
             { data: 'timezone', name: 'timezone'},
             { data: 'created_at', name: 'created_at'},
             { data: 'updated_at', name: 'updated_at'},

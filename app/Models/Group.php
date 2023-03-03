@@ -11,7 +11,7 @@ class Group extends Model
 
     protected $table = 'group';
 
-    protected $fillable = ['header', 'sort'];
+    protected $fillable = ['header', 'sort', 'displayed_on_schedule'];
 
     public function questions(){
         return $this->hasMany(Question::class, 'group_id');
