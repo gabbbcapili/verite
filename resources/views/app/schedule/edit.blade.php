@@ -165,15 +165,16 @@
                     <div class="row mb-5">
                       <div class="row">
                         <div class="d-flex justify-content-end mb-1">
-                          <button class="btn btn-primary" type="button" id="add_user"><i data-feather="plus-circle"></i> Add User</button>
+                          <button class="btn btn-primary" type="button" id="add_user"><i data-feather="plus-circle"></i> Add Resource</button>
                         </div>
                         <div class="table-responsive">
                           <input type="hidden" id="user_row_count" value="1">
                           <table class="table table-striped" id="user_table">
                             <thead>
                               <tr>
-                                <th style="width: 40%;">User</th>
                                 <th style="width: 40%;">Role</th>
+                                <th style="width: 40%;">Resource</th>
+
                                 <th style="width: 20%;">Action</th>
                               </tr>
                             </thead>
@@ -308,8 +309,8 @@
         var $tr = '';
 
         $tr += '<tr>';
-        $tr += '<td><select class="form-control select2Table userSelection" name="users['+ row +'][id]" id="users.'+ row +'.id">'+ userSelection +'</select></td>';
         $tr += '<td><select class="form-control select2Table" name="users['+ row +'][role]" id="users.'+ row +'.role">'+ roleTypesSelection +'</select></td>';
+        $tr += '<td><select class="form-control select2Table userSelection" name="users['+ row +'][id]" id="users.'+ row +'.id">'+ userSelection +'</select></td>';
         $tr += '<td><div class="d-flex justify-content-end"><div class="btn-group" role="group"><button type="button" class="btn btn-sm btn-outline-success delete_row" data-bs-toggle-modal="tooltip" title="Delete"><i data-feather="delete"></i></button></div></div></td>';
         $tr += '</tr>';
         $('#user_table tr:last').after($tr);
@@ -331,8 +332,8 @@
         currentSelection = '<option value="{{ $user->modelable->id }}" selected>{{ $user->modelable->displayName }}</option>';
         var $tr = '';
           $tr += '<tr><input type="hidden" name="users[100{{ $loop->iteration }}][event_user_id]" value="{{ $user->id }}">';
-          $tr += '<td><select class="form-control select2Table userSelection" name="users[100{{ $loop->iteration }}][id]" id="users.100{{ $loop->iteration }}.id">'+ userSelection + currentSelection +'</select></td>';
           $tr += '<td><select class="form-control select2Table" name="users[100{{ $loop->iteration }}][role]" id="users.100{{ $loop->iteration }}.role">'+ roleTypesSelection +'</select></td>';
+          $tr += '<td><select class="form-control select2Table userSelection" name="users[100{{ $loop->iteration }}][id]" id="users.100{{ $loop->iteration }}.id">'+ userSelection + currentSelection +'</select></td>';
           $tr += '<td><div class="d-flex justify-content-end"><div class="btn-group" role="group"><button type="button" class="btn btn-sm btn-outline-success delete_row" data-bs-toggle-modal="tooltip" title="Delete"><i data-feather="delete"></i></button></div></div></td>';
           $tr += '</tr>';
           $('#user_table tr:last').after($tr);

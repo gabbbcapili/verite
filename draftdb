@@ -1,3 +1,14 @@
+added acronym to company, country - to be used in computing title in schedule
+generated computed title client-supplier-country-date for schedule
+changed format in resource (role resource action) for schedule
+added gantt chart (only with permission "Manage Schedule")
+added "Displayed on Schedule" checkbox on template -> group
+    upon selection of client/supplier system will find Approved Assessment forms along with its template -> group that has "Displayed on Schedule" checked and displayed on create/edit schedule tab
+
+Set up Test Server: http://verite.aquiware.com/
+Deployed on https://vsea-ams.org/ 03032023
+
+
 role resource action
 nationalities
 gantt chart
@@ -51,6 +62,8 @@ schedule
     custom_field_3
     custom_field_4
     custom_field_5
+
+
 
 
 
