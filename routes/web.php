@@ -16,6 +16,7 @@ use App\Http\Controllers\Schedule\CountryController;
 use App\Http\Controllers\Schedule\ScheduleStatusController;
 use App\Http\Controllers\Schedule\AuditModelController;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\ProficiencyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,6 +36,7 @@ Route::group(['middleware' => ['auth']], function()
     Route::post('/user/sendReset/{user}', [UserController::class, 'sendReset'])->name('user.sendReset');
     Route::get('user/delete/{user}', [UserController::class, 'delete'])->name('user.delete');
     Route::resource('user', UserController::class)->except('show')->middleware('permission:user.manage');
+    Route::resource('proficiency', ProficiencyController::class)->middleware('permission:user.manage');
     Route::get('role/delete/{role}', [RoleController::class, 'delete'])->name('role.delete');
 
     // Route::get('spaf/edit/{spaf}', [SpafController::class, 'edit'])->name('spaf.edit')->middleware('role:Supplier');

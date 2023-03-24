@@ -21,6 +21,7 @@ use App\Mail\Welcome;
 use App\Mail\Auth\WelcomeClient;
 use App\Mail\Auth\WelcomeSupplier;
 use App\Models\Company;
+use App\Models\Proficiency;
 
 class UserController extends Controller
 {
@@ -156,7 +157,8 @@ class UserController extends Controller
     {
         $roles = Role::where('is_deleted', false)->whereNotIn('id', [3,4])->get();
         $companies = Company::where('type', 'Client')->orWhere('type', 'Supplier')->get();
-        return view('app.user.edit', compact('user', 'roles', 'companies'));
+        $proficiencies = Proficiency::all();
+        return view('app.user.edit', compact('user', 'roles', 'companies', 'proficiencies'));
     }
 
     /**
@@ -204,6 +206,9 @@ class UserController extends Controller
 
             if($request->has('client_preference')){
                 $data['client_preference'] = implode(',', $request->client_preference);
+            }
+            if($request->has('skills')){
+                $data['skills'] = implode(',', $request->skills);
             }
             $previousRole = $user->roles()->first()->name;
             $user->update($data);

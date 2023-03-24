@@ -82,7 +82,11 @@
                     <div class="col-lg-12 col-xs-12">
                       <div class="form-group">
                           <label for="name">Skills and Proficiency:</label>
-                          <textarea class="form-control" name="skills" id="skills">{{ $user->skills }}</textarea>
+                          <select class="form-control select2Modal" name="skills[]" multiple>
+                            @foreach($proficiencies as $proficiency)
+                              <option value="{{ $proficiency->id }}" {{ in_array($proficiency->id, explode(',', $user->skills)) ? 'selected' : '' }}>{{ $proficiency->name }}</option>
+                            @endforeach
+                          </select>
                       </div>
                     </div>
                   </div>
@@ -92,7 +96,7 @@
                           <label for="name">Client Preference:</label>
                           <select class="form-control select2Modal" name="client_preference[]" multiple>
                             @foreach($companies as $company)
-                              <option value="{{ $company->id }}">{{ $company->company_name }}</option>
+                              <option value="{{ $company->id }}" {{ in_array($company->id, explode(',', $user->client_preference)) ? 'selected' : '' }}>{{ $company->company_name }}</option>
                             @endforeach
                           </select>
                       </div>

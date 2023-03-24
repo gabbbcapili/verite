@@ -17,6 +17,10 @@
         <a class="d-flex align-items-center" href="{{ route('user.index') }}"><i data-feather="align-justify"></i>
         <span class="menu-item text-truncate">List Users</span></a>
       </li>
+      <li class="nav-item {{ $request->segment(1) == 'proficiency' && $request->segment(2) == '' ? 'active' : '' }}">
+        <a class="d-flex align-items-center" href="{{ route('proficiency.index') }}"><i data-feather="circle"></i>
+        <span class="menu-item text-truncate">Proficiencies</span></a>
+      </li>
       @endcan
 
       @can('role.manage')
