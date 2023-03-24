@@ -1,5 +1,5 @@
 @component('mail::message')
-# Greetings {{ $user->fullName }}!
+# Hello {{ $user->fullName }}!
 
 {!! Helper::settings()->user_changed_role !!}
 @component('mail::panel')

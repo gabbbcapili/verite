@@ -119,7 +119,7 @@ class UserController extends Controller
             $user->assignRole($request->role);
             $token = $user->generatePassworResetToken();
             Mail::to($user)->send(new ResetPassword($user, $token));
-            Mail::to($user)->send(new Welcome($user));
+            // Mail::to($user)->send(new Welcome($user));
             DB::commit();
             $output = ['success' => 1,
                         'msg' => 'User added successfully!',

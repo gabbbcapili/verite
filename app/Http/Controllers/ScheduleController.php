@@ -328,7 +328,7 @@ class ScheduleController extends Controller
             $validation = [
                 'start_end_date' => 'required',
                 'type' => 'required',
-                'title' => 'required',
+                // 'title' => 'required',
                 'client_company_id' => 'required',
                 'audit_model' => 'required',
                 'audit_model_type' => 'required',

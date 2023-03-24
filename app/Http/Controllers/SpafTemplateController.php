@@ -242,6 +242,8 @@ class SpafTemplateController extends Controller
                 $newTemplate->name = $request->notes;
             }
             $newTemplate->is_approved = false;
+            $newTemplate->created_by = $request->user()->id;
+            $newTemplate->updated_by = $request->user()->id;
             $newTemplate->push();
             foreach($template->groups as $group){
                 $newGroup = $group->replicate();

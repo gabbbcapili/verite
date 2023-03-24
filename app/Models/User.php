@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Traits\CreatedUpdatedBy;
 use Spatie\Permission\Models\Permission;
+use App\Notifications\ResetPassword as ResetPasswordNotification;
 
 class User extends Authenticatable
 {
@@ -207,5 +208,11 @@ class User extends Authenticatable
             return $event;
         }
         return false;
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        // Your your own implementation.
+        $this->notify(new ResetPasswordNotification($token, $this));
     }
 }

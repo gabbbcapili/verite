@@ -126,6 +126,7 @@ class SpafController extends Controller
             $spaf = Spaf::create($data);
             if($spaf->supplier){
                 Mail::to($spaf->supplier)->send(new CreateSpaf($spaf->supplier, $spaf));
+                Mail::to($spaf->client)->send(new CreateSpaf($spaf->client, $spaf));
             }else{
                 Mail::to($spaf->client)->send(new CreateSpaf($spaf->client, $spaf));
             }

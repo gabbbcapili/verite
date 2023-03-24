@@ -1,11 +1,11 @@
 @component('mail::message')
-# Welcome to {{ env('APP_NAME') }}
+# Welcome to {{ env('APP_NAME') }} {{ $user->fullName }}
 
 {!! Helper::settings()->welcome_supplier !!}
 
 @component('mail::panel')
 <p>Your Email: {{ $user->email }}</p>
-<p>You will be prompted to change your password immediately</p>
+<p>This reset password link will expire in 60 minutes</p>
 @endcomponent
 @component('mail::button', ['url' => route('password.reset', $token)])
 Reset Password
