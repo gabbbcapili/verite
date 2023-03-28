@@ -19,7 +19,7 @@
       </li>
       <li class="nav-item {{ $request->segment(1) == 'proficiency' && $request->segment(2) == '' ? 'active' : '' }}">
         <a class="d-flex align-items-center" href="{{ route('proficiency.index') }}"><i data-feather="circle"></i>
-        <span class="menu-item text-truncate">Proficiencies</span></a>
+        <span class="menu-item text-truncate">Skillsets / Competencies</span></a>
       </li>
       @endcan
 

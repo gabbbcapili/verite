@@ -16,6 +16,8 @@ class CreateProficiencyTable extends Migration
         Schema::create('proficiency', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

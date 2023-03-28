@@ -1,6 +1,6 @@
 @inject('request', 'Illuminate\Http\Request')
 @extends('layouts/contentLayoutMaster')
-@section('title', 'Create New Proficiency')
+@section('title', 'Create New Skillset / Competency')
 
 @section('vendor-style')
 @endsection

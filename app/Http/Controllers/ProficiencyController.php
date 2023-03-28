@@ -19,7 +19,7 @@ class ProficiencyController extends Controller
     public function index()
     {
         $breadcrumbs = [
-            ['link'=>"/",'name'=>"Home"],['link'=> route('proficiency.index'), 'name'=>"Proficiencies"], ['name'=>"list of Proficiencies"]
+            ['link'=>"/",'name'=>"Home"],['link'=> route('proficiency.index'), 'name'=>"Skillsets / Competencies"], ['name'=>"List of Skillsets / Competencies"]
         ];
         if (request()->ajax()) {
             $proficiency = Proficiency::query();
@@ -30,10 +30,10 @@ class ProficiencyController extends Controller
                                                 ]);
             })
             ->editColumn('updated_at', function (Proficiency $proficiency) {
-                return $proficiency->updated_at->diffForHumans();
+                return $proficiency->updated_at->diffForHumans() . ' | ' . $proficiency->updatedByName;
             })
             ->editColumn('created_at', function (Proficiency $proficiency) {
-                return $proficiency->created_at->format('M d, Y');
+                return $proficiency->created_at->format('M d, Y') . ' | ' . $proficiency->createdByName;
             })
             ->rawColumns(['action'])
             ->make(true);
@@ -51,7 +51,7 @@ class ProficiencyController extends Controller
     public function create()
     {
         $breadcrumbs = [
-            ['link'=>"/",'name'=>"Home"],['link'=> route('proficiency.index'), 'name'=>"Proficiencies"], ['name'=>"Create New Proficiency"]
+            ['link'=>"/",'name'=>"Home"],['link'=> route('proficiency.index'), 'name'=>"Skillsets / Competencies"], ['name'=>"Create New Skillsets / Competencies"]
         ];
         return view('app.setting.proficiency.create', compact('breadcrumbs'));
     }
@@ -78,7 +78,7 @@ class ProficiencyController extends Controller
             $proficiency = Proficiency::create($data);
             DB::commit();
             $output = ['success' => 1,
-                        'msg' => 'Audit Model added successfully!',
+                        'msg' => 'Skillset / Competency added successfully!',
                         'redirect' => route('proficiency.index'),
                     ];
         } catch (\Exception $e) {
@@ -136,7 +136,7 @@ class ProficiencyController extends Controller
             $proficiency = $proficiency->update($data);
             DB::commit();
             $output = ['success' => 1,
-                        'msg' => 'Audit Model updated successfully!',
+                        'msg' => 'Skillset / Competency updated successfully!',
                     ];
         } catch (\Exception $e) {
             \Log::emergency("File:" . $e->getFile(). " Line:" . $e->getLine(). " Message:" . $e->getMessage());
@@ -161,7 +161,7 @@ class ProficiencyController extends Controller
             $proficiency = $proficiency->delete();
             DB::commit();
             $output = ['success' => 1,
-                        'msg' => 'Audit Model deleted successfully!',
+                        'msg' => 'Skillset / Competency deleted successfully!',
                     ];
         } catch (\Exception $e) {
             \Log::emergency("File:" . $e->getFile(). " Line:" . $e->getLine(). " Message:" . $e->getMessage());
