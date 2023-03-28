@@ -81,7 +81,7 @@
                   <div class="row mb-2">
                     <div class="col-lg-12 col-xs-12">
                       <div class="form-group">
-                          <label for="name">Skills and Proficiency:</label>
+                          <label for="name">Skillsets & Competencies:</label>
                           <select class="form-control select2Modal" name="skills[]" multiple>
                             @foreach($proficiencies as $proficiency)
                               <option value="{{ $proficiency->id }}" {{ in_array($proficiency->id, explode(',', $user->skills)) ? 'selected' : '' }}>{{ $proficiency->name }}</option>

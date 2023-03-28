@@ -123,7 +123,10 @@ class Company extends Model
 
     public function loadSpafForSchedule(){
         $type = $this->type == 'client' ? 'client_id' : 'supplier_id';
-        $spafs = Spaf::where($type, $this->id)->where('status', 'completed')
+        $spafs = Spaf::where('status', 'completed')
+        ->whereHas($this->type, function ($q){
+            $q->where('company_id', $this->id);
+        })
         ->whereHas('template', function ($q1){
             $q1->whereHas('groups', function ($q2){
                 $q2->where('displayed_on_schedule', true);
