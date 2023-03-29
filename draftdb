@@ -11,16 +11,7 @@ dashboard add schedule -> show all, add filter (status)
     -man days (# of resources x days)
 
 
-1. Setting parameter for Password Policy and Idle/Timeout application - closed set to 30mnts
-2. TEMPLATES: Link to File - some questions with Yes responses require specific files to be referenced - No Change needed - Link to URL of the uploaded PDF File
-3. Verite South East Asia Audit - system name not showing in header - in what header?
-4. Consistency of Menu and Breadcrumbs (eg. Home > Users > List Users) - done
-- List word is not capitalized. - done
-5. User Profile PHOTO still prompts The photo failed to upload after saving. - send me the file you try to upload
-6. Still no prompt if invalid email is encoded. Typed in email without @ sign, no prompt. - there is validation
-7. Repeated password should fall under password policy parameter. - added validation
-8. Template: No tagging for active/inactive - there is click the archive icon
-9. list of Proficiencies still inconsistent in the capitalization of word "List" - done
+
 
 
 
