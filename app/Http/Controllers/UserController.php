@@ -33,7 +33,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $breadcrumbs = [
-            ['link'=>"/",'name'=>"Home"],['link'=> route('user.index'), 'name'=>"Users"], ['name'=>"list of Users"]
+            ['link'=>"/",'name'=>"Home"],['link'=> route('user.index'), 'name'=>"Users"], ['name'=>"List of Users"]
         ];
         if (request()->ajax()) {
             $user = User::with('roles')->whereHas("roles", function($q) {

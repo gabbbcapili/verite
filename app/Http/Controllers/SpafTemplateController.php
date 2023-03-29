@@ -25,7 +25,7 @@ class SpafTemplateController extends Controller
             abort(404);
         }
         $breadcrumbs = [
-            ['link'=>"/",'name'=>"Home"],['link'=> route('template.spaf.index', ['type' => $type]), 'name'=> strtoupper(str_replace('_', ' ', $type)) ], ['name'=>"list of Templates"]
+            ['link'=>"/",'name'=>"Home"],['link'=> route('template.spaf.index', ['type' => $type]), 'name'=> strtoupper(str_replace('_', ' ', $type)) ], ['name'=>"List of Templates"]
         ];
         if (request()->ajax()) {
             $template = Template::where('is_deleted', 0)->where('type', $type);

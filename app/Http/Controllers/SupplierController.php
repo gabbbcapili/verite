@@ -28,7 +28,7 @@ class SupplierController extends Controller
     public function index(Request $request)
     {
         $breadcrumbs = [
-            ['link'=>"/",'name'=>"Home"],['link'=> route('supplier.index'), 'name'=>"Suppliers"], ['name'=>"list of Suppliers"]
+            ['link'=>"/",'name'=>"Home"],['link'=> route('supplier.index'), 'name'=>"Suppliers"], ['name'=>"List of Suppliers"]
         ];
         if (request()->ajax()) {
             $company = Company::where('type', 'supplier');

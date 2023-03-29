@@ -29,7 +29,7 @@ class SpafController extends Controller
     public function index(Request $request)
     {
         $breadcrumbs = [
-            ['link'=>"/",'name'=>"Home"],['link'=> route('spaf.index'), 'name'=>"Assessment Forms"], ['name'=>"list of Assessments"]
+            ['link'=>"/",'name'=>"Home"],['link'=> route('spaf.index'), 'name'=>"Assessment Forms"], ['name'=>"List of Assessments"]
         ];
         if (request()->ajax()) {
 
@@ -48,7 +48,7 @@ class SpafController extends Controller
 
     public function clientIndex(Request $request){
         $breadcrumbs = [
-            ['link'=>"/",'name'=>"Home"],['link'=> route('spaf.index'), 'name'=>"Assessment Forms"], ['name'=>"list of Assessments"]
+            ['link'=>"/",'name'=>"Home"],['link'=> route('spaf.index'), 'name'=>"Assessment Forms"], ['name'=>"List of Assessments"]
         ];
         if (request()->ajax()) {
             $spaf = Spaf::where('client_id', $request->user()->id);
@@ -61,7 +61,7 @@ class SpafController extends Controller
 
     public function supplierIndex(Request $request){
         $breadcrumbs = [
-            ['link'=>"/",'name'=>"Home"],['link'=> route('spaf.index'), 'name'=>"Assessment Forms"], ['name'=>"list of Assessments"]
+            ['link'=>"/",'name'=>"Home"],['link'=> route('spaf.index'), 'name'=>"Assessment Forms"], ['name'=>"List of Assessments"]
         ];
         if (request()->ajax()) {
             $spaf = Spaf::where('supplier_id', $request->user()->id);

@@ -30,7 +30,7 @@ class ClientController extends Controller
     public function index(Request $request)
     {
         $breadcrumbs = [
-            ['link'=>"/",'name'=>"Home"],['link'=> route('supplier.index'), 'name'=>"Clients"], ['name'=>"list of Clients"]
+            ['link'=>"/",'name'=>"Home"],['link'=> route('supplier.index'), 'name'=>"Clients"], ['name'=>"List of Clients"]
         ];
         if (request()->ajax()) {
             $company = Company::where('type', 'client');
