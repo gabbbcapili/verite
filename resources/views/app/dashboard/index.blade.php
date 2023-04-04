@@ -9,16 +9,24 @@
   <link rel="stylesheet" href="{{ asset(mix('vendors/css/extensions/toastr.min.css')) }}">
   <link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/dataTables.bootstrap5.min.css')) }}">
   <link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/responsive.bootstrap5.min.css')) }}">
+  <link rel="stylesheet" href="{{ asset(mix('vendors/css/calendars/fullcalendar.min.css')) }}">
+  <link rel="stylesheet" href="{{ asset(mix('vendors/css/forms/select/select2.min.css')) }}">
+  <link rel="stylesheet" href="{{ asset(mix('vendors/css/pickers/flatpickr/flatpickr.min.css')) }}">
+
 @endsection
 @section('page-style')
   <!-- Page css files -->
   <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/charts/chart-apex.css')) }}">
   <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/extensions/ext-component-toastr.css')) }}">
   <link rel="stylesheet" href="{{ asset(mix('css/base/pages/app-invoice-list.css')) }}">
+  <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/forms/pickers/form-flat-pickr.css')) }}">
+  <link rel="stylesheet" href="{{ asset(mix('css/base/pages/app-calendar.css')) }}">
+  <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/forms/form-validation.css')) }}">
   <style type="text/css">
 
   </style>
   @endsection
+
 
 @section('content')
 <!-- Dashboard Ecommerce Starts -->
@@ -101,6 +109,37 @@
     @include('app.dashboard.partials.quick_links')
   </div>
   <!-- Quick Links -->
+    <!-- Schedules -->
+  <div class="row">
+    <div class="col-xl-8 col-md-6 col-12">
+      <div class="card card-statistics">
+        <div class="card-header">
+          <h4 class="card-title">Schedules</h4>
+          <div class="d-flex align-items-center">
+            <p class="card-text font-small-2 me-25 mb-0"></p>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-12">
+              <table class="datatables-basic table" id="schedule_table">
+                <thead>
+                  <tr>
+                    <th>Id</th>
+                    <th>Title</th>
+                    <th>Statuses</th>
+                    <th>Updated At</th>
+                    <th>Person Days</th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Schedules -->
   @endcan
   <!-- dashboard default -->
 
@@ -183,10 +222,49 @@
   <script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.bootstrap5.min.js')) }}"></script>
   <script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.responsive.min.js')) }}"></script>
   <script src="{{ asset(mix('vendors/js/tables/datatable/responsive.bootstrap5.js')) }}"></script>
+  <script src="{{ asset('vendors/js/tables/datatable/datatables.checkboxes.min.js') }}"></script>
+  <script src="{{ asset('vendors/js/tables/datatable/jszip.min.js') }}"></script>
+  <script src="{{ asset('vendors/js/tables/datatable/pdfmake.min.js') }}"></script>
+  <script src="{{ asset('vendors/js/tables/datatable/vfs_fonts.js') }}"></script>
+  <script src="{{ asset('vendors/js/tables/datatable/buttons.html5.min.js') }}"></script>
+  <script src="{{ asset('vendors/js/tables/datatable/buttons.print.min.js') }}"></script>
+  <script src="{{ asset('vendors/js/tables/datatable/dataTables.rowGroup.min.js') }}"></script>
+  <script src="{{ asset('vendors/js/pickers/flatpickr/flatpickr.min.js') }}"></script>
 @endsection
 
 @section('page-script')
+<script type="text/javascript">
+    var table_id = 'schedule_table'
+    var table_title = 'Audit Model List';
+    var table_route = {
+          url: '{{ route('home') }}',
+          data: function (data) {
+                // data.role = $("#role").val();
+            }
+        };
+      var columnns = [
+            { data: 'id', name: 'id'},
+            { data: 'titleDisplay', name: 'title'},
+            { data: 'statuses', name: 'statuses'},
+            { data: 'updated_at', name: 'updated_at'},
+            { data: 'person_days', name: 'person_days'},
+        ];
 
+      var buttons = [
+
+        ];
+      var drawCallback = function( settings ) {
+        $('[data-bs-toggle="tooltip"]').tooltip();
+        feather.replace({
+          width: 14,height: 14
+        });
+      };
+      var order =  [[ 0, "desc" ]];
+      $(document).ready(function(){
+        $('.select2').select2();
+      });
+  </script>
+  <script src="{{ asset('js/scripts/tables/table-datatables-basic.js') }}"></script>
 @endsection
 
 

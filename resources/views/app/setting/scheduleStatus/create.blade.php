@@ -21,7 +21,7 @@
                       </div>
                     </div>
                     <div class="col-lg-4 col-xs-12">
-                       <label class="form-label">Color</label>
+                       <label class="form-label">Color:</label>
                        <select  class="form-control select2" name="color" title="Choose color">
                         <option selected disabled></option>
                         @foreach(App\Models\ScheduleStatus::$colors as $color)
@@ -30,13 +30,30 @@
                             </option>
                         @endforeach
                         </select>
+                      </div>
+                      <div class="col-lg-4 col-xs-12">
+                           <label class="form-label">Block Users / Client / Supplier availability in this Schedule Status?</label>
+                           <select  class="form-control" name="blockable">
+                            <option value="1">Yes</option>
+                            <option value="0">No</option>
+                        </select>
+                      </div>
+                  </div>
+                  <div class="row mb-2">
+                    <div class="col-lg-8 col-xs-12">
+                        <label>Next Stop:</label>
+                        <select class="form-control select2" multiple name="next_stop[]" id="next_stop">
+                            @foreach($scheduleStatuses as $ss)
+                                <option value="{{ $ss->id }}">{{ $ss->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                   </div>
                   <div class="row">
                         <div class="col-12 align-items-center justify-content-center text-center">
                           <input type="submit" name="save" class="btn btn-primary me-1 btn_save" value="Save">
                         </div>
                       </div>
-              </div>
               </form>
         </div>
     </div>

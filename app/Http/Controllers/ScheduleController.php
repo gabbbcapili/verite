@@ -15,6 +15,7 @@ use App\Models\Utilities;
 use Validator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Models\Proficiency;
 
 class ScheduleController extends Controller
 {
@@ -158,10 +159,12 @@ class ScheduleController extends Controller
     public function create(Request $request){
         $auditmodels = AuditModel::all();
         $schedulestatuses = ScheduleStatus::all();
+        $proficiencies = Proficiency::all();
         $countries = Country::all();
         $date = $request->date;
         $companies = Company::all();
-        return view('app.schedule.create', compact('auditmodels','schedulestatuses','countries', 'date', 'companies'));
+        $schedules = Schedule::orderBy('created_at', 'desc')->get();
+        return view('app.schedule.create', compact('auditmodels','schedulestatuses','countries', 'date', 'companies', 'proficiencies', 'schedules'));
     }
 
     public function edit(Event $event){
@@ -169,10 +172,13 @@ class ScheduleController extends Controller
         $schedulestatuses = ScheduleStatus::all();
         $countries = Country::all();
         $schedule = $event->schedule ? $event->schedule : new Schedule();
+        $scheduleStatus = ScheduleStatus::withTrashed()->where('name', $schedule->status)->first();
+        $next_stop = explode(',', $scheduleStatus->next_stop);
         $client = $event->users->where('role', 'Client')->first();
         $supplier = $event->users->where('role', 'Supplier')->first();
         $companies = Company::all();
-        return view('app.schedule.edit', compact('auditmodels','schedulestatuses','countries', 'event', 'schedule', 'client', 'supplier', 'companies'));
+        $proficiencies = Proficiency::all();
+        return view('app.schedule.edit', compact('auditmodels','schedulestatuses','countries', 'event', 'schedule', 'client', 'supplier', 'companies', 'scheduleStatus', 'next_stop', 'proficiencies'));
     }
 
     public function store(Request $request)
@@ -247,12 +253,17 @@ class ScheduleController extends Controller
             $event = Event::create($event);
             if($type == 'Audit Schedule'){
                 $supplier = null;
+                $schedule = $request->only(['status','audit_model','audit_model_type','with_completed_spaf', 'with_quotation','city','turnaround_days','report_submitted','cf_1','cf_2','cf_3','cf_4','cf_5']);
+                $scheduleStatus = ScheduleStatus::where('name', $schedule['status'])->first();
+                $schedule['status_color'] = $scheduleStatus ? $scheduleStatus->color : 'primary';
+                $blockable = $scheduleStatus ? $scheduleStatus->blockable : 1;
                 foreach($request->users as $user){
                     EventUser::firstOrCreate([
                         'role' => $user['role'],
                         'event_id' => $event->id,
                         'modelable_id' => $user['id'],
                         'modelable_type' => 'App\Models\User',
+                        'blockable' => $blockable,
                     ]);
                 }
                 $client = EventUser::create([
@@ -260,7 +271,7 @@ class ScheduleController extends Controller
                         'event_id' => $event->id,
                         'modelable_id' => $request->client_company_id,
                         'modelable_type' => 'App\Models\Company',
-                        'blockable' => $request->has('supplier_company_id') ? 0 : 1,
+                        'blockable' => $request->has('supplier_company_id') ? 0 : $blockable,
                     ]);
                 if($request->has('supplier_company_id')){
                     $supplier = EventUser::create([
@@ -268,9 +279,10 @@ class ScheduleController extends Controller
                         'event_id' => $event->id,
                         'modelable_id' => $request->supplier_company_id,
                         'modelable_type' => 'App\Models\Company',
+                        'blockable' => $blockable,
                     ]);
                 }
-                $schedule = $request->only(['status','audit_model','audit_model_type','with_completed_spaf','city','turnaround_days','report_submitted','cf_1','cf_2','cf_3','cf_4','cf_5']);
+
                 $schedule['client_id'] = $request->has('supplier_company_id') ? $request->supplier_company_id : $request->client_company_id;
                 $country = Country::find($request->country);
                 $schedule['title'] = Schedule::computeTitle($client, $supplier, $country->acronym ,$event->start_date);
@@ -278,9 +290,8 @@ class ScheduleController extends Controller
                 $schedule['timezone'] = $country->timezone;
                 $schedule['event_id'] = $event->id;
                 $schedule['due_date'] = Carbon::now()->addDays($schedule['turnaround_days'])->format('Y-m-d');
-                $scheduleStatus = ScheduleStatus::where('name', $schedule['status'])->first();
-                $schedule['status_color'] = $scheduleStatus ? $scheduleStatus->color : 'primary';
                 $schedule = Schedule::create($schedule);
+                $schedule->scheduleStatusLogs()->create(['schedule_status_id' => $scheduleStatus->id]);
             }else{
                 if($request->user()->hasRole('Client') || $request->user()->hasRole('Supplier')){
                     $eventuser = EventUser::create([
@@ -369,11 +380,19 @@ class ScheduleController extends Controller
             $data['end_date'] = array_key_exists(1, $start_end) ? $start_end[1] : $start_end[0];
             $event->update($data);
             if($type == 'Audit Schedule'){
+                $schedule = $request->only(['status','audit_model','audit_model_type','with_completed_spaf', 'with_quotation','city','due_date','report_submitted','cf_1','cf_2','cf_3','cf_4','cf_5']);
+                $scheduleStatus = ScheduleStatus::where('name', $schedule['status'])->first();
+                $schedule['status_color'] = $scheduleStatus ? $scheduleStatus->color : 'primary';
+                $blockable = $scheduleStatus ? $scheduleStatus->blockable : 1;
+                if($scheduleStatus->name != $event->schedule->status){
+                    $event->schedule->scheduleStatusLogs()->create(['schedule_status_id' => $scheduleStatus->id]);
+                }
                 if($request->has('users')){
                     $updatedEventUsers = [];
                     foreach($request->users as $user){
                         if(isset($user['event_user_id'])){
                             $updateEventUser = EventUser::findOrFail($user['event_user_id']);
+                            $updateEventUser->blockable = $blockable;
                             $updatedEventUsers[] = $updateEventUser->id;
                             $updateEventUser->update($user);
                         }else{
@@ -382,6 +401,7 @@ class ScheduleController extends Controller
                                 'event_id' => $event->id,
                                 'modelable_id' => $user['id'],
                                 'modelable_type' => 'App\Models\User',
+                                'blockable' => $blockable,
                             ]);
                             $updatedEventUsers[] = $eventUser->id;
                         }
@@ -399,7 +419,7 @@ class ScheduleController extends Controller
                         'event_id' => $event->id,
                         'modelable_id' => $request->client_company_id,
                         'modelable_type' => 'App\Models\Company',
-                        'blockable' => $request->has('supplier_company_id') ? 0 : 1,
+                        'blockable' => $request->has('supplier_company_id') ? 0 : $blockable,
                     ]);
                 if($request->has('supplier_company_id')){
                     $supplier = EventUser::updateOrCreate([
@@ -409,22 +429,22 @@ class ScheduleController extends Controller
                         'modelable_type' => 'App\Models\Company',
                     ],[
                         'modelable_id' => $request->supplier_company_id,
+                        'blockable' => $blockable
                     ]);
                 }else{
                     $event->users()->where('role', 'Supplier')->first() ? $event->users()->where('role', 'Supplier')->first()->delete() : '';
                 }
-                $schedule = $request->only(['status','audit_model','audit_model_type','with_completed_spaf','city','due_date','report_submitted','cf_1','cf_2','cf_3','cf_4','cf_5']);
-
                 $schedule['client_id'] = $request->has('supplier_company_id') ? $request->supplier_company_id : $request->client_company_id;
                 $country = Country::find($request->country);
                 $schedule['country'] = $country->name;
                 $schedule['timezone'] = $country->timezone;
                 $schedule['event_id'] = $event->id;
                 $schedule['title'] = Schedule::computeTitle($client, $supplier, $country->acronym ,$event->start_date);
-                $scheduleStatus = ScheduleStatus::where('name', $schedule['status'])->first();
-                $schedule['status_color'] = $scheduleStatus ? $scheduleStatus->color : 'primary';
                 if(! $request->has('with_completed_spaf')){
                     $schedule['with_completed_spaf'] = false;
+                }
+                if(! $request->has('with_quotation')){
+                    $schedule['with_quotation'] = false;
                 }
                 $schedule = $event->schedule()->update($schedule);
             }else{
@@ -472,7 +492,18 @@ class ScheduleController extends Controller
 
     public function loadAvailableUsers(Request $request){
         try {
-            $data['users'] = User::getAvailableAuditor($request->date);
+            $users = User::getAvailableAuditor($request->date);
+            if($request->has('proficiencies')){
+                $users = $users->filter(function ($candidate, $key) use ($request) {
+                    $skills = explode(',',$candidate['skills']);
+                    foreach($request->proficiencies as $p){
+                        if(in_array($p, $skills)){
+                            return $candidate;
+                        }
+                    }
+                });
+            }
+            $data['users'] = $users;
             $data['clients'] = Company::getAvailableClient($request->date);
             $output = ['success' => 1,
                         'msg' => '',
@@ -520,5 +551,23 @@ class ScheduleController extends Controller
 
     public function loadSPAF(Company $company){
         return view('app.schedule.load.spaf', ['spafs' => $company->loadSpafForSchedule()]);
+    }
+
+    public function loadScheduleDetails(Schedule $schedule){
+        try {
+            $data['schedule'] = $schedule;
+            $data['resource'] = $schedule->event->users->sortBy('modelable_type');
+            $data['resource_count'] = $schedule->event->users()->where('modelable_type', 'App\Models\User')->count();
+            $output = ['success' => 1,
+                        'msg' => '',
+                        'data' => $data,
+                    ];
+        } catch (\Exception $e) {
+            \Log::emergency("File:" . $e->getFile(). " Line:" . $e->getLine(). " Message:" . $e->getMessage());
+            $output = ['success' => 0,
+                        'msg' => env('APP_DEBUG') ? $e->getMessage() : 'Sorry something went wrong, please try again later.'
+                    ];
+        }
+        return response()->json($output);
     }
 }

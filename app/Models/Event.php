@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\CreatedUpdatedBy;
+use Carbon\Carbon;
 
 class Event extends Model
 {
@@ -40,6 +41,13 @@ class Event extends Model
             }
             return $this->type;
         }
+    }
+
+    public function getPersonDaysAttribute(){
+        $users = $this->users()->where('modelable_type', 'App\Models\User')->count();
+        $days = Carbon::parse($this->start_date)->diffInDays(Carbon::parse($this->end_date));
+        $days = $days == 0 ? 1 : $days;
+        return $users * $days;
     }
 
     public function getGanttTitleAttribute(){

@@ -57,7 +57,8 @@ class ScheduleStatusController extends Controller
         $breadcrumbs = [
             ['link'=>"/",'name'=>"Home"],['link'=> route('settings.scheduleStatus.index'), 'name'=>"Schedule Statuses"], ['name'=>"Create New Schedule Status"]
         ];
-        return view('app.setting.scheduleStatus.create', compact('breadcrumbs'));
+        $scheduleStatuses = ScheduleStatus::all();
+        return view('app.setting.scheduleStatus.create', compact('breadcrumbs', 'scheduleStatuses'));
     }
 
     /**
@@ -71,6 +72,8 @@ class ScheduleStatusController extends Controller
         $validator = Validator::make($request->all(),[
             'name' => ['required', 'string', 'max:255', 'unique:schedule_status,name,{id},id,deleted_at,NULL'],
             'color' => ['required'],
+            'blockable' => ['required'],
+            'next_stop' => ['required'],
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()]);
@@ -78,6 +81,7 @@ class ScheduleStatusController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->all();
+            $data['next_stop'] = implode(',', $data['next_stop']);
             $scheduleStatus = ScheduleStatus::create($data);
             DB::commit();
             $output = ['success' => 1,
@@ -113,7 +117,9 @@ class ScheduleStatusController extends Controller
      */
     public function edit(ScheduleStatus $scheduleStatus)
     {
-        return view('app.setting.scheduleStatus.edit', compact('scheduleStatus'));
+        $next_stop = explode(',', $scheduleStatus->next_stop);
+        $scheduleStatuses = ScheduleStatus::all();
+        return view('app.setting.scheduleStatus.edit', compact('scheduleStatus', 'next_stop', 'scheduleStatuses'));
     }
 
     /**
@@ -135,6 +141,7 @@ class ScheduleStatusController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->all();
+            $data['next_stop'] = implode(',', $data['next_stop']);
             $scheduleStatus = $scheduleStatus->update($data);
             DB::commit();
             $output = ['success' => 1,

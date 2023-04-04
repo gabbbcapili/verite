@@ -7,7 +7,11 @@ use App\Models\User;
 use Spatie\Permission\Models\Role;
 use App\Models\Template;
 use App\Models\Spaf;
-
+use App\Models\Schedule;
+use App\Models\Utilities;
+use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
+use Validator;
 
 class StaterkitController extends Controller
 {
@@ -19,7 +23,29 @@ class StaterkitController extends Controller
         $totals['suppliers'] = Role::find(3)->users->count();
         $totals['clients'] = Role::find(4)->users->count();
         $totals['spafs'] = Spaf::where('status', 'completed')->count();
-
+        if (request()->ajax()) {
+            $schedules = Schedule::with('event');
+            return Datatables::eloquent($schedules)
+            ->addColumn('titleDisplay', function(Schedule $schedule) {
+                return '<a data-action="'. route('schedule.edit', $schedule->event_id) .'" class="modal_button" data-bs-toggle="tooltip" data-placement="top" title="'. $schedule->status .'"><span class="badge rounded-pill badge-light-'. $schedule->status_color .' me-1">'. $schedule->event->titleComputed .'</span></a>';
+            })
+            ->editColumn('updated_at', function (Schedule $schedule) {
+                return $schedule->updated_at->diffForHumans() . ' | ' . $schedule->updatedByName;
+            })
+            ->addColumn('statuses', function (Schedule $schedule) {
+                $html = '';
+                foreach($schedule->scheduleStatusLogs as $ssl){
+                    $scheduleStatus = $ssl->scheduleStatus;
+                    $html .= '<span data-bs-toggle="tooltip" data-placement="top" title="'. $scheduleStatus->name .' | '. $ssl->updated_at->diffForHumans() .' | '. $ssl->updatedByName .'" class="badge rounded-pill badge-light-'. $scheduleStatus->color .' ">'. substr($scheduleStatus->name, 0, 1) .'</span>';
+                }
+                return $html;
+            })
+            ->addColumn('person_days', function (Schedule $schedule) {
+                return $schedule->event->personDays . ' Days';
+            })
+            ->rawColumns(['action', 'titleDisplay', 'statuses'])
+            ->make(true);
+        }
         return view('app.dashboard.index', compact('breadcrumbs', 'totals'));
     }
 

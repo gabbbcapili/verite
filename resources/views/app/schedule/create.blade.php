@@ -51,6 +51,17 @@
                   </div>
                   <div id="rowSchedule" class="d-none">
                     <div class="row mb-2">
+                      <divv class="col-lg-4">
+                        <label>Copy From:</label>
+                        <select class="form-control select2Modal" id="copyFrom">
+                          <option selected disabled></option>
+                          @foreach($schedules as $schedule)
+                            <option value="{{ $schedule->id }}">{{ $schedule->title }}</option>
+                          @endforeach
+                        </select>
+                      </divv>
+                    </div>
+                    <div class="row mb-2">
                       <div class="col-lg-4 col-xs-12">
                           <label>Title</label>
                         <input type="text" name="title" class="form-control" readonly disabled>
@@ -113,7 +124,7 @@
                             <select class="form-control select2Modal" name="country">
                               <option disabled selected></option>
                               @foreach($countries as $country)
-                                <option value="{{ $country->id }}">{{ $country->name }} - {{ $country->timezone }}</option>
+                                <option value="{{ $country->id }}" data-name="{{ $country->name }}">{{ $country->name }} - {{ $country->timezone }}</option>
                               @endforeach
                             </select>
                         </div>
@@ -122,11 +133,19 @@
                         <label>City:</label>
                         <input type="text" name="city" class="form-control">
                       </div>
-                      <div class="col-lg-4 col-xs-12">
+                      <div class="col-lg-2 col-xs-12">
                         <div class="form-group p-1">
                           <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" value="1" checked name="with_completed_spaf"/>
-                            <label class="form-check-label">With Compelted SPAF?</label>
+                            <label class="form-check-label">With Completed SPAF?</label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-lg-2 col-xs-12">
+                        <div class="form-group p-1">
+                          <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" value="1" checked name="with_quotation"/>
+                            <label class="form-check-label">With Quotation?</label>
                           </div>
                         </div>
                       </div>
@@ -164,12 +183,21 @@
                       </div>
                     </div>
                     <div class="row mb-5">
-                      <div class="row">
+                      <!-- <div class="row"> -->
+                        <div class="col-4"></div><div class="col-4"></div>
+                        <div class="col-4 mb-1">
+                          <label>Filter Resource</label>
+                          <select class="form-control select2Modal" multiple id="filterProficiency">
+                            @foreach($proficiencies as $proficiency)
+                            <option value="{{ $proficiency->id }}">{{ $proficiency->name }}</option>
+                            @endforeach
+                          </select>
+                        </div>
                         <div class="d-flex justify-content-end mb-1">
                           <button class="btn btn-primary" type="button" id="add_user"><i data-feather="plus-circle"></i> Add Resource</button>
                         </div>
                         <div class="table-responsive">
-                          <input type="hidden" id="user_row_count" value="1">
+                          <input type="hidden" id="user_row_count" value="0">
                           <table class="table table-striped" id="user_table">
                             <thead>
                               <tr>
@@ -182,7 +210,7 @@
                             </tbody>
                           </table>
                         </div>
-                      </div>
+                      <!-- </div> -->
                     </div>
                     <div class="row mb-2 align-items-center justify-content-center">
                       <div class="col-6" id="rowSpaf">
@@ -235,9 +263,69 @@
             $(instance.mobileInput).attr('step', null);
           }
         },
-        onChange: function(selectedDates, dateStr, instance) {
+        onClose: function(selectedDates, dateStr, instance) {
+            var current_company = $('#client_company').find(":selected").val();
+            var current_supplier = $('#supplier_company').find(":selected").val();
+            var current_users = $('.userSelection').find(":selected");
             loadData();
+            setTimeout(function(){
+              $('#client_company').val(current_company).trigger('change');
+            }, 1000)
+            setTimeout(function(){
+              $('#supplier_company').val(current_supplier).trigger('change');
+              $.each($('.userSelection'), function(index, item){
+                var current_user = $(current_users[index]).val();
+                $(item).val(current_user).trigger('change');
+              });
+            }, 2000)
         },
+      });
+
+      $(document).on('change', '#copyFrom', function(){
+        var url = '{{ route("schedule.loadScheduleDetails", ":id") }}';
+                      url = url.replace(':id', $(this).val());
+        var copyFrom = $('#copyFrom').find(":selected").val();
+        $.ajax({
+              url: url,
+              method: "POST",
+              success:function(result)
+              {
+                $('.delete_row').click();
+                $('#user_row_count').val(0);
+                for (var i = 0; i < result.data.resource_count; i++){
+                  addUser();
+                }
+                // client_company
+                // supplier_company
+                $('[name="audit_model"]').val(result.data.schedule.audit_model).trigger('change');
+                $('[name="audit_model_type"]').val(result.data.schedule.audit_model_type).trigger('change');
+                $('[name="status"]').val(result.data.schedule.status).trigger('change');
+                $('[name="country"] option[data-name="' + result.data.schedule.country + '"]').prop("selected", true);
+                $('[name="country"]').trigger('change');
+                $('[name="city"]').val(result.data.schedule.city).trigger('change');
+                $('[name="turnaround_days"]').val(result.data.schedule.turnaround_days);
+                $('[name="cf_1"]').val(result.data.schedule.cf_1);
+                $('[name="cf_2"]').val(result.data.schedule.cf_2);
+                $('[name="cf_3"]').val(result.data.schedule.cf_3);
+                $('[name="cf_4"]').val(result.data.schedule.cf_4);
+                $('[name="cf_5"]').val(result.data.schedule.cf_5);
+                var iteration = 1;
+                $.each(result.data.resource, function(index, item){
+                  if(item.modelable_type == 'App\\Models\\Company'){
+                    if(item.role == 'Client'){
+                      $('#client_company').val(item.modelable_id).trigger('change');
+                    }else if (item.role == 'Supplier'){
+                      setTimeout(function(){
+                        $('#supplier_company').val(item.modelable_id).trigger('change');
+                      }, 2000)
+                    }
+                  }else{
+                    $('[name="users['+ iteration +'][id]"]').val(item.modelable_id).trigger('change');
+                    iteration += 1;
+                  }
+                });
+              }
+          });
       });
 
       $(document).on('change', '#client_company', function(){
@@ -281,8 +369,7 @@
               }
           });
       }
-
-      $('#add_user').click(function(){
+      function addUser(){
         var row = parseInt($('#user_row_count').val()) + 1;
         $('#user_row_count').val(row);
         var $tr = '';
@@ -300,6 +387,9 @@
         $('.select2Table').select2({
           dropdownParent: $("#view_modal")
         })
+      }
+      $('#add_user').click(function(){
+        addUser();
       });
 
       $('#SelectType').change(function(){
@@ -323,6 +413,10 @@
         $(this).closest('tr').remove();
       });
 
+      $(document).on('change', '#filterProficiency', function(){
+        loadData();
+      });
+
       function loadData(){
         date = $('#dateRange').val();
           if(date == ""){
@@ -335,6 +429,7 @@
               method: "POST",
               data:{
                 date : date,
+                proficiencies : $('#filterProficiency').val(),
               },
               success:function(result)
               {

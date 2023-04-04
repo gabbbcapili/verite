@@ -212,10 +212,9 @@
               },
           },
           editable: true,
+          eventOverlap: false,
           dragScroll: true,
           dayMaxEvents: 2,
-          eventResizableFromStart: true,
-          eventOverlap: false,
           customButtons: {
             sidebarToggle: {
               text: 'Sidebar'

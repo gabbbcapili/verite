@@ -52,6 +52,7 @@ class Company extends Model
             $hasEvents = $company->events()->whereHas('event', function ($q) use($from,$to){
                 $q->where('start_date', '>=', $from);
                 $q->where('end_date', '<=', $to);
+                $q->where('blockable', true);
             })->count();
             if($hasEvents > 0){
                 $companies->forget($key);

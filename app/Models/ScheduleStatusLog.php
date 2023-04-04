@@ -4,24 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\CreatedUpdatedBy;
 
-class ScheduleStatus extends Model
+class ScheduleStatusLog extends Model
 {
     use HasFactory;
-    use SoftDeletes;
     use CreatedUpdatedBy;
 
-    protected $table = 'schedule_status';
+    protected $table = 'schedule_status_log';
 
-    protected $fillable = ['name', 'color', 'created_by', 'updated_by', 'blockable', 'next_stop'];
+    protected $fillable = ['schedule_id', 'schedule_status_id'];
 
-    public static $colors = ['primary', 'secondary', 'success', 'warning', 'info'];
-
-    public function getNameDisplayAttribute(){
-        return '<span class="text-'. $this->color .'">'. $this->name .'</span>';
-        return $this->name;
+    public function scheduleStatus(){
+        return $this->belongsTo(ScheduleStatus::class, 'schedule_status_id');
     }
 
     public function created_by_user(){

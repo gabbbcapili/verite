@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateScheduleStatusTable extends Migration
+class CreateScheduleStatusLogTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,12 @@ class CreateScheduleStatusTable extends Migration
      */
     public function up()
     {
-        Schema::create('schedule_status', function (Blueprint $table) {
+        Schema::create('schedule_status_log', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('color');
+            $table->unsignedBigInteger('schedule_id');
+            $table->unsignedBigInteger('schedule_status_id');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
-            $table->boolean('blockable')->default(1);
-            $table->string('next_stop')->default('1');
-            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -33,6 +30,6 @@ class CreateScheduleStatusTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('schedule_status');
+        Schema::dropIfExists('schedule_status_log');
     }
 }

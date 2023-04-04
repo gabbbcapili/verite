@@ -99,7 +99,10 @@
                             <select class="form-control select2Modal" name="status">
                               <option disabled selected></option>
                               @foreach($schedulestatuses as $status)
-                                <option value="{{ $status->name }}" {{ $schedule->status == $status->name ? 'selected' : '' }}>{{ $status->name }}</option>
+                                <option value="{{ $status->name }}"
+                                 {{ $schedule->status == $status->name ? 'selected' : '' }}
+                                 {{ in_array($status->id, $next_stop) ? '' : ($schedule->status == $status->name ? '' : 'disabled') }}>
+                                 {{ $status->name }}</option>
                               @endforeach
                             </select>
                         </div>
@@ -121,11 +124,19 @@
                         <label>City:</label>
                         <input type="text" name="city" class="form-control" value="{{ $schedule->city }}">
                       </div>
-                      <div class="col-lg-4 col-xs-12">
+                      <div class="col-lg-2 col-xs-12">
                         <div class="form-group p-1">
                           <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" value="1" name="with_completed_spaf" {{ $schedule->with_completed_spaf ? 'checked' : ''}} />
-                            <label class="form-check-label">With Compelted SPAF?</label>
+                            <label class="form-check-label">With Completed SPAF?</label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-lg-2 col-xs-12">
+                        <div class="form-group p-1">
+                          <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" value="1" name="with_quotation" {{ $schedule->with_quotation ? 'checked' : ''}} />
+                            <label class="form-check-label">With Quotation?</label>
                           </div>
                         </div>
                       </div>
@@ -163,7 +174,16 @@
                       </div>
                     </div>
                     <div class="row mb-5">
-                      <div class="row">
+                      <!-- <div class="row"> -->
+                        <div class="col-4"></div><div class="col-4"></div>
+                        <div class="col-4 mb-1">
+                          <label>Filter Resource</label>
+                          <select class="form-control select2Modal" multiple id="filterProficiency">
+                            @foreach($proficiencies as $proficiency)
+                            <option value="{{ $proficiency->id }}">{{ $proficiency->name }}</option>
+                            @endforeach
+                          </select>
+                        </div>
                         <div class="d-flex justify-content-end mb-1">
                           <button class="btn btn-primary" type="button" id="add_user"><i data-feather="plus-circle"></i> Add Resource</button>
                         </div>
@@ -174,7 +194,6 @@
                               <tr>
                                 <th style="width: 40%;">Role</th>
                                 <th style="width: 40%;">Resource</th>
-
                                 <th style="width: 20%;">Action</th>
                               </tr>
                             </thead>
@@ -182,7 +201,7 @@
                             </tbody>
                           </table>
                         </div>
-                      </div>
+                      <!-- </div> -->
                     </div>
                     <div class="row mb-2 align-items-center justify-content-center">
                       <div class="col-6" id="rowSpaf">
@@ -248,8 +267,21 @@
             $(instance.mobileInput).attr('step', null);
           }
         },
-        onChange: function(selectedDates, dateStr, instance) {
+        onClose: function(selectedDates, dateStr, instance) {
+            var current_company = $('#client_company').find(":selected").val();
+            var current_supplier = $('#supplier_company').find(":selected").val();
+            var current_users = $('.userSelection').find(":selected");
             loadData(false);
+            setTimeout(function(){
+              $('#client_company').val(current_company).trigger('change');
+            }, 1000)
+            setTimeout(function(){
+              $('#supplier_company').val(current_supplier).trigger('change');
+              $.each($('.userSelection'), function(index, item){
+                var current_user = $(current_users[index]).val();
+                $(item).val(current_user).trigger('change');
+              });
+            }, 2000)
         },
       });
 
@@ -371,6 +403,10 @@
         $(this).closest('tr').remove();
       });
 
+      $(document).on('change', '#filterProficiency', function(){
+        loadData();
+      });
+
       function loadData(firstTime){
         date = $('#dateRange').val();
           if(date == ""){
@@ -383,6 +419,7 @@
               method: "POST",
               data:{
                 date : date,
+                proficiencies : $('#filterProficiency').val(),
               },
               success:function(result)
               {

@@ -23,7 +23,7 @@
                           <input type="text" class="form-control" name="name" placeholder="Name" value="{{ $scheduleStatus->name }}">
                       </div>
                     </div>
-                    <div class="col-lg-4 col-xs-12">
+                    <div class="col-lg-6 col-xs-12">
                        <label class="form-label">Color</label>
                        <select  class="form-control select2" name="color" title="Choose color">
                         <option selected disabled></option>
@@ -34,6 +34,25 @@
                         @endforeach
                         </select>
                   </div>
+                  </div>
+                   <div class="row mb-2">
+                    <div class="col-lg-6 col-xs-12">
+                         <label class="form-label">Block Users / Client / Supplier availability in this Schedule Status?</label>
+                         <select  class="form-control" name="blockable">
+                          <option value="1" {{ $scheduleStatus->blockable == 1 ? 'selected' : '' }}>Yes</option>
+                          <option value="0" {{ $scheduleStatus->blockable == 0 ? 'selected' : '' }}>No</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row mb-2">
+                    <div class="col-lg-12 col-xs-12">
+                        <label>Next Stop:</label>
+                        <select class="form-control select2" multiple name="next_stop[]" id="next_stop">
+                            @foreach($scheduleStatuses as $ss)
+                                <option value="{{ $ss->id }}" {{ in_array($ss->id, $next_stop) ? 'selected' : '' }}>{{ $ss->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                   </div>
                 </div>
               </div>

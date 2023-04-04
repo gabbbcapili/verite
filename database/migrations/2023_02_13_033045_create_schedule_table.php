@@ -23,6 +23,7 @@ class CreateScheduleTable extends Migration
             $table->string('audit_model');
             $table->string('audit_model_type');
             $table->boolean('with_completed_spaf')->default(0);
+            $table->boolean('with_quotation')->default(0);
             $table->string('country');
             $table->string('timezone');
             $table->string('city')->nullable();
@@ -33,6 +34,8 @@ class CreateScheduleTable extends Migration
             $table->string('cf_3')->nullable();
             $table->string('cf_4')->nullable();
             $table->string('cf_5')->nullable();
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('updated_by')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

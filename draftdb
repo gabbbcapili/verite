@@ -1,14 +1,15 @@
-copy from schedule -> dropdown
-status->query, blockable = 0 -- maintenance add blockable
-add checkbox tagging -> With Quotation ->
-status change to transactional one schedule to many status
-    -status next stop multiple status
-change date -> retain resources available
-dashboard add schedule -> show all, add filter (status)
-    -title, updated_at
-    -clickalble title -> edit schedule
-    -per status bar
-    -man days (# of resources x days)
+add filter schedule resource ok
+copy from schedule -> dropdown default selectable = today - 1 year ok
+change date -> retain resources available ok
+status->query, blockable = 0 -- maintenance add blockable ok
+add checkbox tagging -> With Quotation -> ok
+status change to transactional one schedule to many status ok
+    -status next stop multiple status ok
+dashboard add schedule -> show all, add filter (status) ok
+    -title, updated_at ok
+    -clickalble title -> edit schedule ok
+    -per status bar ok
+    -man days (# of resources x days) ok
 
 
 
