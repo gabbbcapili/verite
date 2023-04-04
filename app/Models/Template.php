@@ -53,4 +53,246 @@ class Template extends Model
         return $this->status ? 'Inactive' : 'Active';
     }
 
+    public function createDefault(){
+        $group = $this->groups()->create(['header' => 'SPAF Basic Information', 'displayed_on_schedule' => true, 'sort' => 0]);
+
+        $group->questions()->create([
+            'text' => 'Facility Name:',
+            'type' => 'input',
+            'next_line' => 1,
+            'sort' => 0,
+            'requried' => 1,
+        ]);
+        $group->questions()->create([
+            'text' => 'Point Person for Coordination on Overall Assessment Requirements',
+            'type' => 'title',
+            'next_line' => 1,
+            'sort' => 1,
+            'requried' => 0,
+        ]);
+        $group->questions()->create([
+            'text' => 'Name:',
+            'type' => 'input',
+            'next_line' => 0,
+            'sort' => 2,
+            'requried' => 1,
+        ]);
+        $group->questions()->create([
+            'text' => 'Email:',
+            'type' => 'email',
+            'next_line' => 0,
+            'sort' => 3,
+            'requried' => 1,
+        ]);
+        $group->questions()->create([
+            'text' => 'Supplier Facility Characteristics',
+            'type' => 'title',
+            'next_line' => 1,
+            'sort' => 4,
+            'requried' => 0,
+        ]);
+        $group->questions()->create([
+            'text' => 'This facility produces:',
+            'type' => 'input',
+            'next_line' => 1,
+            'sort' => 5,
+            'requried' => 1,
+        ]);
+        $group->questions()->create([
+            'text' => 'Directly Employed Production Workers:',
+            'type' => 'number',
+            'next_line' => 1,
+            'sort' => 6,
+            'requried' => 1,
+        ]);
+        $group->questions()->create([
+            'text' => 'Contract Workers (not an employee of the company):',
+            'type' => 'number',
+            'next_line' => 1,
+            'sort' => 7,
+            'requried' => 1,
+        ]);
+        $group->questions()->create([
+            'text' => 'Temporary Workers:',
+            'type' => 'number',
+            'next_line' => 1,
+            'sort' => 8,
+            'requried' => 1,
+        ]);
+        $group->questions()->create([
+            'text' => 'Security Staff:',
+            'type' => 'number',
+            'next_line' => 1,
+            'sort' => 9,
+            'requried' => 1,
+        ]);
+        $group->questions()->create([
+            'text' => 'Cleaning Staff:',
+            'type' => 'number',
+            'next_line' => 1,
+            'sort' => 10,
+            'requried' => 1,
+        ]);
+        $group->questions()->create([
+            'text' => 'Canteen Workers:',
+            'type' => 'number',
+            'next_line' => 1,
+            'sort' => 11,
+            'requried' => 1,
+        ]);
+        $group->questions()->create([
+            'text' => 'Nationality',
+            'type' => 'title',
+            'next_line' => 1,
+            'sort' => 12,
+            'requried' => 0,
+        ]);
+        $group->questions()->create([
+            'text' => 'Nationality:',
+            'type' => 'input',
+            'next_line' => 0,
+            'sort' => 13,
+            'requried' => 0,
+        ]);
+        $group->questions()->create([
+            'text' => 'Direct Number of workers:',
+            'type' => 'number',
+            'next_line' => 0,
+            'sort' => 14,
+            'requried' => 0,
+        ]);
+        $group->questions()->create([
+            'text' => 'Nationality',
+            'type' => 'title',
+            'next_line' => 1,
+            'sort' => 15,
+            'requried' => 0,
+        ]);
+
+        $group->questions()->create([
+            'text' => 'Nationality:',
+            'type' => 'input',
+            'next_line' => 0,
+            'sort' => 16,
+            'requried' => 0,
+        ]);
+        $group->questions()->create([
+            'text' => 'Direct Number of workers:',
+            'type' => 'number',
+            'next_line' => 0,
+            'sort' => 17,
+            'requried' => 0,
+        ]);
+        $group->questions()->create([
+            'text' => 'Nationality',
+            'type' => 'title',
+            'next_line' => 1,
+            'sort' => 18,
+            'requried' => 0,
+        ]);
+
+        $group->questions()->create([
+            'text' => 'Nationality:',
+            'type' => 'input',
+            'next_line' => 0,
+            'sort' => 19,
+            'requried' => 0,
+        ]);
+        $group->questions()->create([
+            'text' => 'Direct Number of workers:',
+            'type' => 'number',
+            'next_line' => 0,
+            'sort' => 20,
+            'requried' => 0,
+        ]);
+        $group->questions()->create([
+            'text' => 'Nationality',
+            'type' => 'title',
+            'next_line' => 1,
+            'sort' => 21,
+            'requried' => 0,
+        ]);
+        $group->questions()->create([
+            'text' => 'Nationality:',
+            'type' => 'input',
+            'next_line' => 0,
+            'sort' => 22,
+            'requried' => 0,
+        ]);
+
+        $group->questions()->create([
+            'text' => 'Direct Number of workers:',
+            'type' => 'number',
+            'next_line' => 0,
+            'sort' => 23,
+            'requried' => 0,
+        ]);
+        $group->questions()->create([
+            'text' => 'Dispatch Local Labor Agents:',
+            'type' => 'title',
+            'next_line' => 1,
+            'sort' => 24,
+            'requried' => 0,
+        ]);
+        $group->questions()->create([
+            'text' => 'Name:',
+            'type' => 'input',
+            'next_line' => 0,
+            'sort' => 25,
+            'requried' => 0,
+        ]);
+        $group->questions()->create([
+            'text' => 'Outsource Local Labor Agents:',
+            'type' => 'title',
+            'next_line' => 1,
+            'sort' => 26,
+            'requried' => 0,
+        ]);
+
+        $group->questions()->create([
+            'text' => 'Name:',
+            'type' => 'input',
+            'next_line' => 0,
+            'sort' => 27,
+            'requried' => 0,
+        ]);
+        $group->questions()->create([
+            'text' => 'Foreign Labor Agents:',
+            'type' => 'title',
+            'next_line' => 1,
+            'sort' => 28,
+            'requried' => 0,
+        ]);
+        $group->questions()->create([
+            'text' => 'Name:',
+            'type' => 'input',
+            'next_line' => 0,
+            'sort' => 29,
+            'requried' => 0,
+        ]);
+        $group->questions()->create([
+            'text' => 'How many Dormitory Buildings or Housing units are there?',
+            'type' => 'title',
+            'next_line' => 1,
+            'sort' => 30,
+            'requried' => 0,
+        ]);
+
+        $group->questions()->create([
+            'text' => 'Local workers:',
+            'type' => 'number',
+            'next_line' => 0,
+            'sort' => 31,
+            'requried' => 0,
+        ]);
+
+        $group->questions()->create([
+            'text' => 'Foreign contract workers:',
+            'type' => 'number',
+            'next_line' => 0,
+            'sort' => 32,
+            'requried' => 0,
+        ]);
+    }
+
 }

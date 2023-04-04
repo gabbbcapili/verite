@@ -113,6 +113,9 @@ class SpafTemplateController extends Controller
             $data = $request->all();
             // $data['type'] = 'spaf';
             $template = Template::create($data);
+            if($template->type == 'spaf'){
+                $template->createDefault();
+            }
             DB::commit();
             $output = ['success' => 1,
                         'msg' => 'Template added successfully!',
