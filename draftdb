@@ -10,6 +10,7 @@ dashboard add schedule -> show all, add filter (status) ok
     -clickalble title -> edit schedule ok
     -per status bar ok
     -man days (# of resources x days) ok
+default fixed inputs for spaf ok
 
 
 

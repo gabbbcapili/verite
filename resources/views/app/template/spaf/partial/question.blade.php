@@ -10,9 +10,9 @@
 @endphp
 
 @if($q->type == 'input' || $q->type == 'email' || $q->type == 'number')
-    <input type="text" name="question[{{ $q->id  }}]" id="question.{{ $q->id }}" class="form-control" placeholder="{{ $q->text }}" value="{{ $answer ? $answer : '' }}" @if(isset($updated_at)) title="Updated At: {{ $updated_at->diffForHumans() }}" @endif {{ isset($disabled) ? 'disabled' : '' }}>
+    <input type="text" name="question[{{ $q->id  }}]" id="question.{{ $q->id }}" class="form-control" placeholder="{{ $q->text }}{{ $q->required ? '* ' : '' }}" value="{{ $answer ? $answer : '' }}" @if(isset($updated_at)) title="Updated At: {{ $updated_at->diffForHumans() }}" @endif {{ isset($disabled) ? 'disabled' : '' }}>
 @elseif($q->type == 'textarea')
-    <textarea name="question[{{ $q->id  }}]" id="question.{{ $q->id }}" @if(isset($updated_at)) title="Updated At: {{ $updated_at->diffForHumans() }}" @endif class="form-control" placeholder="{{ $q->text }}" {{ isset($disabled) ? 'disabled' : '' }}>{{ $answer ? $answer : '' }}</textarea>
+    <textarea name="question[{{ $q->id  }}]" id="question.{{ $q->id }}" @if(isset($updated_at)) title="Updated At: {{ $updated_at->diffForHumans() }}" @endif class="form-control" placeholder="{{ $q->text }}{{ $q->required ? '* ' : '' }}" {{ isset($disabled) ? 'disabled' : '' }}>{{ $answer ? $answer : '' }}</textarea>
 @elseif($q->type == 'title')
 
 @elseif($q->type == 'radio')

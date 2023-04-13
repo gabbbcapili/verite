@@ -30,7 +30,7 @@
                 </div>
                 <div class="row">
                   <div class="d-flex justify-content-end mb-1">
-                    <button class="btn btn-primary" type="button" id="add_row_question"><i data-feather="plus-circle"></i> Add Question</button>
+                    <button class="btn btn-primary add_row_question" type="button"><i data-feather="plus-circle"></i> Add Question</button>
                   </div>
                   <div class="table-responsive">
                     <input type="hidden" id="question_row_count" value="{{ $group->questions->count() }}">
@@ -103,6 +103,7 @@
         </div>
       </div>
       <div class="modal-footer">
+        <button class="btn btn-primary add_row_question" type="button"><i data-feather="plus-circle"></i> Add Question</button>
           <button type="submit" class="btn btn-primary no-print btn_save"><i data-feather="save"></i> Save
           </button>
       </div>
@@ -148,7 +149,7 @@
         items: "tr",
       });
 
-      $('#add_row_question').click(function(){
+      $('.add_row_question').click(function(){
         var row = parseInt($('#question_row_count').val()) + 1;
         $('#question_row_count').val(row);
         var $tr = '';

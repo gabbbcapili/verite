@@ -93,7 +93,7 @@
                 </div>
                 <div class="my-auto">
                   <h4 class="fw-bolder mb-0">{{ $totals['spafs'] }}</h4>
-                  <p class="card-text font-small-3 mb-0">Completed SPAF</p>
+                  <p class="card-text font-small-3 mb-0">Completed Assessments</p>
                 </div>
               </div>
             </div>
