@@ -4,6 +4,8 @@ namespace App\Notifications;
 
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
+use App\Helpers\Helper;
+use Illuminate\Support\HtmlString;
 
 class ResetPassword extends Notification
 {
@@ -26,7 +28,7 @@ class ResetPassword extends Notification
         return (new MailMessage)
             ->subject('Reset Password')
             ->greeting('Hello ' . $this->user->fullName)
-            ->line('You are receiving this email because we received a password reset request for your account.')
+            ->line(new HtmlString(Helper::settings()->user_reset))
             ->action('Reset Password', url('password/reset', $this->token))
             ->line('This password reset link will expire in 60 minutes.');
     }
