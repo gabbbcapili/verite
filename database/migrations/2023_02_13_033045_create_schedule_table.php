@@ -34,6 +34,7 @@ class CreateScheduleTable extends Migration
             $table->string('cf_3')->nullable();
             $table->string('cf_4')->nullable();
             $table->string('cf_5')->nullable();
+            $table->boolean('is_manual_entry')->default(1);
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->softDeletes();

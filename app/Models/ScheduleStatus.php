@@ -24,6 +24,10 @@ class ScheduleStatus extends Model
         return $this->name;
     }
 
+    public function schedules(){
+        return $this->hasMany(Schedule::class, 'status', 'name');
+    }
+
     public function created_by_user(){
         return $this->belongsTo(User::class, 'created_by');
     }

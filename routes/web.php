@@ -17,6 +17,7 @@ use App\Http\Controllers\Schedule\ScheduleStatusController;
 use App\Http\Controllers\Schedule\AuditModelController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\ProficiencyController;
+use App\Http\Controllers\AuditProgramController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,6 +62,10 @@ Route::group(['middleware' => ['auth']], function()
     Route::resource('schedule', ScheduleController::class)->except(['show'])->parameters(['schedule' => 'event']);
     Route::get('schedule/getEvents', [ScheduleController::class, 'getEvents'])->name('schedule.getEvents');
     Route::get('schedule/ganttChart', [ScheduleController::class, 'ganttChart'])->name('schedule.ganttChart');
+    Route::post('schedule/auditProgram/loadSchedulesFor/{company}', [AuditProgramController::class, 'loadSchedulesFor'])->name('schedule.loadSchedulesFor');
+
+    Route::resource('schedule/auditProgram', AuditProgramController::class, ['as' => 'schedule'])->parameters(['schedule' => 'auditProgram']);
+
 
     Route::post('loadAvailableUsers', [ScheduleController::class, 'loadAvailableUsers'])->name('schedule.loadAvailableUsers')->middleware('permission:schedule.manage');
     Route::post('loadScheduleDetails/{schedule}', [ScheduleController::class, 'loadScheduleDetails'])->name('schedule.loadScheduleDetails')->middleware('permission:schedule.manage');

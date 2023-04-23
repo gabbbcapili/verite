@@ -24,7 +24,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('auditProgram:plot')
+                 ->dailyAt('00:00')
+                 ->appendOutputTo('storage/logs/cron_audit_program_plot.log');
     }
 
     /**

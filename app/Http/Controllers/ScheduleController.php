@@ -531,6 +531,13 @@ class ScheduleController extends Controller
             }
 
             if($event->schedule){
+                if($event->schedule->auditPrograms){
+                    foreach($event->schedule->auditPrograms as $auditProgram){
+                        $auditProgram->auditProgramDates()->delete();
+                        $auditProgram->delete();
+                    }
+                }
+
                 $event->schedule()->delete();
             }
 

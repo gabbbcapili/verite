@@ -86,7 +86,7 @@
                    return opt.text.toUpperCase();
                 } else {
                     var $opt = $(
-                       '<span class="text-white bg-' + color + '">' + opt.text.toUpperCase() + '</span>'
+                       '<span class="px-1 text-white bg-' + color + '">' + opt.text.toUpperCase() + '</span>'
                     );
                     return $opt;
                 }

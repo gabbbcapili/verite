@@ -6,7 +6,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
-          Edit Schedule
+          Edit Schedule - {{ $schedule->is_manual_entry ? 'Manual Entry' : 'Audit Program Generated'  }} / Person Days: {{ $event->personDays }}
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>

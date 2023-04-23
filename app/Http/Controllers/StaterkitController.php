@@ -8,6 +8,7 @@ use Spatie\Permission\Models\Role;
 use App\Models\Template;
 use App\Models\Spaf;
 use App\Models\Schedule;
+use App\Models\ScheduleStatus;
 use App\Models\Utilities;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
@@ -15,7 +16,7 @@ use Validator;
 
 class StaterkitController extends Controller
 {
-    public function home()
+    public function home(Request $request)
     {
         $breadcrumbs = [['link' => "home", 'name' => "Home"], ['name' => ""]];
         $totals = [];
@@ -23,8 +24,28 @@ class StaterkitController extends Controller
         $totals['suppliers'] = Role::find(3)->users->count();
         $totals['clients'] = Role::find(4)->users->count();
         $totals['spafs'] = Spaf::where('status', 'completed')->count();
+        $totals['scheduleStatus'] = ScheduleStatus::all();
         if (request()->ajax()) {
             $schedules = Schedule::with('event');
+            if($request->scheduleStatus != "all"){
+                $schedules = $schedules->where('status', $request->scheduleStatus);
+            }
+            if($request->has('dateRange')){
+                $date = explode(' to ', $request->dateRange);
+                $from = $date[0];
+                $to = array_key_exists(1, $date) ? $date[1] : $date[0];
+                $schedules = $schedules->whereHas('event', function ($q) use($from,$to){
+                    $q->where('start_date', '>=', $from);
+                    $q->where('end_date', '<=', $to);
+                });
+            }
+            $scheduleStatus = ScheduleStatus::whereHas('schedules', function ($q) use($from,$to){
+                    $q->whereHas('event', function ($q) use($from,$to){
+                        $q->where('start_date', '>=', $from);
+                        $q->where('end_date', '<=', $to);
+                    });
+                })->withCount('schedules')->get();
+            $scheduleStatus = $schedules->get()->groupBy('status');
             return Datatables::eloquent($schedules)
             ->addColumn('titleDisplay', function(Schedule $schedule) {
                 return '<a data-action="'. route('schedule.edit', $schedule->event_id) .'" class="modal_button" data-bs-toggle="tooltip" data-placement="top" title="'. $schedule->status .'"><span class="badge rounded-pill badge-light-'. $schedule->status_color .' me-1">'. $schedule->event->titleComputed .'</span></a>';
@@ -44,6 +65,7 @@ class StaterkitController extends Controller
                 return $schedule->event->personDays . ' Days';
             })
             ->rawColumns(['action', 'titleDisplay', 'statuses'])
+            ->with('scheduleStatus', $scheduleStatus)
             ->make(true);
         }
         return view('app.dashboard.index', compact('breadcrumbs', 'totals'));

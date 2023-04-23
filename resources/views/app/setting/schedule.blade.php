@@ -20,6 +20,19 @@
           <div class="card-content">
             <div class="card-body">
               <div class="row mb-2">
+                <h4 class="card-title">Audit Program</h4>
+                <div class="col-lg-4 col-xs-12">
+                    <div class="form-group">
+                        <label for="name">Default Status:</label>
+                        <select class="form-control select2" name="audit_program_default_status_id">
+                          @foreach($scheduleStatuses as $scheduleStatus)
+                            <option value="{{ $scheduleStatus->id }}" {{ $setting->audit_program_default_status_id == $scheduleStatus->id ? 'selected' : '' }}>{{ $scheduleStatus->name }}</option>
+                          @endforeach
+                        </select>
+                    </div>
+                </div>
+              </div>
+              <div class="row mb-2">
                 <h4 class="card-title">Custom Fields Label</h4>
                   <div class="col-lg-4 col-xs-12">
                     <div class="form-group">

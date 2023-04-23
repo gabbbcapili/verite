@@ -107,6 +107,10 @@ class Company extends Model
         return $this->morphMany(EventUser::class, 'modelable');
     }
 
+    public function schedules(){
+        return $this->hasMany(Schedule::class, 'client_id');
+    }
+
     public function isAvailableOn($date){
         $date = explode(' to ', $date);
         $from = $date[0];

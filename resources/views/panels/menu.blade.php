@@ -144,6 +144,10 @@
           <a class="d-flex align-items-center" href="{{ route('schedule.ganttChart') }}"><i data-feather="circle"></i>
           <span class="menu-item text-truncate">Gantt Chart </span></a>
         </li>
+        <li class="nav-item {{ $request->segment(1) == 'schedule' && $request->segment(2) == 'auditProgram' ? 'active' : '' }}">
+          <a class="d-flex align-items-center" href="{{ route('schedule.auditProgram.index') }}"><i data-feather="circle"></i>
+          <span class="menu-item text-truncate">Audit Programs </span></a>
+        </li>
         @endcan
     </ul>
   </li>

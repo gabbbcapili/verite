@@ -1,3 +1,37 @@
+04-17
+    Audit Program ok
+        start date
+        frequency (months) 6
+        length of program (months)
+        default status query
+
+        schedule ok
+        is_manual_entry = bool
+
+    Dashboard ok
+        default data = current month
+        add filter date range
+        add filter status dropdown - (Query - 10) add counter
+
+    Spaf
+        - fixed info remove editable/deletable - all fields required
+        - square root of number of workers per nationality
+
+
+    Settings
+        Planner
+        - No of workers interviewed per day (default 15)
+        - Computation for Interviewer = √({field}) / 15 (no_of_workers_interviewed_per_day)
+        - Translator = # of nationalities = {field}
+        - No of {Role} (Lead Auditor)
+
+
+
+
+
+
+
+
 add filter schedule resource ok
 copy from schedule -> dropdown default selectable = today - 1 year ok
 change date -> retain resources available ok

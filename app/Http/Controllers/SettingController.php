@@ -6,6 +6,7 @@ use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Validator;
+use App\Models\ScheduleStatus;
 
 class SettingController extends Controller
 {
@@ -28,7 +29,8 @@ class SettingController extends Controller
             ['link'=>"/",'name'=>"Home"], ['name'=>"Settings"], ['name'=>"Schedule Settings"]
         ];
         $setting = Setting::first();
-        return view('app.setting.schedule', compact('breadcrumbs', 'setting'));
+        $scheduleStatuses = ScheduleStatus::where('blockable', 0)->get();
+        return view('app.setting.schedule', compact('breadcrumbs', 'setting', 'scheduleStatuses'));
     }
 
     public function scheduleUpdate(Request $request)
@@ -39,6 +41,7 @@ class SettingController extends Controller
             'schedule_cf_3' => ['required'],
             'schedule_cf_4' => ['required'],
             'schedule_cf_5' => ['required'],
+            'audit_program_default_status_id' => ['required'],
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()]);

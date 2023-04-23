@@ -115,11 +115,27 @@
       <div class="card card-statistics">
         <div class="card-header">
           <h4 class="card-title">Schedules</h4>
-          <div class="d-flex align-items-center">
-            <p class="card-text font-small-2 me-25 mb-0"></p>
-          </div>
         </div>
         <div class="card-body">
+          <div class="row">
+            <div class="col-4">
+              <div class="form-group">
+                <select class="form-control select2FormattedColor selectFilter" id="scheduleStatus">
+                  <option value="all">ALL STATUS</option>
+                  @foreach($totals['scheduleStatus'] as $scheduleStatus)
+                      <option value="{{ $scheduleStatus->name }}" data-color="{{ $scheduleStatus->color }}" data-id="{{ $scheduleStatus->id }}">
+                          <span class="text-{{ $scheduleStatus->color }}">{{ $scheduleStatus->name }}</span>
+                      </option>
+                  @endforeach
+                </select>
+              </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                <input type="text" name="start_end_date" class="form-control rangePicker selectFilter" id="dateRange">
+                </div>
+            </div>
+          </div>
           <div class="row">
             <div class="col-12">
               <table class="datatables-basic table" id="schedule_table">
@@ -127,7 +143,7 @@
                   <tr>
                     <th>Id</th>
                     <th>Title</th>
-                    <th>Statuses</th>
+                    <th>Status</th>
                     <th>Updated At</th>
                     <th>Person Days</th>
                   </tr>
@@ -234,12 +250,14 @@
 
 @section('page-script')
 <script type="text/javascript">
+  @can('dashboard.default')
     var table_id = 'schedule_table'
     var table_title = 'Audit Model List';
     var table_route = {
           url: '{{ route('home') }}',
           data: function (data) {
-                // data.role = $("#role").val();
+                data.scheduleStatus = $("#scheduleStatus").val();
+                data.dateRange = $("#dateRange").val();
             }
         };
       var columnns = [
@@ -254,15 +272,58 @@
 
         ];
       var drawCallback = function( settings ) {
+        var api = this.api();
+        var json = api.ajax.json();
+        $.each(json.scheduleStatus, function(index, item) {
+          console.log(item.name + item.schedules_count);
+          $('#scheduleStatus option[value="'+ index +'"]').text(index + ' - ' + item.length);
+        });
+        $(".select2FormattedColor").select2({
+                templateResult: formatStateColor,
+                templateSelection: formatStateColor
+          });
         $('[data-bs-toggle="tooltip"]').tooltip();
         feather.replace({
           width: 14,height: 14
         });
       };
       var order =  [[ 0, "desc" ]];
-      $(document).ready(function(){
-        $('.select2').select2();
+
+      $('.rangePicker').flatpickr({
+        mode: 'range',
+        altFormat: 'Y-m-d',
+        defaultDate: [new Date(), new Date().fp_incr(30)],
+        onReady: function (selectedDates, dateStr, instance) {
+          if (instance.isMobile) {
+            $(instance.mobileInput).attr('step', null);
+          }
+        },
       });
+
+      $(".select2FormattedColor").select2({
+                templateResult: formatStateColor,
+                templateSelection: formatStateColor
+          });
+
+            function formatStateColor (opt) {
+                if (!opt.id) {
+                    return opt.text.toUpperCase();
+                }
+
+                var color = $(opt.element).attr('data-color');
+                if(!color){
+                   return opt.text.toUpperCase();
+                } else {
+                    var $opt = $(
+                       '<span class="px-1 text-white bg-' + color + '">' + opt.text.toUpperCase() + '</span>'
+                    );
+                    return $opt;
+                }
+            };
+      @endcan
+
+
+
   </script>
   <script src="{{ asset('js/scripts/tables/table-datatables-basic.js') }}"></script>
 @endsection
