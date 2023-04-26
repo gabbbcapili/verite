@@ -6,7 +6,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
-          Edit Schedule - {{ $schedule->is_manual_entry ? 'Manual Entry' : 'Audit Program Generated'  }} / Person Days: {{ $event->personDays }}
+          Edit Schedule - @if($schedule->is_manual_entry == true || $schedule->is_manual_entry === null) Manual Entry @else Audit Program Generated @endif / Person Days: {{ $event->personDays }}
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -39,10 +39,15 @@
                   <div id="rowLeave" class="d-none">
                     <div class="row mb-2 justify-content-md-center">
                       <div class="col-lg-6">
-                        <label>Company</label>
+                        <label>Company (Leave Blank if this schedule is for yourself only.)</label>
                         <select name="company_id" class="form-control select2Modal">
+                          <option>Select Company</option>
                           @foreach($companies as $company)
-                            <option value="{{ $company->id }}" {{ $event->users()->first()->modelable_id == $company->id ? 'selected' : '' }}>{{ $company->displayName }}</option>
+                            @if($event->users()->first()->modelable_type == 'App\Models\Company')
+                              <option value="{{ $company->id }}" {{ $event->users()->first()->modelable_id == $company->id ? 'selected' : '' }}>{{ $company->displayName }}</option>
+                            @else
+                              <option value="{{ $company->id }}">{{ $company->displayName }}</option>
+                            @endif
                           @endforeach
                         </select>
                       </div>

@@ -39,7 +39,7 @@
                   <div id="rowLeave" class="d-none">
                     <div class="row mb-2 justify-content-md-center">
                       <div class="col-lg-6">
-                        <label>Company</label>
+                        <label>Company (Leave Blank if this schedule is for yourself only.)</label>
                         <select name="company_id" class="form-control select2Modal">
                           <option disabled selected>Select Company</option>
                           @foreach($companies as $company)

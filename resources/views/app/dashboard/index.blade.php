@@ -132,7 +132,7 @@
             </div>
             <div class="col-4">
                 <div class="form-group">
-                <input type="text" name="start_end_date" class="form-control rangePicker selectFilter" id="dateRange">
+                <input type="text" name="start_end_date" class="form-control rangePick selectFilter" id="dateRange">
                 </div>
             </div>
           </div>
@@ -289,7 +289,7 @@
       };
       var order =  [[ 0, "desc" ]];
 
-      $('.rangePicker').flatpickr({
+      $('.rangePick').flatpickr({
         mode: 'range',
         altFormat: 'Y-m-d',
         defaultDate: [new Date(), new Date().fp_incr(30)],

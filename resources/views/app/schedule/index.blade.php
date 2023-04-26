@@ -211,15 +211,16 @@
                   alert('there was an error while fetching events!');
               },
           },
-          editable: true,
+
           eventOverlap: false,
-          dragScroll: true,
+
           dayMaxEvents: 2,
           customButtons: {
             sidebarToggle: {
               text: 'Sidebar'
             }
           },
+
           headerToolbar: {
             start: 'sidebarToggle, prev,next, title',
             end: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
