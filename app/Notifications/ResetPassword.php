@@ -29,7 +29,7 @@ class ResetPassword extends Notification
             ->subject('Reset Password')
             ->greeting('Hello ' . $this->user->fullName)
             ->line(new HtmlString(Helper::settings()->user_reset))
-            ->action('Reset Password', url('password/reset', $this->token))
+            ->action('Reset Password', route('password.reset', $this->token))
             ->line('This password reset link will expire in 60 minutes.');
     }
 }
