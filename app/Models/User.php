@@ -16,6 +16,8 @@ use Carbon\Carbon;
 use App\Traits\CreatedUpdatedBy;
 use Spatie\Permission\Models\Permission;
 use App\Notifications\ResetPassword as ResetPasswordNotification;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ResetPassword;
 
 class User extends Authenticatable
 {
@@ -217,6 +219,7 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         // Your your own implementation.
-        $this->notify(new ResetPasswordNotification($token, $this));
+        Mail::to($this)->send(new ResetPassword($this, $token));
+        // $this->notify(new ResetPasswordNotification($token, $this));
     }
 }

@@ -87,7 +87,7 @@
 
 @section('page-script')
     <script src="{{ asset('js/scripts/forms-validation/form-normal.js') }}"></script>
-
+    <script src="{{ asset('js/scripts/tables/table-question.js') }}"></script>
     <script type="text/javascript">
         function replaceIcons(){
             if (feather) {
@@ -153,9 +153,6 @@
             $('.btn_print').click(function(){
                 $('#printThis').printThis();
             });
-
         });
-
-
     </script>
 @endsection

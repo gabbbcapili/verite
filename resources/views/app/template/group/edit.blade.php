@@ -41,7 +41,7 @@
                           <th style="width: 20%;">Type</th>
                           <th style="width: 10%;">Required <i data-feather="info" data-bs-toggle-modal="tooltip" data-bs-placement="top" title="Check / Uncheck this field whether this field is required to fill up or not."></i></th>
                           <th style="width: 10%;">Next Line <i data-feather="info" data-bs-toggle-modal="tooltip" data-bs-placement="top" title="Uncheck if multiple questions in one line."></i></th>
-                          <th style="width: 25%;">For Checkbox/Radio <i data-feather="info" data-bs-toggle-modal="tooltip" data-bs-placement="top" title="If the field is checkbox or radio, put all the options in this field separeted by vertical bar ( | ) e.g. 'Yes|No' 'Management|Direct|Outsource|Dispatch'"></i></th>
+                          <th style="width: 25%;">For Checkbox/Radio <i data-feather="info" data-bs-toggle-modal="tooltip" data-bs-placement="top" title="If the field is checkbox or radio, put all the options/columns in this field separeted by vertical bar ( | ) e.g. 'Yes|No' 'Management|Direct|Outsource|Dispatch, Column1|Column2|Column3'."></i></th>
                           <th style="width: 10%;">Action</th>
                         </tr>
                       </thead>
@@ -61,6 +61,9 @@
                                 <option value="email" {{ $q->type == 'email' ? 'selected' : '' }}>Email</option>
                                 <option value="number" {{ $q->type == 'number' ? 'selected' : '' }}>Number</option>
                                 <option value="textarea" {{ $q->type == 'textarea' ? 'selected' : '' }}>Long Text</option>
+                                <option value="file" {{ $q->type == 'file' ? 'selected' : '' }}>File</option>
+                                <option value="file_multiple" {{ $q->type == 'file_multiple' ? 'selected' : '' }}>Multiple File</option>
+                                <option value="table" {{ $q->type == 'table' ? 'selected' : '' }}>Table</option>
                               </select>
                             </td>
                             <td>
@@ -114,7 +117,7 @@
 <script type="text/javascript">
     $(document).ready(function(){
       function changeType(select, initial = false){
-        if(select.find('option:selected').val() == 'checkbox' || select.find('option:selected').val() == 'radio'){
+        if(select.find('option:selected').val() == 'checkbox' || select.find('option:selected').val() == 'radio' || select.find('option:selected').val() == 'table'){
           select.closest('tr').find('.for_checkbox').removeAttr('disabled');
         }else{
           select.closest('tr').find('.for_checkbox').attr('disabled', 'disabled');
@@ -131,7 +134,6 @@
             select.closest('tr').find('.for_next_line').removeAttr('disabled');
             select.closest('tr').find('.for_next_line').prop('checked', true);
           }
-
         }
       }
       $('.selectType').each(function(i, obj) {
@@ -156,7 +158,7 @@
 
         $tr += '<tr>';
         $tr += '<td><textarea name="question['+ row +'][text]" id="question.'+ row +'.text" class="form-control"></textarea></td>';
-        $tr += '<td><select class="form-control selectType" name="question['+ row +'][type]" id="question.'+ row +'.type"><option value="input">Text</option><option value="checkbox">Check Box</option><option value="radio">Radio Button</option><option value="title">Title</option><option value="email">Email</option><option value="number">Number</option><option value="textarea">Long Text</option></select></td>';
+        $tr += '<td><select class="form-control selectType" name="question['+ row +'][type]" id="question.'+ row +'.type"><option value="input">Text</option><option value="checkbox">Check Box</option><option value="radio">Radio Button</option><option value="title">Title</option><option value="email">Email</option><option value="number">Number</option><option value="textarea">Long Text</option><option value="file">File</option><option value="file_multiple">Multiple File</option><option value="table">Table</option></select></td>';
         $tr += '<td><div class="form-check"><input class="form-check-input for_required" type="checkbox" value="1" name="question['+ row +'][required]" id="question.'+ row +'.required"><label class="form-check-label">Required</label></div></td>';
         $tr += '<td><div class="form-check"><input class="form-check-input for_next_line" type="checkbox" value="1" name="question['+ row +'][next_line]" id="question.'+ row +'.next_line" checked><label class="form-check-label">Next Line</label></div></td>';
         $tr += '<td><textarea name="question['+ row +'][for_checkbox]" id="question.'+ row +'.for_checkbox" class="form-control for_checkbox" placeholder="Management|Direct|Outsource|Dispatch" disabled></textarea></td>';

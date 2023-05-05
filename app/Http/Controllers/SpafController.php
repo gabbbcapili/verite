@@ -188,17 +188,33 @@ class SpafController extends Controller
         $validation = [];
         if(! $request->has('save_finish_later')){
             foreach($spaf->template->questions  as $q){
-                if($q->type == 'checkbox'){
-                    $validation['checkbox.'. $q->id] = $q->required ? 'required' : '';
+                if(in_array($q->type, ['checkbox', 'email', 'number', 'file', 'file_multiple', 'table'])){
+                    if($q->type == 'checkbox'){
+                        $validation['checkbox.'. $q->id] = $q->required ? 'required' : '';
+                    }
+                    if($q->type == 'email'){
+                    $validation['question.'. $q->id] = $q->required ? ['required', 'email'] : ['nullable', 'email'];
+                    }
+                    if($q->type == 'number'){
+                        $validation['question.'. $q->id] = $q->required ? ['required', 'numeric'] : ['nullable', 'numeric'];
+                    }
+                    if($q->type == 'file'){
+                        $answer = $spaf->answers()->where('question_id', $q->id)->first();
+                        if(! $answer){
+                            $validation['file.'. $q->id] = $q->required ? ['required'] : ['nullable'];
+                        }
+                    }
+                    if($q->type == 'file_multiple'){
+                        $answer = $spaf->answers()->where('question_id', $q->id)->first();
+                        if(! $answer){
+                            $validation['file_multiple.'. $q->id] = $q->required ? ['required'] : ['nullable'];
+                        }
+                    }
+                    if($q->type == 'table'){
+                        $validation['table.'. $q->id] = $q->required ? ['required'] : ['nullable'];
+                    }
                 }else{
                     $validation['question.'. $q->id] = $q->required ? 'required' : '';
-                }
-
-                if($q->type == 'email'){
-                    $validation['question.'. $q->id] = $q->required ? ['required', 'email'] : ['nullable', 'email'];
-                }
-                if($q->type == 'number'){
-                    $validation['question.'. $q->id] = $q->required ? ['required', 'numeric'] : ['nullable', 'numeric'];
                 }
             }
         }
@@ -206,6 +222,9 @@ class SpafController extends Controller
             $validation,
         [
             'question.*.required' => 'This field is required.',
+            'file.*.required' => 'This field is required.',
+            'table.*.required' => 'This field is required.',
+            'file_multiple.*.required' => 'This field is required.',
             'question.*.email' => 'This field must be a valid email address.',
             'question.*.numeric' => 'This field must be a number.',
             'checkbox.*.required' => 'This field is required.'
@@ -232,6 +251,43 @@ class SpafController extends Controller
                 foreach($request->checkbox as $name => $q){
                     $spaf->answers()->updateOrCreate(['question_id' => $name,],[
                             'value' => implode(',', $q),
+                        ]);
+                }
+            }
+
+            if($request->has('table')){
+                $updated = [];
+                foreach($request->table as $question_id => $answers){
+                    $answer = $spaf->answers()->updateOrCreate(['question_id' => $question_id,],[
+                            'value' => json_encode($answers),
+                        ]);
+                    $updated[] =$answer->id;
+                }
+                $deleteTable = $spaf->answers()->whereIn('question_id', $spaf->template->questions->where('type', 'table')->pluck('id'))->whereNotIn('id', $updated)->delete();
+            }
+
+            if($request->has('file')){
+                foreach($request->file as $name => $q){
+                      $file = $q;
+                      $new_name = 'file_'  . sha1(time()) . '.' . $file->getClientOriginalExtension();
+                      $file->move(public_path('uploads/spaf/') , $new_name);
+                        $spaf->answers()->updateOrCreate(['question_id' => $name,],[
+                            'value' => $new_name,
+                        ]);
+                }
+            }
+            if($request->has('file_multiple')){
+                foreach($request->file_multiple as $name => $q){
+                    $files = [];
+                    $iteration = 0;
+                    foreach($q as $file){
+                        $new_name = 'file'.$iteration.'_'  . sha1(time()) . '.' . $file->getClientOriginalExtension();
+                        $file->move(public_path('uploads/spaf/') , $new_name);
+                        $files[] = $new_name;
+                        $iteration += 1;
+                    }
+                    $spaf->answers()->updateOrCreate(['question_id' => $name,],[
+                            'value' => implode(',', $files),
                         ]);
                 }
             }

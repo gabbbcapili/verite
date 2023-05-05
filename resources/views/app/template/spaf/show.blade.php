@@ -39,3 +39,4 @@
         $('#printThis').printThis();
     });
 </script>
+<script src="{{ asset('js/scripts/tables/table-question.js') }}"></script>

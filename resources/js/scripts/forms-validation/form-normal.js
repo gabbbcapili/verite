@@ -75,6 +75,16 @@ $(function() {
           console.log(jqXhr);
           console.log(json);
           console.log(errorThrown);
+          if(json){
+            Swal.fire({
+                icon: 'error',
+                title: 'No internet connection. Please try again later.',
+                // showConfirmButton: false,
+                showClass: {
+                  popup: 'animate__animated animate__fadeIn'
+                },
+              });
+          }
           $('.btn_save').prop('disabled', false);
         }
       });

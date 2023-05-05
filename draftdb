@@ -1,8 +1,12 @@
 
+email reset password footer - done
+offline mode - for testing/presentation
+calendar - add leave to single user even if has manage.schedule, edit on leave not working, calendar leave plotting always short by 1 day ok
+add type file / multiple to group ok
+
+
 26-04
-    calendar - add leave to single user even if has manage.schedule, edit on leave not working, calendar leave plotting always short by 1 day
     Add another type to template - Action Items template attach to audit transaction
-    add type file / multiple to group
 04-17
     delete audit program dates / status cancel
     check dashboard status counter

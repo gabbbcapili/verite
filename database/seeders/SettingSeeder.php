@@ -34,6 +34,13 @@ class SettingSeeder extends Seeder
             'schedule_cf_3' => 'Custom Field 3',
             'schedule_cf_4' => 'Custom Field 4',
             'schedule_cf_5' => 'Custom Field 5',
+            'lead_auditor' => 1,
+            'second_auditor' => 1,
+            'worker_interviewer' => 1,
+            'ehs_auditor' => 1,
+            'asr' => 1,
+            'interpreter' => 1,
+            'observer' => 1,
         ]);
         AuditModel::create([
             'name' => 'Comprehensive',

@@ -212,9 +212,51 @@
                         </div>
                       <!-- </div> -->
                     </div>
-                    <div class="row mb-2 align-items-center justify-content-center">
+                    <div class="row mb-2">
                       <div class="col-6" id="rowSpaf">
 
+                      </div>
+                      <div class="col-6" id="rowResourcePlan">
+                        <h4>Resource Plan</h4>
+                        <div class="row mb-2">
+                          <div class="col-6">
+                            <label>Lead Auditor</label>
+                            <input type="text" id="lead_auditor" class="form-control inputResourcePlan" data-selection="Lead Auditor" value="{{ Helper::settings()->lead_auditor }}">
+                          </div>
+                          <div class="col-6">
+                            <label>Second Auditor</label>
+                            <input type="text" id="second_auditor" class="form-control inputResourcePlan" data-selection="Second Auditor" value="{{ Helper::settings()->second_auditor }}">
+                          </div>
+                        </div>
+                        <div class="row mb-2">
+                          <div class="col-6">
+                            <label>Worker Interviewer</label>
+                            <input type="text" id="worker_interviewer" class="form-control inputResourcePlan" data-selection="Worker Interviewer" value="{{ Helper::settings()->worker_interviewer }}">
+                          </div>
+                          <div class="col-6">
+                            <label>EHS Auditor</label>
+                            <input type="text" id="ehs_auditor" class="form-control inputResourcePlan" data-selection="EHS Auditor" value="{{ Helper::settings()->ehs_auditor }}">
+                          </div>
+                        </div>
+                        <div class="row mb-2">
+                          <div class="col-6">
+                            <label>ASR</label>
+                            <input type="text" id="asr" class="form-control inputResourcePlan" data-selection="ASR" value="{{ Helper::settings()->asr }}">
+                          </div>
+                          <div class="col-6">
+                            <label>Interpreter</label>
+                            <input type="text" id="interpreter" class="form-control inputResourcePlan" data-selection="Interpreter" value="{{ Helper::settings()->interpreter }}">
+                          </div>
+                        </div>
+                        <div class="row mb-2">
+                          <div class="col-6">
+                            <label>Observer</label>
+                            <input type="text" id="observer" class="form-control inputResourcePlan"data-selection="Observer" value="{{ Helper::settings()->observer }}">
+                          </div>
+                          <div class="col-6">
+                            <button type="button" class="btn btn-primary mt-1" id="addResources">Add Resources</button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -375,7 +417,7 @@
         var $tr = '';
 
         $tr += '<tr>';
-        $tr += '<td><select class="form-control select2Table" name="users['+ row +'][role]" id="users.'+ row +'.role">'+ roleTypesSelection +'</select></td>';
+        $tr += '<td><select class="form-control select2Table roleSelection" name="users['+ row +'][role]" id="users.'+ row +'.role">'+ roleTypesSelection +'</select></td>';
         $tr += '<td><select class="form-control select2Table userSelection" name="users['+ row +'][id]" id="users.'+ row +'.id">'+ userSelection +'</select></td>';
         $tr += '<td><div class="d-flex justify-content-end"><div class="btn-group" role="group"><button type="button" class="btn btn-sm btn-outline-success delete_row" data-bs-toggle-modal="tooltip" title="Delete"><i data-feather="delete"></i></button></div></div></td>';
         $tr += '</tr>';
@@ -452,5 +494,15 @@
               }
           });
       }
+      $('#addResources').click(function(){
+         $(".inputResourcePlan").each(function(){
+            var value = $(this).val();
+            var id = $(this).attr('id');
+            for(let i = 0; i < value; i++){
+              $('#add_user').click();
+              $('#user_table tr:last .roleSelection').val($(this).data('selection')).trigger('change');
+            }
+          });
+      });
     });
 </script>

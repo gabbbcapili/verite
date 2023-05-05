@@ -53,6 +53,7 @@
 
 @section('page-script')
     <script src="{{ asset('js/scripts/forms-validation/form-normal.js') }}"></script>
+    <script src="{{ asset('js/scripts/tables/table-question.js') }}"></script>
     <script type="text/javascript">
         $(document).on('click', '.save_finish_later', function(){
             $('#save_finish_later').prop('checked', true);

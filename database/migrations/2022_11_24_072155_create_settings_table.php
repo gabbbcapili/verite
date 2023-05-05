@@ -33,6 +33,14 @@ class CreateSettingsTable extends Migration
             $table->string('schedule_cf_3');
             $table->string('schedule_cf_4');
             $table->string('schedule_cf_5');
+
+            $table->string('lead_auditor');
+            $table->string('second_auditor');
+            $table->string('worker_interviewer');
+            $table->string('ehs_auditor');
+            $table->string('asr');
+            $table->string('interpreter');
+            $table->string('observer');
             $table->unsignedInteger('audit_program_default_status_id')->default(1);
             $table->timestamps();
         });

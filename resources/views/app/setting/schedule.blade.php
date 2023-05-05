@@ -33,6 +33,18 @@
                 </div>
               </div>
               <div class="row mb-2">
+                <h4 class="card-title">Resource Plan</h4>
+                @foreach(Helper::settings()->schedule_role_types() as $role)
+                @php
+                  $roleName = strtolower(str_replace(' ', '_', $role));
+                @endphp
+                  <div class="col-lg-4 col-xs-12 mb-2">
+                    <label>{{ $role }}</label>
+                    <input type="text" class="form-control" name="{{ $roleName }}" value="{{ $setting->$roleName }}">
+                  </div>
+                @endforeach
+              </div>
+              <div class="row mb-2">
                 <h4 class="card-title">Custom Fields Label</h4>
                   <div class="col-lg-4 col-xs-12">
                     <div class="form-group">
