@@ -42,6 +42,13 @@ class SettingController extends Controller
             'schedule_cf_4' => ['required'],
             'schedule_cf_5' => ['required'],
             'audit_program_default_status_id' => ['required'],
+            'lead_auditor' => ['required','numeric', 'min:0'],
+            'second_auditor' => ['required','numeric', 'min:0'],
+            'worker_interviewer' => ['required','numeric', 'min:0'],
+            'ehs_auditor' => ['required','numeric', 'min:0'],
+            'asr' => ['required','numeric', 'min:0'],
+            'interpreter' => ['required','numeric', 'min:0'],
+            'observer' => ['required','numeric', 'min:0'],
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()]);
