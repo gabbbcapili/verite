@@ -28,10 +28,21 @@ class AuditController extends Controller
         ];
         if (request()->ajax()) {
             $audit = Audit::with('schedule')->whereHas('schedule');
+
             if($request->user()->can('audit.manage')){
                 if($request->status != "all"){
                     $audit->where('status', $request->status);
                 }
+            }else{
+                // only schedules that the user was tagged as a resource person
+                $audit->whereHas('schedule', function($s) use($request){
+                    $s->whereHas('event', function($e) use($request){
+                        $e->whereHas('users', function($eu) use($request){
+                            $eu->where('modelable_type', 'App\Models\User');
+                            $eu->where('modelable_id', $request->user()->id);
+                        });
+                    });
+                });
             }
             return Datatables::eloquent($audit)
             ->addColumn('action', function(Audit $audit) {
@@ -39,8 +50,12 @@ class AuditController extends Controller
                                              // ['route' => route('audit.destroy', $audit->id), 'name' => 'Delete', 'type' => 'confirmDelete', 'title' => 'Are you sure to delete this audit?', 'text' => 'Delete']
                                             ]);
             })
-            ->addColumn('schedule_title', function (Audit $audit) {
-                return '<a href="#" class="modal_button" data-action="'.route('schedule.edit', $audit->schedule->event_id).'">'. $audit->schedule->title .'</a>';
+            ->addColumn('schedule_title', function (Audit $audit, Request $request) {
+                if($request->user()->can('audit.manage')){
+                    return '<a href="#" class="modal_button" data-action="'.route('schedule.edit', $audit->schedule->event_id).'">'. $audit->schedule->title .'</a>';
+                }else{
+                    return $audit->schedule->title;
+                }
             })
             ->editColumn('updated_at', function (Audit $audit) {
                 return $audit->updated_at->diffForHumans() . ' | ' . $audit->updatedByName;

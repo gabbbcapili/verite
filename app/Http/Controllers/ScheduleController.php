@@ -390,8 +390,6 @@ class ScheduleController extends Controller
                         }
                     }
                 }
-
-
         }
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()]);

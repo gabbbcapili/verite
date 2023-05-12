@@ -53,7 +53,7 @@ class RoleSeeder extends Seeder
             ['name' => 'schedule.selectableAuditor', 'display' => 'Selectable as Auditor'],
             ['name' => 'audit.manage', 'display' => 'Manage Audit'],
             ['name' => 'audit.approve', 'display' => 'Approve Audit'],
-            ['name' => 'settings.audit.manage', 'display' => 'Approve Audit'],
+            ['name' => 'settings.audit.manage', 'display' => 'Manage Audit Settings'],
         ];
         foreach($permissions as $p){
             Permission::create($p);

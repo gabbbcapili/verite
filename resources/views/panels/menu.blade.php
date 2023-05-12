@@ -160,7 +160,7 @@
     </ul>
   </li>
 
-  @if($request->user()->hasRole('Client') || $request->user()->hasRole('Client') || $request->user()->can('audit.manage') || $request->user()->can('schedule.selectableAuditor'))
+  @if($request->user()->can('audit.manage') || $request->user()->can('schedule.selectableAuditor'))
   <li class="nav-item has-sub" style=""><a class="d-flex align-items-center" href="#">
     <i data-feather="folder"></i>
     <span class="menu-title text-truncate">Audits</span><span class="badge badge-light-warning rounded-pill ms-auto me-1" id="badge_audits"></span></a>

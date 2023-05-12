@@ -28,7 +28,13 @@
                                         <table class="table table-bordered">
                                             <tr>
                                                 <th class="text-end" style="width: 20%">Schedule:</th>
-                                                <td style="width: 40%"><a href="#" class="modal_button" data-action="{{route('schedule.edit', $audit->schedule->event_id)}}">{{$audit->schedule->title}}</a></td>
+                                                <td style="width: 40%">
+                                                    @if($request->user()->can('schedule.manage'))
+                                                        <a href="#" class="modal_button" data-action="{{route('schedule.edit', $audit->schedule->event_id)}}">{{$audit->schedule->title}}</a>
+                                                    @else
+                                                        {{$audit->schedule->title}}
+                                                    @endif
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <th class="text-end" style="width: 20%">Auditee:</th>
