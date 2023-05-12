@@ -87,24 +87,32 @@
     <i data-feather="file"></i>
     <span class="menu-title text-truncate">Templates</span><span class="badge badge-light-warning rounded-pill ms-auto me-1" id="badge_templates"></span></a>
     <ul class="menu-content">
-      <li class="nav-item {{ $request->segment(1) == 'template' && $request->segment(2) == 'spaf' && $request->segment(3) == 'spaf' ? 'active' : '' }}">
+      <li class="nav-item {{ $request->segment(1) == 'template' && $request->segment(2) == 'spaf' ? 'active' : '' }}">
         <a class="d-flex align-items-center" href="{{ route('template.spaf.index', ['type' => 'spaf']) }}"><i data-feather="circle"></i>
           <span class="menu-item text-truncate">SPAF</span>
           <span class="badge badge-light-warning rounded-pill ms-auto me-1" id="badge_spaf"></span>
         </a>
 
       </li>
-      <li class="nav-item {{ $request->segment(1) == 'template' && $request->segment(2) == 'spaf' && $request->segment(3) == 'spaf_extension' ? 'active' : '' }}">
+      <li class="nav-item {{ $request->segment(1) == 'template' && $request->segment(2) == 'spaf_extension' ? 'active' : '' }}">
         <a class="d-flex align-items-center" href="{{ route('template.spaf.index', ['type' => 'spaf_extension']) }}"><i data-feather="circle"></i>
           <span class="menu-item text-truncate">SPAF Extension</span>
           <span class="badge badge-light-warning rounded-pill ms-auto me-1" id="badge_spaf_extension"></span>
         </a>
 
       </li>
-      <li class="nav-item {{ $request->segment(1) == 'template' && $request->segment(2) == 'spaf' && $request->segment(3) == 'risk_management' ? 'active' : '' }}">
+      <li class="nav-item {{ $request->segment(1) == 'template' && $request->segment(2) == 'risk_management' ? 'active' : '' }}">
       <a class="d-flex align-items-center" href="{{ route('template.spaf.index', ['type' => 'risk_management']) }}"><i data-feather="circle"></i>
         <span class="menu-item text-truncate">Risk Management</span>
         <span class="badge badge-light-warning rounded-pill ms-auto me-1" id="badge_risk_management"></span>
+      </a>
+      </li>
+
+
+      <li class="nav-item {{ $request->segment(1) == 'template' && $request->segment(2) == 'audit' ? 'active' : '' }}">
+      <a class="d-flex align-items-center" href="{{ route('template.spaf.index', ['type' => 'audit']) }}"><i data-feather="circle"></i>
+        <span class="menu-item text-truncate">Audit</span>
+        <span class="badge badge-light-warning rounded-pill ms-auto me-1" id="badge_audit_template"></span>
       </a>
       </li>
     </ul>
@@ -152,9 +160,28 @@
     </ul>
   </li>
 
+  @if($request->user()->hasRole('Client') || $request->user()->hasRole('Client') || $request->user()->can('audit.manage') || $request->user()->can('schedule.selectableAuditor'))
+  <li class="nav-item has-sub" style=""><a class="d-flex align-items-center" href="#">
+    <i data-feather="folder"></i>
+    <span class="menu-title text-truncate">Audits</span><span class="badge badge-light-warning rounded-pill ms-auto me-1" id="badge_audits"></span></a>
+    <ul class="menu-content">
+        <li class="nav-item {{ $request->segment(1) == 'audit' && $request->segment(2) == '' ? 'active' : '' }}">
+          <a class="d-flex align-items-center" href="{{ route('audit.index') }}"><i data-feather="circle"></i>
+          <span class="menu-item text-truncate">List Audits</span></a>
+        </li>
+        @can('audit.manage')
+        <li class="nav-item {{ $request->segment(1) == 'audit' && $request->segment(2) == 'create' ? 'active' : '' }}">
+          <a class="d-flex align-items-center" href="{{ route('audit.create') }}"><i data-feather="plus-circle"></i>
+          <span class="menu-item text-truncate">Create New Audit</span></a>
+        </li>
+        @endcan
+    </ul>
+  </li>
+  @endif
 
 
-  @if( $request->user()->can('settings.email.manage') || $request->user()->can('settings.country.manage') || $request->user()->can('settings.scheduleStatus.manage') || $request->user()->can('settings.auditModel.manage'))
+
+  @if( $request->user()->can('settings.email.manage') || $request->user()->can('settings.country.manage') || $request->user()->can('settings.scheduleStatus.manage') || $request->user()->can('settings.auditModel.manage') || $request->user()->can('settings.audit.manage'))
   <li class="nav-item has-sub" style=""><a class="d-flex align-items-center" href="#">
     <i data-feather="settings"></i>
     <span class="menu-title text-truncate">Settings</span></a>
@@ -202,6 +229,12 @@
           </ul>
         </li>
         @endif
+        @can('settings.audit.manage')
+          <li class="nav-item {{ $request->segment(1) == 'settings' && $request->segment(2) == 'audit' ? 'active' : '' }}">
+            <a class="d-flex align-items-center" href="{{ route('settings.audit') }}"><i data-feather="folder"></i>
+            <span class="menu-item text-truncate">Audit</span></a>
+          </li>
+        @endcan
 
     </ul>
   </li>

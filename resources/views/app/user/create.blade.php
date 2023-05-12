@@ -69,9 +69,4 @@
             $('.select2').select2();
           });
     </script>
-    <script type="text/javascript">
-    if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.register('/serviceWorker.js');
-    }
-    </script>
 @endsection

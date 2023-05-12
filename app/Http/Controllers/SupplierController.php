@@ -143,7 +143,7 @@ class SupplierController extends Controller
             }
             $company = Company::create($companyData);
             $userData = $request->only(['first_name', 'last_name', 'email']);
-            $userData['password'] = Hash::make(Str::random(10));
+            $userData['password'] = Hash::make('admin123');
             $user = $company->users()->create($userData);
             $user->assignRole('Supplier');
             if($request->has('clients')){

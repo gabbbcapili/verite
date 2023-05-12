@@ -1,4 +1,29 @@
 
+Audit Db
+
+Audit
+id
+schedule_id
+status
+
+Audit Forms
+id
+audit_id
+template_id
+isMultiple boolean
+
+Audit Forms Header
+id
+audit_form_id
+name
+
+Audit Forms Answer
+id
+audit_form_header_id
+question_id
+value
+
+
 email reset password footer - done
 offline mode - for testing/presentation
 calendar - add leave to single user even if has manage.schedule, edit on leave not working, calendar leave plotting always short by 1 day ok

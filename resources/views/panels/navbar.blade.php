@@ -27,8 +27,13 @@
     </ul>
     <ul class="nav navbar-nav">
       <li class="nav-item d-none d-lg-block">
-        <a class="nav-link nav-link-style">
-          <i class="ficon" data-feather="{{ $configData['theme'] === 'dark' ? 'sun' : 'moon' }}"></i>
+        <a class="nav-link nav-link-style" href="{{ route('theme', session()->get('theme') == 'dark' ? 'light' : 'dark') }}">
+          <i class="ficon" data-feather="{{ session()->get('theme') == 'dark' ? 'sun' : 'moon' }}"></i>
+        </a>
+      </li>
+      <li class="nav-item d-none d-lg-block">
+        <a class="nav-link" href="{{ route('auditForm.cachedForms') }}" data-bs-toggle="tooltip" title="Cached Forms">
+          <i class="ficon" data-feather="hard-drive"></i>
         </a>
       </li>
     </ul>

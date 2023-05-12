@@ -84,7 +84,8 @@ class StaterkitController extends Controller
                     $data['badge_spaf'] = Template::where('type', 'spaf')->where('is_deleted', false)->where('is_approved', false)->count();
                     $data['badge_spaf_extension'] = Template::where('type', 'spaf_extension')->where('is_deleted', false)->where('is_approved', false)->count();
                     $data['badge_risk_management'] = Template::where('type', 'risk_management')->where('is_deleted', false)->where('is_approved', false)->count();
-                    $data['badge_templates'] = $data['badge_spaf'] + $data['badge_spaf_extension'] + $data['badge_risk_management'];
+                    $data['badge_audit_template'] = Template::where('type', 'audit')->where('is_deleted', false)->where('is_approved', false)->count();
+                    $data['badge_templates'] = $data['badge_spaf'] + $data['badge_spaf_extension'] + $data['badge_risk_management'] + $data['badge_audit_template'];
                 }
                 if($request->user()->can('spaf.manage') || $request->user()->can('spaf.approve')){
                     $data['badge_assessment_forms_admin'] = Spaf::whereIn('status',['pending', 'answered'])->count();
@@ -102,5 +103,13 @@ class StaterkitController extends Controller
                     ];
         }
         return response()->json($output);
+    }
+
+    public function setTheme($theme){
+        $availTheme=['dark'=>'dark', 'light' => 'light'];
+        if(array_key_exists($theme,$availTheme)){
+            session()->put('theme',$theme);
+        }
+        return redirect()->back();
     }
 }

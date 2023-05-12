@@ -15,7 +15,11 @@ class Template extends Model
 
     protected $fillable = ['name', 'type', 'is_deleted', 'is_approved', 'status'];
 
-    public static $typeList = ['spaf', 'spaf_extension', 'risk_management'];
+    public static $typeList = ['spaf', 'spaf_extension', 'risk_management', 'audit'];
+
+    public static $forAudit = ['audit'];
+
+    public static $forSpaf = ['spaf', 'spaf_extension', 'risk_management'];
 
     public function created_by_user(){
         return $this->belongsTo(User::class, 'created_by');

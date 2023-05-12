@@ -41,6 +41,7 @@ class SettingSeeder extends Seeder
             'asr' => 1,
             'interpreter' => 1,
             'observer' => 1,
+            'status_for_audit_name' => 'Completed'
         ]);
         AuditModel::create([
             'name' => 'Comprehensive',

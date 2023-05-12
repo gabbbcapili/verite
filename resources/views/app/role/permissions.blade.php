@@ -233,6 +233,38 @@
       </tbody>
       <thead>
         <tr>
+          <th>Audits</th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td></td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="audit.manage" name="permissions[]" {{ isset($roleList) ? in_array('audit.manage', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="folder" class="vs-icon"></i></span>
+              </span>
+              <span class="">Manage Audits</span>
+            </div></fieldset>
+          </td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="audit.approve" name="permissions[]" {{ isset($roleList) ? in_array('audit.approve', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="check-circle" class="vs-icon"></i></span>
+              </span>
+              <span class="">Approve Audits</span>
+            </div></fieldset>
+          </td>
+          <td></td>
+        </tr>
+      </tbody>
+      <thead>
+        <tr>
           <th>Settings</th>
           <th></th>
           <th></th>
@@ -258,6 +290,15 @@
                 <span class="vs-checkbox--check"><i data-feather="globe" class="vs-icon"></i></span>
               </span>
               <span class="">Manage Schedule General Settings</span>
+            </div></fieldset>
+          </td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="settings.audit.manage" name="permissions[]" {{ isset($roleList) ? in_array('settings.audit.manage', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="folder" class="vs-icon"></i></span>
+              </span>
+              <span class="">Manage Audit Settings</span>
             </div></fieldset>
           </td>
           <td></td>

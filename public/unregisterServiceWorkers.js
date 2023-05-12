@@ -15,3 +15,5 @@ navigator.serviceWorker.getRegistrations().then(function (registrations) {
     })
   }
 })
+caches.delete('precache-v1');
+caches.delete('runtime');

@@ -51,13 +51,16 @@ class RoleSeeder extends Seeder
             ['name' => 'settings.auditModel.manage', 'display' => 'Manage Schedule Statuses'],
             ['name' => 'schedule.manage', 'display' => 'Manage Schedule Calendar'],
             ['name' => 'schedule.selectableAuditor', 'display' => 'Selectable as Auditor'],
+            ['name' => 'audit.manage', 'display' => 'Manage Audit'],
+            ['name' => 'audit.approve', 'display' => 'Approve Audit'],
+            ['name' => 'settings.audit.manage', 'display' => 'Approve Audit'],
         ];
         foreach($permissions as $p){
             Permission::create($p);
         }
 
         $sa_permission = Permission::all();
-        $sa->syncPermissions(['user.manage', 'spaf.manage','template.manage', 'supplier.manage', 'client.manage', 'spaf.approve', 'role.manage', 'template.approve', 'dashboard.default', 'settings.email.manage', 'settings.country.manage', 'settings.scheduleStatus.manage', 'settings.auditModel.manage', 'schedule.manage', 'settings.schedule.manage', 'schedule.selectableAuditor']);
+        $sa->syncPermissions(['user.manage', 'spaf.manage','template.manage', 'supplier.manage', 'client.manage', 'spaf.approve', 'role.manage', 'template.approve', 'dashboard.default', 'settings.email.manage', 'settings.country.manage', 'settings.scheduleStatus.manage', 'settings.auditModel.manage', 'schedule.manage', 'settings.schedule.manage', 'schedule.selectableAuditor', 'audit.manage', 'audit.approve', 'settings.audit.manage']);
         $default->syncPermissions(['dashboard.default']);
         $supplier->syncPermissions(['dashboard.supplier']);
         $client->syncPermissions(['dashboard.client']);

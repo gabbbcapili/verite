@@ -18,6 +18,8 @@ use App\Http\Controllers\Schedule\AuditModelController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\ProficiencyController;
 use App\Http\Controllers\AuditProgramController;
+use App\Http\Controllers\AuditController;
+use App\Http\Controllers\AuditFormController;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,6 +61,19 @@ Route::group(['middleware' => ['auth']], function()
     Route::get('spaf/{spaf}', [SpafController::class, 'show'])->name('spaf.show');
     Route::resource('spaf', SpafController::class)->only(['update', 'edit'])->middleware('role:Supplier,Client');
 
+    Route::post('audit/approve/{audit}/', [AuditController::class, 'approve'])->name('audit.approve')->middleware('permission:audit.approve');
+    Route::resource('audit', AuditController::class)->middleware('permission:audit.manage,schedule.selectableAuditor');
+    Route::get('auditForm/create/{auditForm}', [AuditFormController::class, 'create'])->name('auditForm.create')->middleware('permission:audit.manage,schedule.selectableAuditor');
+    Route::post('auditForm/{auditForm}', [AuditFormController::class, 'store'])->name('auditForm.store')->middleware('permission:audit.manage,schedule.selectableAuditor');
+    Route::get('auditForm/{auditFormHeader}', [AuditFormController::class, 'show'])->name('auditForm.show')->middleware('permission:audit.manage,schedule.selectableAuditor');
+    Route::get('auditForm/edit/{auditFormHeader}', [AuditFormController::class, 'edit'])->name('auditForm.edit')->middleware('permission:audit.manage,schedule.selectableAuditor');
+    Route::get('forms/cachedForms', [AuditFormController::class, 'cachedForms'])->name('auditForm.cachedForms')->middleware('permission:audit.manage,schedule.selectableAuditor');
+    Route::put('auditForm/{auditFormHeader}', [AuditFormController::class, 'update'])->name('auditForm.update')->middleware('permission:audit.manage,schedule.selectableAuditor');
+    Route::delete('auditForm/{auditFormHeader}', [AuditFormController::class, 'destroy'])->name('auditForm.destroy')->middleware('permission:audit.manage,schedule.selectableAuditor');
+
+    Route::post('audit/loadSchedulesFor/{company}', [AuditController::class, 'loadSchedulesFor'])->name('audit.loadSchedulesFor');
+
+
     Route::resource('schedule', ScheduleController::class)->except(['show'])->parameters(['schedule' => 'event']);
     Route::get('schedule/getEvents', [ScheduleController::class, 'getEvents'])->name('schedule.getEvents');
     Route::get('schedule/ganttChart', [ScheduleController::class, 'ganttChart'])->name('schedule.ganttChart');
@@ -81,6 +96,9 @@ Route::group(['middleware' => ['auth']], function()
         Route::get('schedule', [SettingController::class, 'schedule'])->name('settings.schedule')->middleware('permission:settings.schedule.manage');
         Route::put('scheduleUpdate', [SettingController::class, 'scheduleUpdate'])->name('settings.scheduleUpdate')->middleware('permission:settings.schedule.manage');
 
+        Route::get('audit', [SettingController::class, 'audit'])->name('settings.audit')->middleware('permission:settings.audit.manage');
+        Route::put('auditUpdate', [SettingController::class, 'auditUpdate'])->name('settings.auditUpdate')->middleware('permission:settings.audit.manage');
+
         Route::resource('country', CountryController::class, ['names' => 'settings.country'])->middleware('permission:settings.country.manage');
         Route::resource('scheduleStatus', ScheduleStatusController::class, ['names' => 'settings.scheduleStatus'])->middleware('permission:settings.scheduleStatus.manage');
         Route::resource('auditModel', AuditModelController::class, ['names' => 'settings.auditModel'])->middleware('permission:settings.auditModel.manage');
@@ -102,7 +120,7 @@ Route::group(['middleware' => ['auth']], function()
              Route::post('spaf/changeStatus/{template}', [SpafTemplateController::class, 'changeStatus'])->name('spaf.changeStatus')->middleware('permission:template.manage');
              Route::post('spaf/approve/{template}', [SpafTemplateController::class, 'approve'])->name('spaf.approve')->middleware('permission:template.approve');
              Route::post('spaf/clone/{template}', [SpafTemplateController::class, 'clone'])->name('spaf.clone')->middleware('permission:template.manage');
-             Route::get('spaf/{type}', [SpafTemplateController::class, 'index'])->name('spaf.index')->middleware('permission:template.manage,template.approve');
+             Route::get('{type}', [SpafTemplateController::class, 'index'])->name('spaf.index')->middleware('permission:template.manage,template.approve');
              Route::get('spaf/show/{template}', [SpafTemplateController::class, 'show'])->name('spaf.show')->middleware('permission:template.manage,template.approve');
              Route::resource('spaf', SpafTemplateController::class)->parameters(['spaf' => 'template'])->except(['index', 'show'])->middleware('permission:template.manage');
              // group
@@ -121,6 +139,7 @@ Route::group(['middleware' => ['auth']], function()
 
 // locale Route
 Route::get('lang/{locale}', [LanguageController::class, 'swap']);
+Route::get('theme/{theme}', [StaterkitController::class, 'setTheme'])->name('theme');
 
 Route::middleware([
     'auth:sanctum',

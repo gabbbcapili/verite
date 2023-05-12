@@ -153,6 +153,11 @@
                 if($('#view_modal').hasClass('show')){
                   $('#view_modal').modal('toggle');
                 }
+                console.log(result);
+                if (result.removeRow) {
+                  console.log('yes');
+                      $('#'+ result.removeRow).remove();
+                  }
                 }
           });
         }

@@ -42,6 +42,7 @@ class CreateSettingsTable extends Migration
             $table->string('interpreter');
             $table->string('observer');
             $table->unsignedInteger('audit_program_default_status_id')->default(1);
+            $table->string('status_for_audit_name')->default('Completed');
             $table->timestamps();
         });
     }

@@ -39,7 +39,7 @@
                   $roleName = strtolower(str_replace(' ', '_', $role));
                 @endphp
                   <div class="col-lg-4 col-xs-12 mb-2">
-                    <label>{{ $role }}</label>
+                    <label>{{ $role }}:</label>
                     <input type="text" class="form-control" name="{{ $roleName }}" value="{{ $setting->$roleName }}">
                   </div>
                 @endforeach

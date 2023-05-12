@@ -30,6 +30,10 @@ class Schedule extends Model
         return $this->hasMany(AuditProgram::class, 'schedule_id');
     }
 
+    public function audit(){
+        return $this->hasOne(Audit::class, 'schedule_id');
+    }
+
     public static function computeTitle($client, $supplier, $country_name, $start_date){
         $title = $client->modelable->acronym . '-';
 

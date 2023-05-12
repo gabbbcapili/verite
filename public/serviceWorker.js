@@ -1,97 +1,51 @@
-// // Service Worker
 
-// // Define the cache name
-// const CACHE_NAME = 'my-cache-v1';
-
-// // List of static assets to cache
-// const urlsToCache = [
-//   '/',
-//   '/index.html',
-//   '/styles.css',
-//   '/script.js'
-// ];
-
-// // Install the Service Worker
-// self.addEventListener('install', event => {
-//   event.waitUntil(
-//     caches.open(CACHE_NAME)
-//       .then(cache => {
-//         console.log('Opened cache');
-//         return cache.addAll(urlsToCache);
-//       })
-//   );
-// });
-
-// // Activate the Service Worker
-// self.addEventListener('activate', event => {
-//   event.waitUntil(
-//     caches.keys()
-//       .then(cacheNames => {
-//         return Promise.all(
-//           cacheNames.filter(cacheName => {
-//             return cacheName.startsWith('my-cache-') &&
-//               cacheName !== CACHE_NAME;
-//           }).map(cacheName => {
-//             return caches.delete(cacheName);
-//           })
-//         );
-//       })
-//   );
-// });
-
-// Fetch requests
-// self.addEventListener('fetch', event => {
-//   event.respondWith(
-//     caches.match(event.request)
-//       .then(response => {
-//         if (response) {
-//           return response;
-//         }
-
-//         return fetch(event.request)
-//           .then(response => {
-//             if (!response || response.status !== 200 || response.type !== 'basic') {
-//               return response;
-//             }
-
-//             const responseToCache = response.clone();
-
-//             caches.open(CACHE_NAME)
-//               .then(cache => {
-//                 cache.put(event.request, responseToCache);
-//               });
-
-//             return response;
-//           });
-//       })
-//   );
-// });
-
-
-
-/*
- Copyright 2016 Google Inc. All Rights Reserved.
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
- http://www.apache.org/licenses/LICENSE-2.0
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
-
-// Names of the two caches used in this version of the service worker.
-// Change to v2, etc. when you update any of the local resources, which will
-// in turn trigger the install event again.
-const PRECACHE = 'precache-v13';
+const PRECACHE = 'precache-v1';
 const RUNTIME = 'runtime';
+const urlStartsWith = '/auditForm';
 
 // A list of local resources we always want to be cached.
 const PRECACHE_URLS = [
+  '/css/base/core/menu/menu-types/vertical-menu.css',
+  '/css/base/themes/bordered-layout.css',
+  '/css/base/themes/dark-layout.css',
+  '/css/base/themes/semi-dark-layout.css',
+  '/css/core.css',
+  '/css/overrides.css',
+  '/css/style.css',
+  '/images/ico/logo-v.png',
+  '/js/core/app-menu.js',
+  '/js/core/app.js',
+  '/js/core/scripts.js',
+  '/js/scripts/customizer.js',
+  '/js/scripts/forms-validation/form-normal.js',
+  '/js/scripts/print/printThis.js',
+  '/js/scripts/tables/table-question.js',
+  '/livewire/livewire.js?id=de3fca26689cb5a39af4',
+  '/vendors/css/animate/animate.min.css',
+  '/vendors/css/bootstrap-extended.css',
+  '/vendors/css/extensions/sweetalert2.min.css',
+  '/vendors/css/forms/select/select2.min.css',
+  '/vendors/css/vendors.min.css',
+  '/vendors/js/alpinejs/alpine.js',
+  '/vendors/js/extensions/polyfill.min.js',
+  '/vendors/js/extensions/sweetalert2.all.min.js',
+  '/vendors/js/forms/select/select2.full.min.js',
+  '/vendors/js/jquery/jquery-ui.js',
+  '/vendors/js/ui/jquery.sticky.js',
+  '/vendors/js/vendors.min.js',
 ];
-// const urlToWorkOn = 'http://127.0.0.1:8000/user/create';
+
+self.addEventListener('message', event => {
+  const currentUrl = event.data.current_url;
+  if (currentUrl && !PRECACHE_URLS.includes(currentUrl)) {
+    PRECACHE_URLS.push(currentUrl);
+    caches.open(PRECACHE)
+      .then(cache => {
+        cache.addAll(PRECACHE_URLS);
+      });
+  }
+});
+
 
 // The install handler takes care of precaching the resources we always need.
 self.addEventListener('install', event => {
@@ -121,42 +75,30 @@ self.addEventListener('activate', event => {
 // from the network before returning it to the page.
 self.addEventListener('fetch', event => {
   // Skip cross-origin requests, like those for Google Analytics.
+  if (event.request.method !== 'GET') {
+    return;
+  }
+  var requestUrl = new URL(event.request.url);
   if (event.request.url.startsWith(self.location.origin)) {
-  // if (event.request.url === urlToWorkOn) {
     event.respondWith(
       caches.match(event.request).then(cachedResponse => {
         if (cachedResponse) {
           return cachedResponse;
         }
 
-       // if (event.request.url === 'http://127.0.0.1:8000/user/create') {
-       //    event.respondWith((async () => {
-       //      const response = await fetch(event.request.clone());
-       //      if (!response.ok) {
-       //        // If the response is not OK, wait for the internet connection to be restored
-       //        await new Promise(resolve => {
-       //          self.addEventListener('online', resolve, { once: true });
-       //        });
-       //        // Re-send the POST request
-       //        const res = await fetch(event.request.clone(), { method: 'POST' });
-       //        return res;
-       //      }
-       //      return response;
-       //    })());
-       //  }
-
         return caches.open(RUNTIME).then(cache => {
           return fetch(event.request).then(response => {
             // Put a copy of the response in the runtime cache.
-            // return cache.put(event.request, response.clone()).then(() => {
+            if (requestUrl.pathname.startsWith(urlStartsWith)) {
+              return cache.put(event.request, response.clone()).then(() => {
+                return response;
+              });
+            }else{
               return response;
-            // });
+            }
           });
         });
       })
     );
-  }
-  else{
-    return false;
   }
 });

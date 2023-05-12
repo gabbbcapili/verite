@@ -72,6 +72,42 @@ class SettingController extends Controller
         return response()->json($output);
     }
 
+    public function audit(){
+        $breadcrumbs = [
+            ['link'=>"/",'name'=>"Home"], ['name'=>"Settings"], ['name'=>"Audit Settings"]
+        ];
+        $setting = Setting::first();
+        $scheduleStatuses = ScheduleStatus::where('blockable', 1)->get();
+        return view('app.setting.audit', compact('breadcrumbs', 'setting', 'scheduleStatuses'));
+    }
+
+    public function auditUpdate(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            'status_for_audit_name' => ['required'],
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()]);
+        }
+        try {
+            DB::beginTransaction();
+            $data = $request->all();
+            Setting::first()->update($data);
+            DB::commit();
+            $output = ['success' => 1,
+                        'msg' => 'Settings updated successfully!',
+                        'redirect' => route('settings.audit'),
+                    ];
+        } catch (\Exception $e) {
+            \Log::emergency("File:" . $e->getFile(). " Line:" . $e->getLine(). " Message:" . $e->getMessage());
+            $output = ['success' => 0,
+                        'msg' => env('APP_DEBUG') ? $e->getMessage() : 'Sorry something went wrong, please try again later.'
+                    ];
+             DB::rollBack();
+        }
+        return response()->json($output);
+    }
+
     /**
      * Update the specified resource in storage.
      *
