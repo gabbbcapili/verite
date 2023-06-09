@@ -39,11 +39,32 @@
                   <div id="rowLeave" class="d-none">
                     <div class="row mb-2 justify-content-md-center">
                       <div class="col-lg-6">
-                        <label>Company (Leave Blank if this schedule is for yourself only.)</label>
+                        <label>Resource / Company</label>
+                        <select name="unavailability_type" id="unavailabilityType" class="form-control select2Modal">
+                          <option disabled selected>Select Option</option>
+                          <option value="resource">Resource</option>
+                          <option value="company">Company</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="row mb-2 justify-content-md-center d-none" id="rowLeaveCompany">
+                      <div class="col-lg-6">
+                        <label>Company</label>
                         <select name="company_id" class="form-control select2Modal">
                           <option disabled selected>Select Company</option>
                           @foreach($companies as $company)
                             <option value="{{ $company->id }}">{{ $company->displayName }}</option>
+                          @endforeach
+                        </select>
+                      </div>
+                    </div>
+                    <div class="row mb-2 justify-content-md-center d-none" id="rowLeaveResource">
+                      <div class="col-lg-6">
+                        <label>Resource</label>
+                        <select name="user_id" class="form-control select2Modal">
+                          <option disabled selected>Select Resource</option>
+                          @foreach($auditors as $auditor)
+                            <option value="{{ $auditor->id }}">{{ $auditor->displayName }}</option>
                           @endforeach
                         </select>
                       </div>
@@ -196,7 +217,7 @@
                         <div class="d-flex justify-content-end mb-1">
                           <button class="btn btn-primary" type="button" id="add_user"><i data-feather="plus-circle"></i> Add Resource</button>
                         </div>
-                        <div class="table-responsive">
+                        <div class="table-responsive" style="max-height:320px;">
                           <input type="hidden" id="user_row_count" value="0">
                           <table class="table table-striped" id="user_table">
                             <thead>
@@ -449,6 +470,18 @@
           @endcan
         }
       })
+
+      @can('schedule.manage')
+      $('#unavailabilityType').change(function(){
+        if($(this).find(":selected").val() == 'resource'){
+          $('#rowLeaveResource').removeClass('d-none');
+          $('#rowLeaveCompany').addClass('d-none');
+        }else{
+          $('#rowLeaveResource').addClass('d-none');
+          $('#rowLeaveCompany').removeClass('d-none');
+        }
+      });
+      @endcan
 
       $(document).on('click', '.delete_row', function(){
         $('[data-bs-toggle-modal="tooltip"]').tooltip('hide')

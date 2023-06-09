@@ -39,14 +39,39 @@
                   <div id="rowLeave" class="d-none">
                     <div class="row mb-2 justify-content-md-center">
                       <div class="col-lg-6">
-                        <label>Company (Leave Blank if this schedule is for yourself only.)</label>
+                        <label>Resource / Company</label>
+                        <select name="unavailability_type" id="unavailabilityType" class="form-control select2Modal">
+                          <option disabled selected>Select Option</option>
+                          <option value="resource" {{$event->users()->first()->modelable_type == 'App\Models\User' ?  'selected' : ''}}>Resource</option>
+                          <option value="company" {{$event->users()->first()->modelable_type == 'App\Models\Company' ?  'selected' : ''}}>Company</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="row mb-2 justify-content-md-center d-none" id="rowLeaveCompany">
+                      <div class="col-lg-6">
+                        <label>Company</label>
                         <select name="company_id" class="form-control select2Modal">
-                          <option>Select Company</option>
+                          <option disabled>Select Company</option>
                           @foreach($companies as $company)
                             @if($event->users()->first()->modelable_type == 'App\Models\Company')
                               <option value="{{ $company->id }}" {{ $event->users()->first()->modelable_id == $company->id ? 'selected' : '' }}>{{ $company->displayName }}</option>
                             @else
-                              <option value="{{ $company->id }}">{{ $company->displayName }}</option>
+                            <option value="{{ $company->id }}">{{ $company->displayName }}</option>
+                            @endif
+                          @endforeach
+                        </select>
+                      </div>
+                    </div>
+                    <div class="row mb-2 justify-content-md-center d-none" id="rowLeaveResource">
+                      <div class="col-lg-6">
+                        <label>Resource</label>
+                        <select name="user_id" class="form-control select2Modal">
+                          <option disabled>Select Resource</option>
+                          @foreach($auditors as $auditor)
+                            @if($event->users()->first()->modelable_type == 'App\Models\User')
+                              <option value="{{ $auditor->id }}" {{ $event->users()->first()->modelable_id == $auditor->id ? 'selected' : '' }}>{{ $auditor->displayName }}</option>
+                            @else
+                            <option value="{{ $auditor->id }}">{{ $auditor->displayName }}</option>
                             @endif
                           @endforeach
                         </select>
@@ -192,7 +217,7 @@
                         <div class="d-flex justify-content-end mb-1">
                           <button class="btn btn-primary" type="button" id="add_user"><i data-feather="plus-circle"></i> Add Resource</button>
                         </div>
-                        <div class="table-responsive">
+                        <div class="table-responsive" style="max-height:320px;">
                           <input type="hidden" id="user_row_count" value="1">
                           <table class="table table-striped" id="user_table">
                             <thead>
@@ -369,9 +394,6 @@
       function loadCurrentUser(){
         var currentSelection = '';
         @foreach($event->users->where('role', '!=', 'Client')->where('role', '!=', 'Supplier') as $user)
-
-        @endforeach
-        @foreach($event->users->where('role', '!=', 'Client')->where('role', '!=', 'Supplier') as $user)
         currentSelection = '<option value="{{ $user->modelable->id }}" selected>{{ $user->modelable->displayName }}</option>';
         var $tr = '';
           $tr += '<tr><input type="hidden" name="users[100{{ $loop->iteration }}][event_user_id]" value="{{ $user->id }}">';
@@ -380,7 +402,7 @@
           $tr += '<td><div class="d-flex justify-content-end"><div class="btn-group" role="group"><button type="button" class="btn btn-sm btn-outline-success delete_row" data-bs-toggle-modal="tooltip" title="Delete"><i data-feather="delete"></i></button></div></div></td>';
           $tr += '</tr>';
           $('#user_table tr:last').after($tr);
-          $('#users.100{{ $loop->iteration }}.role').val("{{ $user->role }}");
+          $('select[name="users[100{{ $loop->iteration }}][role]"').val("{{ $user->role }}");
         @endforeach
         $('.select2Table').select2({
           dropdownParent: $("#view_modal")
@@ -393,6 +415,22 @@
       $('#SelectType').change(function(){
         onChangeSelectType();
       });
+
+      @can('schedule.manage')
+      $('#unavailabilityType').change(function(){
+        onChangeUnavailabilityType();
+      });
+
+      function onChangeUnavailabilityType(){
+        if($('#unavailabilityType').find(":selected").val() == 'resource'){
+          $('#rowLeaveResource').removeClass('d-none');
+          $('#rowLeaveCompany').addClass('d-none');
+        }else{
+          $('#rowLeaveResource').addClass('d-none');
+          $('#rowLeaveCompany').removeClass('d-none');
+        }
+      }
+      @endcan
 
       function onChangeSelectType(){
         if($('#SelectType').find(":selected").val() == 'Audit Schedule'){
@@ -415,8 +453,28 @@
       });
 
       $(document).on('change', '#filterProficiency', function(){
-        loadData();
+        date = $('#dateRange').val();
+          if(date == ""){
+            $('#SelectType').val('').trigger('change');
+            alert('Please select a Date first');
+            return;
+          }
+          $.ajax({
+              url: "{{ route('schedule.loadAvailableUsers') }}",
+              method: "POST",
+              data:{
+                date : date,
+                proficiencies : $('#filterProficiency').val(),
+              },
+              success:function(result){
+                userSelection = '';
+                $.each(result.data.users, function(k, u) {
+                  userSelection += '<option value="'+ u.id +'">'+ u.displayName +'</option>'
+                $('.userSelection').find('option').remove().end().append(userSelection).val('');
+              });
+          }
       });
+    });
 
       function loadData(firstTime){
         date = $('#dateRange').val();
@@ -475,6 +533,7 @@
       @endif
       }
       onChangeSelectType();//$('#SelectType').trigger('change');
+      onChangeUnavailabilityType();
       loadData(true);
       console.log(true);
     });

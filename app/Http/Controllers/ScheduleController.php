@@ -163,8 +163,9 @@ class ScheduleController extends Controller
         $countries = Country::all();
         $date = $request->date;
         $companies = Company::all();
+        $auditors = User::auditors();
         $schedules = Schedule::orderBy('created_at', 'desc')->get();
-        return view('app.schedule.create', compact('auditmodels','schedulestatuses','countries', 'date', 'companies', 'proficiencies', 'schedules'));
+        return view('app.schedule.create', compact('auditmodels','schedulestatuses','countries', 'date', 'companies', 'proficiencies', 'schedules', 'auditors'));
     }
 
     public function edit(Event $event){
@@ -178,8 +179,8 @@ class ScheduleController extends Controller
         $supplier = $event->users->where('role', 'Supplier')->first();
         $companies = Company::all();
         $proficiencies = Proficiency::all();
-
-        return view('app.schedule.edit', compact('auditmodels','schedulestatuses','countries', 'event', 'schedule', 'client', 'supplier', 'companies', 'scheduleStatus', 'next_stop', 'proficiencies'));
+        $auditors = User::auditors();
+        return view('app.schedule.edit', compact('auditmodels','schedulestatuses','countries', 'event', 'schedule', 'client', 'supplier', 'companies', 'scheduleStatus', 'next_stop', 'proficiencies', 'auditors'));
     }
 
     public function store(Request $request)
@@ -204,7 +205,9 @@ class ScheduleController extends Controller
                 $validation = [
                     'start_end_date' => 'required',
                     'type' => 'required',
-                    // 'company_id' => 'required',
+                    'unavailability_type' => 'required_if:type,Leave,Holiday,Unavailable',
+                    'company_id' => 'required_if:unavailability_type,company',
+                    'user_id' => 'required_if:unavailability_type,resource',
                 ];
             }else{
                 $validation = [
@@ -235,7 +238,8 @@ class ScheduleController extends Controller
                         return response()->json(['error' => ['start_end_date' => 'You already have schedule on this date entitled ' . $eventUser->event->TitleComputed]]);
                     }
                 }else{
-                    $eventUser = $request->user()->isAvailableOn($request->start_end_date);
+                    $unavailableUser = User::where('id', $request->user_id)->first();
+                    $eventUser = $unavailableUser->isAvailableOn($request->start_end_date);
                     if($eventUser){
                         return response()->json(['error' => ['start_end_date' => 'You already have schedule on this date entitled ' . $eventUser->event->TitleComputed]]);
                     }
@@ -319,7 +323,7 @@ class ScheduleController extends Controller
                             $eventuser = EventUser::create([
                                 'role' => $type,
                                 'event_id' => $event->id,
-                                'modelable_id' => $request->user()->id,
+                                'modelable_id' => $request->user_id,
                                 'modelable_type' => 'App\Models\User',
                             ]);
                         }
@@ -367,7 +371,10 @@ class ScheduleController extends Controller
         }else{
             $validation = [
                 'start_end_date' => 'required',
-                'type' => 'required'
+                'type' => 'required',
+                'unavailability_type' => 'required_if:type,Leave,Holiday,Unavailable',
+                'company_id' => 'required_if:unavailability_type,company',
+                'user_id' => 'required_if:unavailability_type,resource',
             ];
         }
         $validator = Validator::make($request->all(),$validation, [
@@ -383,8 +390,9 @@ class ScheduleController extends Controller
                     }
                 }
             }else{
-                    if($request->user()->id != $event->users()->first()->modelable_id){
-                      $eventUser = $request->user()->isAvailableOn($request->start_end_date);
+                    $unavailableUser = User::where('id', $request->user_id)->first();
+                    if($unavailableUser != $event->users()->first()->modelable_id){
+                        $eventUser = $unavailableUser->isAvailableOn($request->start_end_date);
                         if($eventUser){
                             return response()->json(['error' => ['start_end_date' => 'You already have schedule on this date entitled ' . $eventUser->event->TitleComputed]]);
                         }
@@ -416,9 +424,12 @@ class ScheduleController extends Controller
                     foreach($request->users as $user){
                         if(isset($user['event_user_id'])){
                             $updateEventUser = EventUser::findOrFail($user['event_user_id']);
-                            $updateEventUser->blockable = $blockable;
                             $updatedEventUsers[] = $updateEventUser->id;
-                            $updateEventUser->update($user);
+                            $updateEventUser->update([
+                                'modelable_id' => $user['id'],
+                                'role' => $user['role'],
+                                'blockable' => $blockable
+                            ]);
                         }else{
                             $eventUser = EventUser::firstOrCreate([
                                 'role' => $user['role'],
@@ -481,7 +492,7 @@ class ScheduleController extends Controller
                     ]);
                 }else{
                     if($request->user()->can('schedule.manage')){
-                        if($request->company_id != "Select Company"){
+                        if($request->unavailability_type == 'company'){
                             $eventuser = $event->users()->first()->update([
                                 'role' => $type,
                                 'event_id' => $event->id,
@@ -492,7 +503,7 @@ class ScheduleController extends Controller
                             $eventuser = $event->users()->first()->update([
                                 'role' => $type,
                                 'event_id' => $event->id,
-                                'modelable_id' => $request->user()->id,
+                                'modelable_id' => $request->user_id,
                                 'modelable_type' => 'App\Models\User',
                             ]);
                         }
