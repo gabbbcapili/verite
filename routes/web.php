@@ -106,9 +106,9 @@ Route::group(['middleware' => ['auth']], function()
 
 
     Route::resource('role', RoleController::class)->middleware('permission:role.manage');
-    Route::get('supplier/{company}/addContact', [SupplierController::class, 'addContact'])->name('supplier.addContact')->middleware('permission:supplier.manage,client.manage');
-    Route::post('supplier/{company}/addContact', [SupplierController::class, 'storeContact'])->name('supplier.storeContact')->middleware('permission:supplier.manage,client.manage');
-    Route::resource('supplier', SupplierController::class)->middleware('permission:supplier.manage,client.manage')->parameters(['supplier' => 'company']);
+    Route::get('supplier/{company}/addContact', [SupplierController::class, 'addContact'])->name('supplier.addContact')->middleware('permission:supplier.manage');
+    Route::post('supplier/{company}/addContact', [SupplierController::class, 'storeContact'])->name('supplier.storeContact')->middleware('permission:supplier.manage');
+    Route::resource('supplier', SupplierController::class)->middleware('permission:supplier.manage')->parameters(['supplier' => 'company']);
     Route::resource('client', ClientController::class)->middleware('permission:client.manage')->parameters(['client' => 'user']);
     Route::group(['prefix' => 'template', 'as' => 'template.'], function()
     {

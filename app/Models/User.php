@@ -125,6 +125,25 @@ class User extends Authenticatable
         return $this->fullName . ' ' . $skills . ' ' . $client_preference;
     }
 
+    public function getDisplaySkillsAttribute(){
+        $skills = '';
+        $client_preference = '';
+        if($this->skills){
+            $skills = Proficiency::whereIn('id', explode(',', $this->skills))->pluck('name');
+            if($skills->count() > 0){
+                $skills = '('. implode(', ', $skills->toArray()) . ')';
+            }
+        }
+        if($this->client_preference){
+            $companies = Company::whereIn('id', explode(',', $this->client_preference))->pluck('company_name');
+            if($companies->count() > 0){
+                $client_preference = '['. implode(', ', $companies->toArray()) . ']';
+            }
+        }
+
+        return $skills . ' ' . $client_preference;
+    }
+
     public function getCompanyDetailsAttribute(){
         if($this->company){
             return $this->company->company_name . ' - ' . $this->first_name . ' ' . $this->last_name;

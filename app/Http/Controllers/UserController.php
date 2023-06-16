@@ -51,6 +51,9 @@ class UserController extends Controller
             ->addColumn('fullName', function(User $user) {
                             return $user->fullName;
                         })
+            ->addColumn('skillsFormatted', function(User $user) {
+                            return $user->DisplaySkills;
+                        })
             ->addColumn('role', function(User $user) {
                             return $user->getRoleNames()->first();
                         })

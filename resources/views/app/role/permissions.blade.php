@@ -226,7 +226,7 @@
               <span class="vs-checkbox">
                 <span class="vs-checkbox--check"><i data-feather="check-circle" class="vs-icon"></i></span>
               </span>
-              <span class="">Selectable as Auditor</span>
+              <span class="">Selectable as Resource</span>
             </div></fieldset>
           </td>
         </tr>

@@ -115,6 +115,8 @@ class SpafTemplateController extends Controller
             $template = Template::create($data);
             if($template->type == 'spaf'){
                 $template->createDefault();
+            }else if($template->type == 'report'){
+                $template->createDefaultForReport();
             }
             DB::commit();
             $output = ['success' => 1,

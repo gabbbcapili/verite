@@ -37,6 +37,7 @@
               <th>Email</th>
               <th>Role</th>
               <th>Status</th>
+              <th>Skills / Client Preference</th>
               <th>Created</th>
               <th>Updated</th>
               <th class="noexport">Action</th>
@@ -84,6 +85,7 @@
             { data: 'email', name: 'email'},
             { data: 'role', name: 'role'},
             { data: 'statusText', name: 'status'},
+            { data: 'skillsFormatted', name: 'skillsFormatted', 'orderable' : false, visible : false},
             { data: 'created_at', name: 'created_at'},
             { data: 'updated_at', name: 'updated_at'},
             { data: 'action', name: 'action', 'orderable' : false, 'printable' : false}

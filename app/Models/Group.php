@@ -16,4 +16,8 @@ class Group extends Model
     public function questions(){
         return $this->hasMany(Question::class, 'group_id');
     }
+
+    public function template(){
+        return $this->belongsTo(Template::class, 'template_id');
+    }
 }

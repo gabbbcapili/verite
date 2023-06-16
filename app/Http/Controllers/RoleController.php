@@ -34,7 +34,7 @@ class RoleController extends Controller
                                 return Utilities::actionButtons([['route' => route('role.show', $role->id), 'name' => 'Show'],]);
                             }
                         })
-            ->editColumn('privileges', function (Role $role) {
+            ->addColumn('privileges', function (Role $role) {
                 return implode(', ', $role->permissions->pluck('display')->toArray());
             })
             ->editColumn('created_at', function (Role $role) {

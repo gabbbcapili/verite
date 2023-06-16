@@ -225,37 +225,42 @@ class ScheduleController extends Controller
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()]);
         }
+        $type = $request->type;
         if($request->user()->hasRole('Client') || $request->user()->hasRole('Supplier')){
             $eventUser = $request->user()->company->isAvailableOn($request->start_end_date);
             if($eventUser){
                 return response()->json(['error' => ['start_end_date' => 'You already have schedule on this date entitled ' . $eventUser->event->TitleComputed]]);
             }
         }else{
-            if($request->user()->can('schedule.manage')){
-                if($request->company_id){
-                    $eventUser = Company::where('id',$request->company_id)->first()->isAvailableOn($request->start_end_date);
-                    if($eventUser){
-                        return response()->json(['error' => ['start_end_date' => 'You already have schedule on this date entitled ' . $eventUser->event->TitleComputed]]);
-                    }
-                }else{
-                    $unavailableUser = User::where('id', $request->user_id)->first();
-                    $eventUser = $unavailableUser->isAvailableOn($request->start_end_date);
-                    if($eventUser){
-                        return response()->json(['error' => ['start_end_date' => 'You already have schedule on this date entitled ' . $eventUser->event->TitleComputed]]);
-                    }
-                }
+            if($type == 'Audit Schedule'){
 
             }else{
-                $eventUser = $request->user()->isAvailableOn($request->start_end_date);
-                if($eventUser){
-                    return response()->json(['error' => ['start_end_date' => 'You already have schedule on this date entitled ' . $eventUser->event->TitleComputed]]);
+                if($request->user()->can('schedule.manage')){
+                    if($request->company_id){
+                        $eventUser = Company::where('id',$request->company_id)->first()->isAvailableOn($request->start_end_date);
+                        if($eventUser){
+                            return response()->json(['error' => ['start_end_date' => 'You already have schedule on this date entitled ' . $eventUser->event->TitleComputed]]);
+                        }
+                    }else{
+                        $unavailableUser = User::where('id', $request->user_id)->first();
+                        $eventUser = $unavailableUser->isAvailableOn($request->start_end_date);
+                        if($eventUser){
+                            return response()->json(['error' => ['start_end_date' => 'You already have schedule on this date entitled ' . $eventUser->event->TitleComputed]]);
+                        }
+                    }
+
+                }else{
+                    $eventUser = $request->user()->isAvailableOn($request->start_end_date);
+                    if($eventUser){
+                        return response()->json(['error' => ['start_end_date' => 'You already have schedule on this date entitled ' . $eventUser->event->TitleComputed]]);
+                    }
                 }
             }
+
         }
         try {
             DB::beginTransaction();
             $data = $request->all();
-            $type = $request->type;
             $event['type'] = $type;
             $start_end = explode('to', $request->start_end_date);
             $event['start_date'] = $start_end[0];
