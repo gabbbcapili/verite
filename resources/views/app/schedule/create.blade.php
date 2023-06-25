@@ -217,7 +217,7 @@
                         <div class="d-flex justify-content-end mb-1">
                           <button class="btn btn-primary" type="button" id="add_user"><i data-feather="plus-circle"></i> Add Resource</button>
                         </div>
-                        <div class="table-responsive" style="max-height:320px;">
+                        <div class="table-responsive" style="max-height:320px;" id="userTableResponsive">
                           <input type="hidden" id="user_row_count" value="0">
                           <table class="table table-striped" id="user_table">
                             <thead>
@@ -448,7 +448,7 @@
         });
         $('[data-bs-toggle-modal="tooltip"]').tooltip();
         $('.select2Table').select2({
-          dropdownParent: $("#view_modal")
+          dropdownParent: $("#userTableResponsive")
         })
       }
       $('#add_user').click(function(){

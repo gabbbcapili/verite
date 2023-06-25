@@ -155,6 +155,7 @@
 @section('page-script')
   <!-- Page js files -->
   <script type="text/javascript">
+
     $('.select2').select2();
     var route = "{{ route('schedule.create') }}";
     'use-strict';
@@ -162,6 +163,7 @@
 
 
     document.addEventListener('DOMContentLoaded', function () {
+      $.fn.modal.Constructor.prototype.enforceFocus = function() {};
       var calendarEl = document.getElementById('calendar'),
         eventToUpdate,
         sidebar = $('.event-sidebar'),
