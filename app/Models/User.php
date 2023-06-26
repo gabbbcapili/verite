@@ -191,7 +191,7 @@ class User extends Authenticatable
 
     public static function auditors(){
         $roleswithPermission = Permission::find(18)->getRoleNames(); //Selectable as Auditor
-        return User::where('status', 1)->role($roleswithPermission)->get();
+        return User::where('status', 1)->role($roleswithPermission)->orderBy('first_name', 'asc')->get();
     }
 
     public static function getAvailableAuditor($date){
