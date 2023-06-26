@@ -11,7 +11,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div class="row">
+        <div class="row" id="formRow">
           <div class="col-sm-12">
             <div class="card">
               <div class="card-body">
@@ -297,14 +297,14 @@
 <script src="{{ asset(mix('js/scripts/forms-validation/form-modal.js')) }}"></script>
 <script type="text/javascript">
     $(document).ready(function(){
-      $('#view_modal').css('overflow-y', 'scroll');
+      $('#formRow').css('overflow-y', 'scroll');
       var date = '';
       var clientSelection = '';
       var userSelection = '';
       var roleTypes = @json(Helper::settings()->schedule_role_types());
       var roleTypesSelection = '';
       $('.select2Modal').select2({
-        dropdownParent: $("#view_modal")
+        dropdownParent: $("#formRow")
       });
 
       $('.datePicker').flatpickr({
@@ -404,7 +404,7 @@
               {
                 $('#fg_supplier').html(result);
                 $('#supplier_company').select2({
-                  dropdownParent: $("#view_modal")
+                  dropdownParent: $("#formRow")
                 });
                 loadSpaf();
               }
