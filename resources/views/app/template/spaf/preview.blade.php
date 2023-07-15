@@ -1,4 +1,4 @@
-
+@if(! in_array($template->type, App\Models\Template::$forReport))
 @foreach($template->groups()->orderBy('sort')->get() as $group)
 <div class="row mb-2 {{ isset($displayed_on_schedule) ? $group->displayed_on_schedule == false ? 'd-none' : '' : '' }}">
     <h4>{{ $group->header }}</h4>
@@ -20,5 +20,13 @@
         </table>
     </div>
 </div>
-
 @endforeach
+@else
+    @foreach($template->groups()->orderBy('sort')->get() as $group)
+        <div class="row mb-2">
+            @foreach($group->questions()->orderBy('sort')->get() as $q)
+                {!! $q->text !!}
+            @endforeach
+        </div>
+    @endforeach
+@endif

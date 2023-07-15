@@ -8,6 +8,11 @@
         display: table;
     }
 </style>
+<link rel="stylesheet" href="{{ asset(mix('vendors/css/trumbowyg/trumbowyg.min.css')) }}">
+<link rel="stylesheet" href="{{ asset(mix('vendors/css/trumbowyg/trumbowyg.colors.min.css')) }}">
+<link rel="stylesheet" href="{{ asset(mix('vendors/css/trumbowyg/trumbowyg.emoji.min.css')) }}">
+<link rel="stylesheet" href="{{ asset('vendors/css/tinymce/content.min.css') }}">
+
 @endsection
 
 @section('content')
@@ -18,7 +23,11 @@
         @csrf
         <div class="row match-height">
             <!-- create question -->
-            <div class="col-lg-4 col-md-4 col-sm-12">
+            @if(! in_array($template->type, App\Models\Template::$forReport))
+                <div class="col-lg-4 col-sm-12">
+            @else
+                <div class="col-lg-2 col-sm-12">
+            @endif
                 <div class="row">
                     <div class="card">
                         <div class="card-header">
@@ -27,7 +36,9 @@
                         <div class="card-content">
                             <div class="card-body">
                                 <div class="row">
+                                    @if(! in_array($template->type, App\Models\Template::$forReport))
                                     <button class="btn btn-primary modal_button" type="button" data-action="{{ route('template.group.create', $template) }}"><i data-feather="plus"></i> Add Group / Question</button>
+                                    @endif
                                     <div class="row mt-1">
                                         <div class="col-md-12 col-sm-12" id="">
                                           <div class="list-group"role="tablist"  id="sortable_groups">
@@ -42,7 +53,11 @@
             </div>
             <!-- create question -->
             <!-- show question -->
-                <div class="col-lg-8 col-md-8 col-sm-12" id="printThis">
+            @if(! in_array($template->type, App\Models\Template::$forReport))
+                <div class="col-lg-8 col-sm-12" id="printThis">
+            @else
+                <div class="col-lg-10 col-sm-12" id="printThis">
+            @endif
                     <div class="card">
                         <div class="card-header">
                           <h4 class="card-title text-center">Template Preview</h4>
@@ -68,7 +83,9 @@
                               <!-- <button type="submit" class="btn btn-primary me-1 btn_save">Submit</button> -->
                               <a href="{{ route('template.spaf.index', ['type' => $template->type]) }}" class="btn btn-outline-secondary me-1"><i data-feather="arrow-left"></i> Go Back</a>
                               <button class="btn btn-primary btn_print" type="button"><i data-feather="printer"></i> Print</button>
+                              @if(! in_array($template->type, App\Models\Template::$forReport))
                               <button class="btn btn-primary modal_button" type="button" data-action="{{ route('template.group.create', $template) }}"><i data-feather="plus"></i> Add Group / Question</button>
+                              @endif
                             </div>
                           </div>
                         </div>
@@ -82,7 +99,13 @@
 
 @section('vendor-script')
     <script src="{{ asset('vendors/js/jquery/jquery-ui.js') }}"></script>
-
+    <!-- <script src="https://cdn.tiny.cloud/1/a5smub4os8441k8y5xnvbx7yfkdfef86of7gmmi26fi19sak/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tinymce/tinymce-jquery@1/dist/tinymce-jquery.min.js"></script> -->
+    <script src="{{ asset(mix('vendors/js/trumbowyg/trumbowyg.min.js')) }}"></script>
+    <script src="{{ asset('vendors/js/trumbowyg/trumbowyg.colors.min.js') }}"></script>
+    <script src="{{ asset('vendors/js/trumbowyg/trumbowyg.emoji.min.js') }}"></script>
+    <script src="{{ asset('vendors/js/trumbowyg/trumbowyg.fontsize.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.6.0/tinymce.min.js" integrity="sha512-hMjDyb/4G3SapFEM71rK+Gea0+ZEr9vDlhBTyjSmRjuEgza0Ytsb67GE0aSpRMYW++z6kZPPcnddwlUG6VKm9w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 @endsection
 
 @section('page-script')

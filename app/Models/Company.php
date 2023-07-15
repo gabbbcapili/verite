@@ -139,4 +139,13 @@ class Company extends Model
         })->get();
         return $spafs;
     }
+
+    public function loadSpafForReport(){
+        $type = $this->type == 'client' ? 'client_id' : 'supplier_id';
+        $spafs = Spaf::where('status', 'completed')
+        ->whereHas($this->type, function ($q){
+            $q->where('company_id', $this->id);
+        })->get();
+        return $spafs;
+    }
 }

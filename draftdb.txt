@@ -1,3 +1,27 @@
+Schedule -
+    -Resource Plan with automation and settings - 40 hours
+    -Show Spaf information - 24 hours
+    -Audit Program with cron job - 40 hours
+    -Schedule Copy From - 16 hours
+
+Audit - 24 hours
+    -Client has access to audit - 8 hours
+
+Client / Supplier -
+    -Multiple Contact Person and access - 24 hours
+
+
+
+user role check not match sa export ok
+
+group->question checkbox (string) change to longtext ok
+
+
+report
+    client access
+    role list add "role.manage" ok
+
+
 
 Audit Db
 

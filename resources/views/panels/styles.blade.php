@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="{{ asset(mix('vendors/css/forms/select/select2.min.css')) }}">
 <!-- Global Page Css -->
 @yield('vendor-style')
+<link rel="stylesheet" href="{{ asset('vendors/css/tinymce/content.min.css') }}">
 <!-- END: Vendor CSS-->
 
 <!-- BEGIN: Theme CSS-->

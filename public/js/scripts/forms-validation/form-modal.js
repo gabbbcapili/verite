@@ -1,4 +1,5 @@
 $(".modal .form").submit(function(e) {
+  tinyMCE.triggerSave();
   e.preventDefault();
    $('.btn_save').prop('disabled', true);
     $.ajax({

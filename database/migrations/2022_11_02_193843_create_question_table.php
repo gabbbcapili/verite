@@ -18,7 +18,7 @@ class CreateQuestionTable extends Migration
             $table->unsignedBigInteger('group_id');
             $table->longText('text')->nullable();
             $table->string('type');
-            $table->string('for_checkbox')->nullable();
+            $table->longText('for_checkbox')->nullable();
             $table->boolean('next_line')->default(0);
             $table->unsignedInteger('sort');
             $table->boolean('required')->default(0);

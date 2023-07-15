@@ -4,6 +4,8 @@
 <!-- BEGIN: Page Vendor JS-->
 <script src="{{asset(mix('vendors/js/ui/jquery.sticky.js'))}}"></script>
 @yield('vendor-script')
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.6.0/tinymce.min.js" integrity="sha512-hMjDyb/4G3SapFEM71rK+Gea0+ZEr9vDlhBTyjSmRjuEgza0Ytsb67GE0aSpRMYW++z6kZPPcnddwlUG6VKm9w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <!-- END: Page Vendor JS-->
 <!-- BEGIN: Theme JS-->
 <script src="{{ asset(mix('js/core/app-menu.js')) }}"></script>

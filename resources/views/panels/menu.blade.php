@@ -115,6 +115,13 @@
         <span class="badge badge-light-warning rounded-pill ms-auto me-1" id="badge_audit_template"></span>
       </a>
       </li>
+
+      <li class="nav-item {{ $request->segment(1) == 'template' && $request->segment(2) == 'report' ? 'active' : '' }}">
+      <a class="d-flex align-items-center" href="{{ route('template.spaf.index', ['type' => 'report']) }}"><i data-feather="circle"></i>
+        <span class="menu-item text-truncate">Report</span>
+        <span class="badge badge-light-warning rounded-pill ms-auto me-1" id="badge_report_template"></span>
+      </a>
+      </li>
     </ul>
   </li>
   @endif
@@ -175,6 +182,23 @@
           <span class="menu-item text-truncate">Create New Audit</span></a>
         </li>
         @endcan
+    </ul>
+  </li>
+  @endif
+
+  @if($request->user()->can('report.manage'))
+  <li class="nav-item has-sub" style=""><a class="d-flex align-items-center" href="#">
+    <i data-feather="file-text"></i>
+    <span class="menu-title text-truncate">Reports</span><span class="badge badge-light-warning rounded-pill ms-auto me-1" id="badge_audits"></span></a>
+    <ul class="menu-content">
+        <li class="nav-item {{ $request->segment(1) == 'report' && $request->segment(2) == '' ? 'active' : '' }}">
+          <a class="d-flex align-items-center" href="{{ route('report.index') }}"><i data-feather="circle"></i>
+          <span class="menu-item text-truncate">List Reports</span></a>
+        </li>
+        <li class="nav-item {{ $request->segment(1) == 'report' && $request->segment(2) == 'create' ? 'active' : '' }}">
+          <a class="d-flex align-items-center" href="{{ route('report.create') }}"><i data-feather="plus-circle"></i>
+          <span class="menu-item text-truncate">Create New Report</span></a>
+        </li>
     </ul>
   </li>
   @endif
@@ -261,6 +285,18 @@
       </a>
   </li>
   @endif
+
+  @if($request->user()->hasRole('Client') || $request->user()->hasRole('Supplier'))
+  <li class="nav-item has-sub" style=""><a class="d-flex align-items-center" href="#">
+    <i data-feather="file-text"></i>
+    <span class="menu-title text-truncate">Reports</span><span class="badge badge-light-warning rounded-pill ms-auto me-1" id="badge_audits"></span></a>
+    <ul class="menu-content">
+        <li class="nav-item {{ $request->segment(1) == 'report' && $request->segment(2) == '' ? 'active' : '' }}">
+          <a class="d-flex align-items-center" href="{{ route('report.index') }}"><i data-feather="circle"></i>
+          <span class="menu-item text-truncate">List Reports</span></a>
+        </li>
+    </ul>
+  </li>  @endif
 
 
 </ul>

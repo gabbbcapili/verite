@@ -265,6 +265,30 @@
       </tbody>
       <thead>
         <tr>
+          <th>Reports</th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td></td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="report.manage" name="permissions[]" {{ isset($roleList) ? in_array('report.manage', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="file-text" class="vs-icon"></i></span>
+              </span>
+              <span class="">Manage Reports</span>
+            </div></fieldset>
+          </td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
+      <thead>
+        <tr>
           <th>Settings</th>
           <th></th>
           <th></th>

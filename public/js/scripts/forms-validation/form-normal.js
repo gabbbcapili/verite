@@ -5,6 +5,7 @@ $(function() {
   });
   $(".form").submit(function(e) {
     e.preventDefault();
+    tinyMCE.triggerSave();
     if($('.btn_save').prop('disabled') == true){
       return false;
     }

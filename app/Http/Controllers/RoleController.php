@@ -158,6 +158,12 @@ class RoleController extends Controller
     {
         try {
             DB::beginTransaction();
+            $users = User::with("roles")->whereHas("roles", function($q) use($role) {
+                $q->whereIn("name", [$role->name]);
+            })->get();
+            foreach($users as $user){
+                $user->assignRole('Default');
+            }
             $role->update(['is_deleted' => true]);
             DB::commit();
             $output = ['success' => 1,

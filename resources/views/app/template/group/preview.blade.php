@@ -15,12 +15,16 @@
     {{ \Illuminate\Support\Str::limit($group->header, 25, $end='...') }}
     <div class="d-flex justify-content-end">
         <div class="btn-group justify-conte" role="group">
+            @if(! in_array($template->type, App\Models\Template::$forReport))
             @if($group->editable)
             <button type="button" class="btn btn-sm btn-outline-success modal_button" data-action="{{ route('template.group.delete', $group) }}"  title="Delete"><i data-feather="delete"></i></button>
             <button type="button" class="btn btn-sm btn-outline-success modal_button" data-action="{{ route('template.group.edit', $group) }}"  title="Edit"><i data-feather="edit"></i></button>
             @endif
             <button type="button" class="btn btn-sm btn-outline-success confirm" data-action="{{ route('template.group.clone', $group) }}" data-title="Are you sure to clone this group {{ $group->header }}?"  title="Clone"><i data-feather="copy"></i></button>
             <span role="button" class="btn btn-sm btn-outline-success cursor-move ui-icon"  title="Move"><i class="" data-feather="move"></i></span>
+            @else
+            <button type="button" class="btn btn-sm btn-outline-success modal_button" data-action="{{ route('template.group.edit', $group) }}"  title="Edit"><i data-feather="edit"></i></button>
+            @endif
         </div>
     </div>
 </li>

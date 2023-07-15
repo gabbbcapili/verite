@@ -20,6 +20,7 @@ use App\Http\Controllers\ProficiencyController;
 use App\Http\Controllers\AuditProgramController;
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\AuditFormController;
+use App\Http\Controllers\ReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,6 +64,10 @@ Route::group(['middleware' => ['auth']], function()
 
     Route::post('audit/approve/{audit}/', [AuditController::class, 'approve'])->name('audit.approve')->middleware('permission:audit.approve');
     Route::resource('audit', AuditController::class)->middleware('permission:audit.manage,schedule.selectableAuditor');
+
+
+
+    Route::resource('report', ReportController::class);
     Route::get('auditForm/create/{auditForm}', [AuditFormController::class, 'create'])->name('auditForm.create')->middleware('permission:audit.manage,schedule.selectableAuditor');
     Route::post('auditForm/{auditForm}', [AuditFormController::class, 'store'])->name('auditForm.store')->middleware('permission:audit.manage,schedule.selectableAuditor');
     Route::get('auditForm/{auditFormHeader}', [AuditFormController::class, 'show'])->name('auditForm.show')->middleware('permission:audit.manage,schedule.selectableAuditor');
@@ -72,7 +77,6 @@ Route::group(['middleware' => ['auth']], function()
     Route::delete('auditForm/{auditFormHeader}', [AuditFormController::class, 'destroy'])->name('auditForm.destroy')->middleware('permission:audit.manage,schedule.selectableAuditor');
 
     Route::post('audit/loadSchedulesFor/{company}', [AuditController::class, 'loadSchedulesFor'])->name('audit.loadSchedulesFor');
-
 
     Route::resource('schedule', ScheduleController::class)->except(['show'])->parameters(['schedule' => 'event']);
     Route::get('schedule/getEvents', [ScheduleController::class, 'getEvents'])->name('schedule.getEvents');

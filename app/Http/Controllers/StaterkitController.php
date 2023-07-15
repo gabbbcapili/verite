@@ -85,6 +85,7 @@ class StaterkitController extends Controller
                     $data['badge_spaf_extension'] = Template::where('type', 'spaf_extension')->where('is_deleted', false)->where('is_approved', false)->count();
                     $data['badge_risk_management'] = Template::where('type', 'risk_management')->where('is_deleted', false)->where('is_approved', false)->count();
                     $data['badge_audit_template'] = Template::where('type', 'audit')->where('is_deleted', false)->where('is_approved', false)->count();
+                    $data['badge_report_template'] = Template::where('type', 'report')->where('is_deleted', false)->where('is_approved', false)->count();
                     $data['badge_templates'] = $data['badge_spaf'] + $data['badge_spaf_extension'] + $data['badge_risk_management'] + $data['badge_audit_template'];
                 }
                 if($request->user()->can('spaf.manage') || $request->user()->can('spaf.approve')){

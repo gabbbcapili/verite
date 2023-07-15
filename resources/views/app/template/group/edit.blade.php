@@ -7,7 +7,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
-          Edit Question
+          Edit Group
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -16,6 +16,7 @@
           <div class="col-sm-12">
             <div class="card">
               <div class="card-body">
+                @if(! in_array($group->template->type, App\Models\Template::$forReport))
                 <div class="row mb-2">
                   <div class="col-6">
                     <label class="form-label">Header:</label>
@@ -101,12 +102,24 @@
                   </div>
                 </div>
               </div>
+              @else
+              <input type="hidden" name="header" placeholder="Header" class="form-control" value="{{ $group->header }}">
+              <div class="row mb-2 justify-content-center align-items-center">
+                <div class="col-7">
+                  <input type="hidden" name="question[0][question_id]" value="{{ $group->questions->first()->id }}">
+                  <input type="hidden" name="question[0][type]" value="editor">
+                  <textarea class="form-control tinymce" name="question[0][text]">{{ $group->questions->first()->text }}</textarea>
+                </div>
+              </div>
+              @endif
             </div>
           </div>
         </div>
       </div>
       <div class="modal-footer">
+        @if(! in_array($group->template->type, App\Models\Template::$forReport))
         <button class="btn btn-primary add_row_question" type="button"><i data-feather="plus-circle"></i> Add Question</button>
+        @endif
           <button type="submit" class="btn btn-primary no-print btn_save"><i data-feather="save"></i> Save
           </button>
       </div>
@@ -116,6 +129,46 @@
 <script src="{{ asset(mix('js/scripts/forms-validation/form-modal.js')) }}"></script>
 <script type="text/javascript">
     $(document).ready(function(){
+      tinymce.init({
+        selector: ".tinymce",
+        plugins: 'pagebreak image code fullscreen table lists',
+        height : "700"
+      });
+      $('.trumbowyg').trumbowyg({
+        plugins: {
+            fontsize: {
+                sizeList: [
+                    '14px',
+                    '16px',
+                    '18px',
+                    '20px',
+                    '22px',
+                    '24px',
+                    '30px',
+                    '34px',
+                    '40px',
+                ],
+                allowCustomSize: false
+            }
+        },
+        btns: [
+            ['viewHTML'],
+            ['undo', 'redo'],
+            ['formatting'],
+            ['fontsize'],
+            ['foreColor', 'backColor'],
+            ['strong', 'em', 'del'],
+            ['superscript', 'subscript'],
+            ['link'],
+            ['insertImage'],
+            ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+            ['unorderedList', 'orderedList'],
+            ['horizontalRule'],
+            ['removeformat'],
+            ['emoji'],
+        ]
+      });
+
       function changeType(select, initial = false){
         if(select.find('option:selected').val() == 'checkbox' || select.find('option:selected').val() == 'radio' || select.find('option:selected').val() == 'table'){
           select.closest('tr').find('.for_checkbox').removeAttr('disabled');

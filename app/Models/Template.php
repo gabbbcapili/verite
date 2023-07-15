@@ -15,11 +15,13 @@ class Template extends Model
 
     protected $fillable = ['name', 'type', 'is_deleted', 'is_approved', 'status'];
 
-    public static $typeList = ['spaf', 'spaf_extension', 'risk_management', 'audit'];
+    public static $typeList = ['spaf', 'spaf_extension', 'risk_management', 'audit', 'report'];
 
     public static $forAudit = ['audit'];
 
     public static $forSpaf = ['spaf', 'spaf_extension', 'risk_management'];
+
+    public static $forReport = ['report'];
 
     public function created_by_user(){
         return $this->belongsTo(User::class, 'created_by');
@@ -55,6 +57,18 @@ class Template extends Model
 
     public function getStatusTextAttribute(){
         return $this->status ? 'Inactive' : 'Active';
+    }
+
+    public function createDefaultForReport(){
+        $group = $this->groups()->create(['header' => $this->name, 'sort' => 0, 'editable' => 1]);
+
+        $group->questions()->create([
+            'text' => '',
+            'type' => 'editor',
+            'next_line' => 1,
+            'sort' => 0,
+            'required' => 1,
+        ]);
     }
 
     public function createDefault(){
