@@ -159,7 +159,7 @@ class ScheduleController extends Controller
     public function create(Request $request){
         $auditmodels = AuditModel::all();
         $schedulestatuses = ScheduleStatus::all();
-        $proficiencies = Proficiency::all();
+        $proficiencies = Proficiency::orderBy('name', 'asc')->get();
         $countries = Country::all();
         $date = $request->date;
         $companies = Company::all();
@@ -178,7 +178,7 @@ class ScheduleController extends Controller
         $client = $event->users->where('role', 'Client')->first();
         $supplier = $event->users->where('role', 'Supplier')->first();
         $companies = Company::all();
-        $proficiencies = Proficiency::all();
+        $proficiencies = Proficiency::orderBy('name', 'asc')->get();
         $auditors = User::auditors();
         return view('app.schedule.edit', compact('auditmodels','schedulestatuses','countries', 'event', 'schedule', 'client', 'supplier', 'companies', 'scheduleStatus', 'next_stop', 'proficiencies', 'auditors'));
     }

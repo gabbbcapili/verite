@@ -209,9 +209,13 @@ class UserController extends Controller
 
             if($request->has('client_preference')){
                 $data['client_preference'] = implode(',', $request->client_preference);
+            }else{
+                $data['client_preference'] = null;
             }
             if($request->has('skills')){
                 $data['skills'] = implode(',', $request->skills);
+            }else{
+                $data['skills'] = null;
             }
             $previousRole = $user->roles()->first()->name;
             $user->update($data);

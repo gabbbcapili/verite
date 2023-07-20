@@ -1,3 +1,8 @@
+
+users skills set on update pag dinelete lahat ayaw mag save
+calendar alpabetical filter resource, edit create ok
+
+
 Schedule -
     -Resource Plan with automation and settings - 40 hours
     -Show Spaf information - 24 hours
