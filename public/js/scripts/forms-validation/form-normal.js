@@ -4,6 +4,7 @@ $(function() {
        button = this.name;
   });
   $(".form").submit(function(e) {
+    tinyMCE.triggerSave();
     e.preventDefault();
     tinyMCE.triggerSave();
     if($('.btn_save').prop('disabled') == true){
@@ -29,7 +30,10 @@ $(function() {
                 },
               });
                 $('.error').remove();
-                $('.form')[0].reset();
+                if(button != 'no_action'){
+                  $('.form')[0].reset();
+                }
+
             }
 
           // $(".select").val(null).trigger("change");
@@ -40,6 +44,8 @@ $(function() {
             setTimeout(function(){
                 window.location.replace(result.redirect);
             }, 1500);
+          }else if(button == 'no_action'){
+
           }else{
             $('.form')[0].reset();
           }

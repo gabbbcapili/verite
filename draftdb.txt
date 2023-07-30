@@ -1,4 +1,9 @@
 
+forinsertion -> add whole table
+template -> report -> can add other report template
+
+
+
 users skills set on update pag dinelete lahat ayaw mag save
 calendar alpabetical filter resource, edit create ok
 

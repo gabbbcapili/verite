@@ -158,7 +158,7 @@ class GroupController extends Controller
              }
             DB::commit();
             $output = ['success' => 1,
-                        'msg' => 'Question Group successfully created!',
+                        'msg' => 'Question Group successfully updated!',
                     ];
         } catch (\Exception $e) {
             \Log::emergency("File:" . $e->getFile(). " Line:" . $e->getLine(). " Message:" . $e->getMessage());

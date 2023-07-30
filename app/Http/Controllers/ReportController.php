@@ -93,7 +93,7 @@ class ReportController extends Controller
             ['link'=>"/",'name'=>"Home"],['link'=> route('report.index'), 'name'=>"Reports"], ['name'=>"Create New Report"]
         ];
         $audits = Audit::where('status', 'completed')->orderBy('id', 'desc')->get();
-        $templates = Template::where('is_deleted', false)->where('is_approved', true)->where('status', true)->whereIn('type', Template::$forReport)->get();
+        $templates = Template::where('is_deleted', false)->where('is_approved', true)->where('status', true)->whereIn('type', Template::$forReport)->orderBy('id', 'desc')->get();
         return view('app.report.create', compact('breadcrumbs', 'audits', 'templates'));
     }
 
@@ -124,6 +124,7 @@ class ReportController extends Controller
                 $data['content'] = $q->text;
             }
             $report = Report::create($data);
+            $report->processContent();
             DB::commit();
             $output = ['success' => 1,
                         'msg' => 'Report added successfully!',

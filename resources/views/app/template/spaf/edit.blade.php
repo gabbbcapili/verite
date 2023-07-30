@@ -18,31 +18,30 @@
 @section('content')
 
 <section id="basic-vertical-layouts">
-    <form action="{{ route('template.spaf.update', $template) }}" method="POST" class="form form-vertical" enctype="multipart/form-data">
+  <!--   <form action="{{ route('template.spaf.update', $template) }}" method="POST" class="form form-vertical" enctype="multipart/form-data">
         @method('put')
-        @csrf
-        <div class="row match-height">
+        @csrf -->
+
             <!-- create question -->
             @if(! in_array($template->type, App\Models\Template::$forReport))
+            <div class="row match-height">
                 <div class="col-lg-4 col-sm-12">
-            @else
-                <div class="col-lg-2 col-sm-12">
-            @endif
-                <div class="row">
-                    <div class="card">
-                        <div class="card-header">
-                          <h4 class="card-title">Add & Edit Your Questions</h4>
-                        </div>
-                        <div class="card-content">
-                            <div class="card-body">
-                                <div class="row">
-                                    @if(! in_array($template->type, App\Models\Template::$forReport))
-                                    <button class="btn btn-primary modal_button" type="button" data-action="{{ route('template.group.create', $template) }}"><i data-feather="plus"></i> Add Group / Question</button>
-                                    @endif
-                                    <div class="row mt-1">
-                                        <div class="col-md-12 col-sm-12" id="">
-                                          <div class="list-group"role="tablist"  id="sortable_groups">
-                                          </div>
+                    <div class="row">
+                        <div class="card">
+                            <div class="card-header">
+                              <h4 class="card-title">Add & Edit Your Questions</h4>
+                            </div>
+                            <div class="card-content">
+                                <div class="card-body">
+                                    <div class="row">
+                                        @if(! in_array($template->type, App\Models\Template::$forReport))
+                                        <button class="btn btn-primary modal_button" type="button" data-action="{{ route('template.group.create', $template) }}"><i data-feather="plus"></i> Add Group / Question</button>
+                                        @endif
+                                        <div class="row mt-1">
+                                            <div class="col-md-12 col-sm-12" id="">
+                                              <div class="list-group"role="tablist"  id="sortable_groups">
+                                              </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -50,29 +49,64 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- create question -->
-            <!-- show question -->
-            @if(! in_array($template->type, App\Models\Template::$forReport))
+                <!-- create question -->
+                <!-- show question -->
                 <div class="col-lg-8 col-sm-12" id="printThis">
+                    <div class="card">
+                            <div class="card-header">
+                              <h4 class="card-title text-center">Template Preview</h4>
+                            </div>
+                            <div class="card-content">
+                                <div class="card-body">
+                                    <div class="row" id="template_preview">
+
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- show question -->
+            </div>
             @else
-                <div class="col-lg-10 col-sm-12" id="printThis">
-            @endif
+            <div class="row match-height">
+                <div class="col-lg-12 col-sm-12">
                     <div class="card">
                         <div class="card-header">
-                          <h4 class="card-title text-center">Template Preview</h4>
+                            <h4 class="card-title">Report Template</h4>
                         </div>
-                        <div class="card-content">
-                            <div class="card-body">
-                                <div class="row" id="template_preview">
-
+                        @php
+                            $group = $template->groups->first();
+                        @endphp
+                        <div class="card-body">
+                            <form action="{{ route('template.group.update', ['group' => $group]) }}" method="POST" class="form" enctype='multipart/form-data'>
+                              @method('put')
+                              @csrf
+                                <div class="form-body">
+                                    <div class="row mb-2">
+                                        <div class="col-lg-4">
+                                            <button type="button" class="btn btn-primary" id="selectVariableModalButton">Select Variable</button>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="header" placeholder="Header" class="form-control" value="{{ $group->header }}">
+                                      <div class="row mb-2 justify-content-center align-items-center">
+                                        <div class="col-10">
+                                          <input type="hidden" name="question[0][question_id]" value="{{ $group->questions->first()->id }}">
+                                          <input type="hidden" name="question[0][type]" value="editor">
+                                          <textarea class="form-control tinymce" name="question[0][text]">{{ $group->questions->first()->text }}</textarea>
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-12 align-items-center justify-content-center text-center">
+                                          <input type="submit" name="no_action" class="btn btn-primary me-1 btn_save" value="Save">
+                                        </div>
+                                      </div>
                                 </div>
-                            </div>
+                              </form>
+                        </div>
                     </div>
                 </div>
             </div>
-            <!-- show question -->
-        </div>
+            @endif
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -93,7 +127,8 @@
                 </div>
             </div>
         </div>
-      </form>
+      <!-- </form> -->
+      @include('app.template.group.forInsertionModal')
 </section>
 @endsection
 
@@ -176,6 +211,40 @@
             $('.btn_print').click(function(){
                 $('#printThis').printThis();
             });
+
+            $(document).ready(function(){
+                tinymce.init({
+                      selector: ".tinymce",
+                      plugins: 'pagebreak image code fullscreen table lists',
+                      height : "700"
+                    });
+                $('.forInsertion').dblclick(function(){
+                    var self = $(this);
+                    var text = '';
+                    if (self.is("input")) {
+                        text = self.val();
+                    } else if (self.is("radio")) {
+                         // text = self.val();
+                    } else if (self.is("textarea")) {
+                        text = self.val();
+                    }else if (self.is("td")) {
+                        text = self.html();
+                    }
+                    // override
+                    if(self.hasClass('withDataInsertion')){
+                        text = self.data('forinsertion');
+                        console.log(text);
+                    }
+                    tinymce.activeEditor.execCommand('mceInsertContent', false, text);
+                    $('#selectVariableModal').modal('toggle');
+                });
+                $('#selectVariableModalButton').click(function(){
+                    $('#selectVariableModal').modal('toggle');
+                });
+
+                $('input,textarea').attr('readonly', 'readonly');
+
+              });
         });
     </script>
 @endsection

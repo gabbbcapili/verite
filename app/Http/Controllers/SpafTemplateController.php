@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use Validator;
 use Carbon\Carbon;
+use App\Models\Setting;
 
 
 class SpafTemplateController extends Controller
@@ -155,7 +156,13 @@ class SpafTemplateController extends Controller
         $breadcrumbs = [
             ['link'=>"/",'name'=>"Home"],['link'=> route('template.spaf.index', ['type' => $template->type]), 'name'=>"List Templates"], ['name'=> $template->name]
         ];
-        return view('app.template.spaf.edit', compact('template', 'breadcrumbs'));
+        if(! in_array($template->type, Template::$forReport)){
+            $templates = [];
+        }else{
+            $templates = Template::where('is_deleted', false)->where('is_approved', true)->where('status', true)->whereIn('type', Template::$forSpaf)->get();
+        }
+        $settings = Setting::first();
+        return view('app.template.spaf.edit', compact('template', 'breadcrumbs', 'settings', 'templates'));
     }
 
     /**

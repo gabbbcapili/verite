@@ -9,10 +9,10 @@
                 <tr >
                     <td style="width: 30%; white-space:pre-wrap;">{{ $q->text }} {{ $q->required ? '* ' : '' }}</td>
                     <td style="width: 70%;">
-                    @include('app.template.spaf.partial.question', ['q' => $q, 'answers' => isset($answers) ? $answers : []])
+                    @include('app.template.spaf.partial.question', ['q' => $q, 'answers' => isset($answers) ? $answers : [], 'g' => $group, 't' => $template])
             @else
                 <div class="mt-1">
-                    @include('app.template.spaf.partial.question', ['q' => $q, 'answers' => isset($answers) ? $answers : []])
+                    @include('app.template.spaf.partial.question', ['q' => $q, 'answers' => isset($answers) ? $answers : [], 'g' => $group, 't' => $template])
                 </div>
             @endif
 
