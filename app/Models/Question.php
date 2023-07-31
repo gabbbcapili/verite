@@ -122,6 +122,27 @@ class Question extends Model
             }
     }
 
+    public function convertToTinyMceTable($answer){
+        $q = $this;
+        $html = '<table style="border-collapse: collapse; width: 99.9989%;" border="1"><tbody>';
+        $html .= '<tr>';
+        foreach(explode('|', $q->for_checkbox) as $column){
+            $html .= '<th>'. $column .'</th>';
+        }
+        $html .= '</tr>';
+        if($answer){
+            foreach(json_decode($answer) as $index => $row){
+                $html .= '<tr>';
+                    foreach($row as $data){
+                        $html .= '<td>'. $data .'</td>';
+                    }
+                $html .= '</tr>';
+                }
+        }
+        $html .= '</tbody></table>';
+       return $html;
+    }
+
 
 
 }

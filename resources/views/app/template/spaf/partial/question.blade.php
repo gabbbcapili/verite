@@ -50,8 +50,8 @@
     @endforeach
 @elseif($q->type == 'table')
     @if(!$q->next_line)<label>{{ $q->text }}{{ $q->required ? '* ' : '' }}</label>@endif
-    <table class="table text-center table-sm table-striped table-hover table-bordered" id="table.{{ $q->id }}">
-        <thead>
+    <table class="table text-center table-sm table-striped table-hover table-bordered id="table.{{ $q->id }}">
+        <thead class="forInsertion withDataInsertion" data-forinsertion="{template-{{ $t->id }}_{{$q->id}}_{{$t->name}}_TABLE_{{$g->header}}_{{$q->text}}}"  data-forinsertionReport="{{ $q->convertToTinyMceTable($answer) }}">
             <tr>
                 <th class="cursor-pointer addQuestionTableRow" data-table="table.{{ $q->id }}" data-table-id="{{ $q->id }}" data-count="0" data-columns-count="{{ count(explode('|', $q->for_checkbox)) }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Add Row"><i data-feather="plus"></i></th>
                @foreach(explode('|', $q->for_checkbox) as $column)

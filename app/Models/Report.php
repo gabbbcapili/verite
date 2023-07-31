@@ -53,7 +53,16 @@ class Report extends Model
                                     $query->where('client_id', $company->id);
                                 })->orderBy('id', 'desc')->first();
                             if($spafAnswer){
-                                $content = str_replace('{'. $var .'}', $spafAnswer->value, $content);
+                                $spafQuestion = $spafAnswer->question;
+                                if($spafQuestion){
+                                    if($spafQuestion->type == 'table'){
+                                        $content = str_replace('{'. $var .'}', $spafQuestion->convertToTinyMceTable($spafAnswer->value), $content);
+                                    }else{
+                                        $content = str_replace('{'. $var .'}', $spafAnswer->value, $content);
+                                    }
+                                }else{
+                                    $content = str_replace('{'. $var .'}', $spafAnswer->value, $content);
+                                }
                             }
                         }
                     }
