@@ -97,7 +97,7 @@
                         <div class="card-body">
                             <div class="row">
                             <div class="col-12 align-items-center justify-content-center text-center">
-                              @if(in_array($spaf->status, ['pending', 'additional', 'answered']) && (request()->user()->hasRole('Supplier') || request()->user()->hasRole('Client')))
+                              @if(in_array($spaf->status, ['pending', 'additional', 'answered']))
                                 <a href="{{ route('spaf.edit', $spaf) }}" class="btn btn-outline-secondary">Edit <i data-feather="arrow-right"></i></a>
                               @endif
                               @if(request()->user()->can('spaf.approve') && in_array($spaf->status, ['answered']))

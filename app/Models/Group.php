@@ -20,4 +20,15 @@ class Group extends Model
     public function template(){
         return $this->belongsTo(Template::class, 'template_id');
     }
+
+    public function convertToTinymceTable($answers){
+        $html = '<table style="border-collapse: collapse; width: 99.9989%;" border="1"><tbody>';
+
+        foreach($this->questions()->orderBy('sort')->get() as $q){
+            $html .= '<tr>';
+
+            $answer = $answers->where('question_id', $q->id)->first();
+            $html .= '</tr>';
+        }
+    }
 }

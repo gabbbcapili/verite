@@ -25,7 +25,7 @@
     @foreach($template->groups()->orderBy('sort')->get() as $group)
         <div class="row mb-2">
             @foreach($group->questions()->orderBy('sort')->get() as $q)
-                {!! $q->text !!}
+                <div class="forInsertion">{!! $q->text !!}</div>
             @endforeach
         </div>
     @endforeach

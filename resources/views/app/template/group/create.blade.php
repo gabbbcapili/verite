@@ -40,7 +40,7 @@
                           <th style="width: 20%;">Type</th>
                           <th style="width: 10%;">Required <i data-feather="info" data-bs-toggle-modal="tooltip" data-bs-placement="top" title="Check / Uncheck this field whether this field is required to fill up or not."></i></th>
                           <th style="width: 10%;">Next Line <i data-feather="info" data-bs-toggle-modal="tooltip" data-bs-placement="top" title="Uncheck if multiple questions in one line."></i></th>
-                          <th style="width: 25%;">For Checkbox/Radio/Table <i data-feather="info" data-bs-toggle-modal="tooltip" data-bs-placement="top" title="If the field is checkbox or radio or table, put all the options/columns in this field separeted by vertical bar ( | ) e.g. 'Yes|No' 'Management|Direct|Outsource|Dispatch, Column1|Column2|Column3'."></i></th>
+                          <th style="width: 25%;">For Checkbox/Radio/Table <i data-feather="info" data-bs-toggle-modal="tooltip" data-bs-placement="top" title="If the field is checkbox or radio or table, put all the options/columns in this field separated by vertical bar ( | ) e.g. 'Yes|No' 'Management|Direct|Outsource|Dispatch, Column1|Column2|Column3'."></i></th>
                           <th style="width: 10%;">Action</th>
                         </tr>
                       </thead>

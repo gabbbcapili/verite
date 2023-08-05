@@ -60,7 +60,7 @@ Route::group(['middleware' => ['auth']], function()
     Route::get('spaf/supplierIndex', [SpafController::class, 'supplierIndex'])->name('spaf.supplierIndex')->middleware('role:Supplier');
     Route::get('spaf/clientIndex', [SpafController::class, 'clientIndex'])->name('spaf.clientIndex')->middleware('role:Client');
     Route::get('spaf/{spaf}', [SpafController::class, 'show'])->name('spaf.show');
-    Route::resource('spaf', SpafController::class)->only(['update', 'edit'])->middleware('role:Supplier,Client');
+    Route::resource('spaf', SpafController::class)->only(['update', 'edit']);
 
     Route::post('audit/approve/{audit}/', [AuditController::class, 'approve'])->name('audit.approve')->middleware('permission:audit.approve');
     Route::resource('audit', AuditController::class)->middleware('permission:audit.manage,schedule.selectableAuditor');

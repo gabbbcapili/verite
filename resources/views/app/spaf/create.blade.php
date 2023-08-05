@@ -71,6 +71,26 @@
                         </div>
                       </div>
                     </div>
+                    <hr>
+                    <div class="row mb-2">
+                      <div class="col-lg-4 col-xs-12">
+                          <div class="form-group">
+                            <label>Send Email to Client/Supplier?</label>
+                            <div class="row mt-1">
+                              <div class="col-12">
+                                <div class="form-check form-check-inline">
+                                  <input class="form-check-input" type="radio" name="sendEmail" id="inlineRadio1" value="1" checked />
+                                  <label class="form-check-label" for="inlineRadio1">Yes</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                  <input class="form-check-input" type="radio" name="sendEmail" id="inlineRadio2" value="0" />
+                                  <label class="form-check-label" for="inlineRadio2">No</label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+                    </div>
                 </div>
             </div>
           </div>

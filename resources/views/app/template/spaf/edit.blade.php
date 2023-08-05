@@ -229,6 +229,8 @@
                         text = self.val();
                     }else if (self.is("td")) {
                         text = self.html();
+                    }else if (self.is("div")) {
+                        text = self.html();
                     }
                     // override
                     if(self.hasClass('withDataInsertion')){

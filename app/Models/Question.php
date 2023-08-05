@@ -130,15 +130,32 @@ class Question extends Model
             $html .= '<th>'. $column .'</th>';
         }
         $html .= '</tr>';
+        $totals = [];
         if($answer){
             foreach(json_decode($answer) as $index => $row){
+                // $totals[$index] = 0;
                 $html .= '<tr>';
-                    foreach($row as $data){
+                    foreach($row as $indexx => $data){
+                        $totals[$indexx] = 0;
+                        if(ctype_digit($data)){
+                            $totals[$indexx] += (int) $data;
+                        }
                         $html .= '<td>'. $data .'</td>';
                     }
                 $html .= '</tr>';
                 }
+            $html .= '<tr>';
+            foreach($totals as $total){
+                if($total == 0){
+                    $html .= '<td></td>';
+                }else{
+                    $html .= '<td>' . $total . '</td>';
+                }
+
+            }
+            $html .= '</tr>';
         }
+
         $html .= '</tbody></table>';
        return $html;
     }

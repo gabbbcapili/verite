@@ -252,6 +252,35 @@
                             </div>
                           </div>
                           @endif
+                           @if(isset($templatesReport))
+                          <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTen">
+                              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordionTen" aria-expanded="false" aria-controls="accordionTen">
+                                Report
+                              </button>
+                            </h2>
+                            <div id="accordionTen" class="accordion-collapse collapse" aria-labelledby="headingTen" data-bs-parent="#accordionVariables">
+                              <div class="accordion-body">
+                                <div class="accordion" id="accordionTemplatesReport">
+                                  @foreach($templatesReport as $template)
+                                  <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingTemplatesReport{{ $template->id }}">
+                                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordionTargetTemplatesReport{{ $template->id }}" aria-expanded="false" aria-controls="accordionTargetTemplatesReport{{ $template->id }}">
+                                        <h4>{{ $template->name }}</h4>
+                                      </button>
+                                    </h2>
+                                    <div id="accordionTargetTemplatesReport{{ $template->id }}" class="accordion-collapse collapse" aria-labelledby="headingTemplatesReport{{ $template->id }}" data-bs-parent="#accordionTemplatesReport">
+                                      <div class="accordion-body">
+                                            @include('app.template.spaf.preview', ['template' => $template, 'answers' => null])
+                                      </div>
+                                    </div>
+                                  </div>
+                                  @endforeach
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          @endif
                         </div>
                     </div>
                 </div>

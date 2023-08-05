@@ -124,11 +124,13 @@ class SpafController extends Controller
             DB::beginTransaction();
             $data = $request->all();
             $spaf = Spaf::create($data);
-            if($spaf->supplier){
-                Mail::to($spaf->supplier)->send(new CreateSpaf($spaf->supplier, $spaf));
-                Mail::to($spaf->client)->send(new CreateSpaf($spaf->client, $spaf));
-            }else{
-                Mail::to($spaf->client)->send(new CreateSpaf($spaf->client, $spaf));
+            if($data['sendEmail']){
+                if($spaf->supplier){
+                    Mail::to($spaf->supplier)->send(new CreateSpaf($spaf->supplier, $spaf));
+                    Mail::to($spaf->client)->send(new CreateSpaf($spaf->client, $spaf));
+                }else{
+                    Mail::to($spaf->client)->send(new CreateSpaf($spaf->client, $spaf));
+                }
             }
             DB::commit();
             $output = ['success' => 1,
