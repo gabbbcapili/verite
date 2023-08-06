@@ -158,6 +158,7 @@ class SpafTemplateController extends Controller
         ];
         if(! in_array($template->type, Template::$forReport)){
             $templates = [];
+            $templatesReport = [];
         }else{
             $templates = Template::where('is_deleted', false)->where('is_approved', true)->where('status', true)->whereIn('type', Template::$forSpaf)->orderBy('id', 'desc')->get();
             $templatesReport = Template::where('is_deleted', false)->where('is_approved', true)->where('status', true)->whereIn('type', Template::$forReport)->orderBy('id', 'desc')->get();
