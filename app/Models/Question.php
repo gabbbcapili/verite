@@ -125,31 +125,38 @@ class Question extends Model
     public function convertToTinyMceTable($answer){
         $q = $this;
         $html = '<table style="border-collapse: collapse; width: 99.9989%;" border="1"><tbody>';
-        $html .= '<tr>';
+        $html .= '<tr><th style="font-style: italic;">#</th>';
         foreach(explode('|', $q->for_checkbox) as $column){
             $html .= '<th>'. $column .'</th>';
         }
         $html .= '</tr>';
         $totals = [];
         if($answer){
+            $iteration = 1;
             foreach(json_decode($answer) as $index => $row){
                 // $totals[$index] = 0;
-                $html .= '<tr>';
-                    foreach($row as $indexx => $data){
-                        $totals[$indexx] = 0;
-                        if(ctype_digit($data)){
-                            $totals[$indexx] += (int) $data;
-                        }
-                        $html .= '<td>'. $data .'</td>';
+                $html .= '<tr><td style="font-style: italic;">'. $iteration .'.</td>';
+                $iteration +=1;
+                $column = 0;
+                foreach($row as $indexx => $data){
+                    if(! isset($totals[$column])){
+                        $totals[$column] = 0;
                     }
+                    if(ctype_digit($data)){
+                        $totals[$column] += (int) $data;
+                    }
+                    $html .= '<td>'. $data .'</td>';
+                    $column += 1;
+                }
                 $html .= '</tr>';
                 }
-            $html .= '<tr>';
+            $html .= '<tr><td style="font-style: italic;">Total:</td>';
+            // dd($totals);
             foreach($totals as $total){
                 if($total == 0){
                     $html .= '<td></td>';
                 }else{
-                    $html .= '<td>' . $total . '</td>';
+                    $html .= '<td style="font-style: italic;">' . $total . '</td>';
                 }
 
             }

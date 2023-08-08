@@ -253,10 +253,12 @@
             @else
               <a target="_blank" href="{{ route('audit.show', $event->schedule->audit) }}" class="btn btn-success"><i data-feather="eye"></i> View Audit</a>
             @endif
+            @else
+            <a href="#" data-action="{{ route('schedule.destroy', $event) }}" data-bs-toggle="tooltip" data-title="Are you sure to delete this schedule?" data-placement="top" title="Delete Schedule" class="btn btn-danger confirmDelete"><i data-feather="trash"></i> Delete Schedule</a>
           @endif
           <button type="submit" class="btn btn-primary no-print btn_save"><i data-feather="save"></i> Save
           </button>
-          @endcan
+          @endif
       </div>
     </div>
   </form>
