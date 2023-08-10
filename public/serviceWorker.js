@@ -37,8 +37,13 @@ const PRECACHE_URLS = [
 
 self.addEventListener('message', event => {
   const currentUrl = event.data.current_url;
+  console.log(currentUrl);
   if (currentUrl && !PRECACHE_URLS.includes(currentUrl)) {
-    PRECACHE_URLS.push(currentUrl);
+    // PRECACHE_URLS.push(currentUrl);
+    caches.open(RUNTIME)
+      .then(cache => {
+        cache.addAll([currentUrl]);
+      });
     caches.open(PRECACHE)
       .then(cache => {
         cache.addAll(PRECACHE_URLS);
@@ -81,24 +86,31 @@ self.addEventListener('fetch', event => {
   var requestUrl = new URL(event.request.url);
   if (event.request.url.startsWith(self.location.origin)) {
     event.respondWith(
-      caches.match(event.request).then(cachedResponse => {
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-
-        return caches.open(RUNTIME).then(cache => {
-          return fetch(event.request).then(response => {
-            // Put a copy of the response in the runtime cache.
-            if (requestUrl.pathname.startsWith(urlStartsWith)) {
-              return cache.put(event.request, response.clone()).then(() => {
+      (async function () {
+        try {
+          // return await fetch(event.request);
+          return await fetch(event.request).then(response => {
+            return caches.open(RUNTIME).then(cache => {
+              // Put a copy of the response in the runtime cache.
+              if (requestUrl.pathname.startsWith(urlStartsWith)) {
+                return cache.put(event.request, response.clone()).then(() => {
+                  return response;
+                });
+              }else{
                 return response;
-              });
-            }else{
-              return response;
-            }
+              }
+            });
           });
-        });
-      })
+        } catch (err) {
+          return caches.match(event.request);
+          caches.match(event.request).then(cachedResponse => {
+            if (cachedResponse) {
+              return cachedResponse;
+            }
+          })
+        }
+      })()
+
     );
   }
 });
