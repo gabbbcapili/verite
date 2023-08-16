@@ -81,6 +81,8 @@
                     text = self.data('forinsertionreport');
                 }else if (self.is("table")) {
                     text = self.html();
+                }else if (self.is("div")) {
+                    text = self.html();
                 }
                 tinymce.activeEditor.execCommand('mceInsertContent', false, text);
                 $('#selectVariableModal').modal('toggle');

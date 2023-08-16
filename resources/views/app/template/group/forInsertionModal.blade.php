@@ -202,6 +202,29 @@
                             <div id="accordionFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionVariables">
                               <div class="accordion-body">
                                 @foreach($audit->forms as $auditForm)
+                                  @if($auditForm->isMultiple)
+                                    <div class="row mb-2">
+                                        <div class="col-lg-12 col-md-12 col-sm-12">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                  <h4 class="card-title text-center">SUMMARY - {{ $auditForm->template->name }}</h4>
+                                                  <div class="heading-elements">
+                                                    <ul class="list-inline mb-0">
+                                                      <li>
+                                                        <a data-action="collapse"><i data-feather="chevron-down"></i></a>
+                                                      </li>
+                                                    </ul>
+                                                  </div>
+                                                </div>
+                                                <div class="card-content collapse">
+                                                  <div class="card-body">
+                                                      {!! $auditForm->summarizeAnswers() !!}
+                                                  </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                  @endif
                                   <div class="row mb-2">
                                       <div class="col-lg-12 col-md-12 col-sm-12">
                                           <div class="card">

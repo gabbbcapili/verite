@@ -30,18 +30,18 @@ class Question extends Model
                 if($q->type == 'number'){
                     $validation['question.'. $q->id] = $q->required ? ['required', 'numeric'] : ['nullable', 'numeric'];
                 }
-                if($q->type == 'file'){
-                    $answer = $model->answers()->where('question_id', $q->id)->first();
-                    if(! $answer){
-                        $validation['file.'. $q->id] = $q->required ? ['required'] : ['nullable'];
-                    }
-                }
-                if($q->type == 'file_multiple'){
-                    $answer = $model->answers()->where('question_id', $q->id)->first();
-                    if(! $answer){
-                        $validation['file_multiple.'. $q->id] = $q->required ? ['required'] : ['nullable'];
-                    }
-                }
+                // if($q->type == 'file'){
+                //     $answer = $model->answers()->where('question_id', $q->id)->first();
+                //     if(! $answer){
+                //         $validation['file.'. $q->id] = $q->required ? ['required'] : ['nullable'];
+                //     }
+                // }
+                // if($q->type == 'file_multiple'){
+                //     $answer = $model->answers()->where('question_id', $q->id)->first();
+                //     if(! $answer){
+                //         $validation['file_multiple.'. $q->id] = $q->required ? ['required'] : ['nullable'];
+                //     }
+                // }
                 if($q->type == 'table'){
                     $validation['table.'. $q->id] = $q->required ? ['required'] : ['nullable'];
                 }
