@@ -1,3 +1,54 @@
+08-20-2023 Workshop
+
+IS
+Cannot delete Leave, Holiday, Unavailability
+
+Overlapping entries in Calendar display
+
+No notification on overlapping events in Calendar - Add checking on all client supplier and resources on change date if available on selected date if no add notif
+
+Gantt Chart has static entries, cannot view details of the Audit Schedule
+
+No of Days reflected in Gantt Chart is incorrect (eg. test1-PH-081023 - Audit Schedule Aug10-11 shown only in  Gantt Chart Aug 10)
+
+Set Edit button to floating, not only on the bottom - audit create/edit - sticky/floating footer save
+
+No notification on Audit Team re. assigned audit upon creation of Audit Schedule - add checkbox "send email to resource persons" "send email to client/supplier" on audit creation
+
+Lead Auditor cannot view details of the Audit in the Calendar (when Manage Schedules is unchecked)
+
+Display Audit Form Name and Assigned Name in Cached Forms page - add name to cached form (template name)
+
+Cannot uncheck Radio Buttons - add option to uncheck
+
+Null values displayed for Client, Supplier, Resources when Audit Schedule is displayed
+
+OOS
+No facility for Admin to set up public holiday per country and city
+    -add country and citv qxy to company - verite, supplier and client and verite user -- schedule -> create -> holiday -> add option to select country then city and holiday name
+    -verite - user wide
+    -client/supplier - company wide
+    -retain dropdown holiday, add Holiday (Per Country/City - different implementation)
+
+
+Users with Role = Worker Interviewer should access only Worker Interview Forms
+    -create access matrix for every resource in the audit schedule add checkbox for each forms selected if they have access or no default yes then creator of audit can turn off (uncheck each form per user) for those who do not have access
+
+    -add new permission "Manage Audit Access Matrix"
+
+Gantt Chart only shows Audit Events, no leaves/holidays/unavailability
+    -Can be achived by: Default display to audit schedule only then add filter to filter by company and resources
+
+
+
+
+
+
+
+
+
+
+
 
 forinsertion -> add whole table
 template -> report -> can add other report template

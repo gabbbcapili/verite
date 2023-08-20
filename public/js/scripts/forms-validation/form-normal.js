@@ -83,7 +83,8 @@ $(function() {
           console.log(json);
           console.log(errorThrown);
           if(json){
-            Swal.fire({
+            if(! navigator.onLine){
+              Swal.fire({
                 icon: 'error',
                 title: 'No internet connection. Please try again later.',
                 // showConfirmButton: false,
@@ -91,6 +92,16 @@ $(function() {
                   popup: 'animate__animated animate__fadeIn'
                 },
               });
+            }else{
+              Swal.fire({
+                icon: 'error',
+                title: 'An error has occurred. Please try again later.',
+                // showConfirmButton: false,
+                showClass: {
+                  popup: 'animate__animated animate__fadeIn'
+                },
+              });
+            }
           }
           $('.btn_save').prop('disabled', false);
         }
