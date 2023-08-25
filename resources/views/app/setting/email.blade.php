@@ -94,6 +94,16 @@
                 </div>
                 <hr>
                 <div class="row mb-2">
+                <h4 class="card-title">Audit</h4>
+                  <div class="col-lg-6 col-xs-12">
+                    <div class="form-group">
+                        <label for="name">New Creation of Audit:</label>
+                        <textarea class="form-control trumbowyg" name="audit_send">{!! $setting->audit_send !!}</textarea>
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <div class="row mb-2">
                 <h4 class="card-title">Footer</h4>
                   <div class="col-lg-6 col-xs-12">
                     <div class="form-group">

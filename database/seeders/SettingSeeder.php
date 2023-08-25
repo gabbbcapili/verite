@@ -27,6 +27,7 @@ class SettingSeeder extends Seeder
             'user_welcome' => 'Hello thank you for registering in our site, please wait for our admin to change your role according to your position.',
             'welcome_client' => 'Welcome Client',
             'welcome_supplier' => 'Welcome Supplier',
+            'audit_send' => 'A new Audit has been created to see the details click the button below.',
             'user_changed_role' => 'Hello! administrator changed your role click the button below to visit the site',
             'admin_change_role_of' => 'Please change the role of the user below',
             'schedule_cf_1' => 'Custom Field 1',

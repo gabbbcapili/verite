@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\CreatedUpdatedBy;
+use Illuminate\Support\Str;
 
 class Template extends Model
 {
@@ -22,6 +23,10 @@ class Template extends Model
     public static $forSpaf = ['spaf', 'spaf_extension', 'risk_management'];
 
     public static $forReport = ['report'];
+
+    public function getSlugAttribute(){
+        return Str::slug($this->name, "-");
+    }
 
     public function created_by_user(){
         return $this->belongsTo(User::class, 'created_by');

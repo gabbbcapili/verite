@@ -40,7 +40,7 @@ class ScheduleController extends Controller
                 $start = new Carbon($event->start_date);
                 $end = new Carbon($event->end_date);
                 $diff = $start->diff($end)->days;
-                $diff = $diff == 0 ? 1 : $diff;
+                $diff = $diff == 0 ? 1 : $diff + 1;
                 $schedule = $event->schedule;
                 $data[] = [
                     'id' => $event->id,
@@ -51,7 +51,7 @@ class ScheduleController extends Controller
                     'text' => $event->ganttTitle,
                     'open' => true,
                     'backgroundColor' => $event->type == 'Audit Schedule' ? $schedule ? $schedule->status_color : 'primary' : 'danger',
-                    'textColor' => '#FFF'
+                    'textColor' => '#FFF',
                 ];
             }
 

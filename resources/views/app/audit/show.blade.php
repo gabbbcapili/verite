@@ -130,13 +130,13 @@
                                     @if(! $auditForm->headers->count() > 0)
                                         <div class="row">
                                             <div class="col-12 align-items-center justify-content-center text-center">
-                                                <a href="{{ route('auditForm.create', $auditForm) }}" class="btn btn-outline-secondary">Edit <i data-feather="arrow-right"></i></a>
+                                                <a href="{{ route('auditForm.create', ['auditForm' => $auditForm, 'template' => $auditForm->template->slug]) }}" class="btn btn-outline-secondary">Edit <i data-feather="arrow-right"></i></a>
                                             </div>
                                         </div>
                                     @else
                                         <div class="row">
                                             <div class="col-12 align-items-center justify-content-center text-center">
-                                                <a href="{{ route('auditForm.edit', $auditForm->headers->first()) }}" class="btn btn-outline-secondary">Edit <i data-feather="arrow-right"></i></a>
+                                                <a href="{{ route('auditForm.edit', ['auditFormHeader' => $auditForm->headers->first(), 'template' => $auditForm->template->slug]) }}" class="btn btn-outline-secondary">Edit <i data-feather="arrow-right"></i></a>
                                             </div>
                                         </div>
                                     @endif
@@ -148,7 +148,7 @@
                                       <div class="col-lg-6 col-sm-12">
                                             @if($audit->status != 'completed')
                                               <div class="d-flex justify-content-end mb-1 no-print">
-                                                <a class="btn btn-primary" href="{{ route('auditForm.create', $auditForm) }}"><i data-feather="plus-circle"></i> Add Answer</a>
+                                                <a class="btn btn-primary" href="{{ route('auditForm.create', ['auditForm' => $auditForm, 'template' => $auditForm->template->slug]) }}"><i data-feather="plus-circle"></i> Add Answer</a>
                                               </div>
                                             @endif
                                           <div class="table-responsive">
@@ -164,7 +164,7 @@
                                                             <td>@if($audit->status != 'completed')
                                                                     <a target="_blank" href="{{ route('auditForm.show', $header) }}" data-bs-toggle="tooltip" data-placement="top" title="" data-href="http://127.0.0.1:8000/auditForm/12" class="me-50" data-bs-original-title="Show" aria-label="Show"><i data-feather="eye"></i></a>
                                                                     {!! App\Models\Utilities::actionButtons([
-                                                                        ['route' => route('auditForm.edit', $header), 'name' => 'Edit', 'type' => 'href'],
+                                                                        ['route' => route('auditForm.edit', ['auditFormHeader' => $header, 'template' => $auditForm->template->slug]), 'name' => 'Edit', 'type' => 'href'],
                                                                         ['route' => route('auditForm.destroy', $header), 'name' => 'Delete', 'type' => 'confirmDelete', 'title' => 'Are you sure to delete this audit form answer?', 'text' => 'Delete']
                                                                     ]); !!}
                                                                 @else

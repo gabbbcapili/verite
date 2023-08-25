@@ -66,8 +66,43 @@
                             </select>
                         </div>
                       </div>
-
                   </div>
+                  <div class="row mb-2">
+                      <div class="col-lg-4 col-xs-12">
+                          <div class="form-group">
+                            <label>Send Email to Client/Supplier?</label>
+                            <div class="row mt-1">
+                              <div class="col-12">
+                                <div class="form-check form-check-inline">
+                                  <input class="form-check-input" type="radio" name="sendEmailClient" id="inlineRadio1" value="1" checked />
+                                  <label class="form-check-label" for="inlineRadio1">Yes</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                  <input class="form-check-input" type="radio" name="sendEmailClient" id="inlineRadio2" value="0" />
+                                  <label class="form-check-label" for="inlineRadio2">No</label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+                      <div class="col-lg-4 col-xs-12">
+                          <div class="form-group">
+                            <label>Send Email to Resource Person(s)?</label>
+                            <div class="row mt-1">
+                              <div class="col-12">
+                                <div class="form-check form-check-inline">
+                                  <input class="form-check-input" type="radio" name="sendEmailResource" id="inlineRadio3" value="1" checked />
+                                  <label class="form-check-label" for="inlineRadio3">Yes</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                  <input class="form-check-input" type="radio" name="sendEmailResource" id="inlineRadio4" value="0" />
+                                  <label class="form-check-label" for="inlineRadio4">No</label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+                    </div>
                   <div class="row">
                     <div class="col-12 align-items-center justify-content-center text-center">
                       <input type="submit" name="save" class="btn btn-primary me-1 btn_save" value="Save">

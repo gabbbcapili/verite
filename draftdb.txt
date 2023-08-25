@@ -1,27 +1,26 @@
 08-20-2023 Workshop
 
 IS
-Cannot delete Leave, Holiday, Unavailability
+Lead Auditor cannot view details of the Audit in the Calendar (when Manage Schedules is unchecked) ok
+Lead Auditor cannot view Audit details ok
 
-Overlapping entries in Calendar display
+Cannot delete Leave, Holiday, Unavailability ok
+Gantt Chart has static entries, cannot view details of the Audit Schedule ok
+No of Days reflected in Gantt Chart is incorrect (eg. test1-PH-081023 - Audit Schedule Aug10-11 shown only in  Gantt Chart Aug 10) ok
+
+Set Edit button to floating, not only on the bottom - audit create/edit - sticky/floating footer save ok
+
+No notification on Audit Team re. assigned audit upon creation of Audit Schedule - add checkbox "send email to resource persons" "send email to client/supplier" on audit creation ok
+
+Cannot uncheck Radio Buttons - add option to uncheck - ok
+
+Display Audit Form Name and Assigned Name in Cached Forms page - add name to cached form (template name) ok
 
 No notification on overlapping events in Calendar - Add checking on all client supplier and resources on change date if available on selected date if no add notif
 
-Gantt Chart has static entries, cannot view details of the Audit Schedule
-
-No of Days reflected in Gantt Chart is incorrect (eg. test1-PH-081023 - Audit Schedule Aug10-11 shown only in  Gantt Chart Aug 10)
-
-Set Edit button to floating, not only on the bottom - audit create/edit - sticky/floating footer save
-
-No notification on Audit Team re. assigned audit upon creation of Audit Schedule - add checkbox "send email to resource persons" "send email to client/supplier" on audit creation
-
-Lead Auditor cannot view details of the Audit in the Calendar (when Manage Schedules is unchecked)
-
-Display Audit Form Name and Assigned Name in Cached Forms page - add name to cached form (template name)
-
-Cannot uncheck Radio Buttons - add option to uncheck
-
 Null values displayed for Client, Supplier, Resources when Audit Schedule is displayed
+
+Overlapping entries in Calendar display
 
 OOS
 No facility for Admin to set up public holiday per country and city

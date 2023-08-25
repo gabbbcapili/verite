@@ -27,6 +27,7 @@ class CreateSettingsTable extends Migration
             $table->longText('admin_change_role_of');
             $table->longText('welcome_client');
             $table->longText('welcome_supplier');
+            $table->longText('audit_send');
             // schedules
             $table->string('schedule_cf_1');
             $table->string('schedule_cf_2');

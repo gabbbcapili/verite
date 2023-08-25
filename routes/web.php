@@ -68,10 +68,10 @@ Route::group(['middleware' => ['auth']], function()
 
 
     Route::resource('report', ReportController::class);
-    Route::get('auditForm/create/{auditForm}', [AuditFormController::class, 'create'])->name('auditForm.create')->middleware('permission:audit.manage,schedule.selectableAuditor');
+    Route::get('auditForm/create/{auditForm}/{template:slug?}', [AuditFormController::class, 'create'])->name('auditForm.create')->middleware('permission:audit.manage,schedule.selectableAuditor');
     Route::post('auditForm/{auditForm}', [AuditFormController::class, 'store'])->name('auditForm.store')->middleware('permission:audit.manage,schedule.selectableAuditor');
     Route::get('auditForm/{auditFormHeader}', [AuditFormController::class, 'show'])->name('auditForm.show')->middleware('permission:audit.manage,schedule.selectableAuditor');
-    Route::get('auditForm/edit/{auditFormHeader}', [AuditFormController::class, 'edit'])->name('auditForm.edit')->middleware('permission:audit.manage,schedule.selectableAuditor');
+    Route::get('auditForm/edit/{auditFormHeader}/{template:slug?}', [AuditFormController::class, 'edit'])->name('auditForm.edit')->middleware('permission:audit.manage,schedule.selectableAuditor');
     Route::get('forms/cachedForms', [AuditFormController::class, 'cachedForms'])->name('auditForm.cachedForms')->middleware('permission:audit.manage,schedule.selectableAuditor');
     Route::put('auditForm/{auditFormHeader}', [AuditFormController::class, 'update'])->name('auditForm.update')->middleware('permission:audit.manage,schedule.selectableAuditor');
     Route::delete('auditForm/{auditFormHeader}', [AuditFormController::class, 'destroy'])->name('auditForm.destroy')->middleware('permission:audit.manage,schedule.selectableAuditor');
@@ -86,12 +86,12 @@ Route::group(['middleware' => ['auth']], function()
     Route::resource('schedule/auditProgram', AuditProgramController::class, ['as' => 'schedule'])->parameters(['schedule' => 'auditProgram']);
 
 
-    Route::post('loadAvailableUsers', [ScheduleController::class, 'loadAvailableUsers'])->name('schedule.loadAvailableUsers')->middleware('permission:schedule.manage');
+    Route::post('loadAvailableUsers', [ScheduleController::class, 'loadAvailableUsers'])->name('schedule.loadAvailableUsers');
     Route::post('loadScheduleDetails/{schedule}', [ScheduleController::class, 'loadScheduleDetails'])->name('schedule.loadScheduleDetails')->middleware('permission:schedule.manage');
 
 
-    Route::post('loadAvailableSuppliers/{company}', [ScheduleController::class, 'loadAvailableSuppliers'])->name('schedule.loadAvailableSuppliers')->middleware('permission:schedule.manage');
-    Route::post('loadSpaf/{company}', [ScheduleController::class, 'loadSpaf'])->name('schedule.loadSpaf')->middleware('permission:schedule.manage');
+    Route::post('loadAvailableSuppliers/{company}', [ScheduleController::class, 'loadAvailableSuppliers'])->name('schedule.loadAvailableSuppliers');
+    Route::post('loadSpaf/{company}', [ScheduleController::class, 'loadSpaf'])->name('schedule.loadSpaf');
 
     Route::group(['prefix' => 'settings'], function()
     {

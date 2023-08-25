@@ -32,12 +32,13 @@
     <input type="hidden" id="question.{{ $q->id }}">
     @foreach(explode('|', $q->for_checkbox) as $option)
     <div class="form-check form-check-inline" @if(isset($updated_at)) data-bs-toggle="tooltip" title="Updated At: {{ $updated_at->diffForHumans() }}" @endif>
-          <input class="form-check-input forInsertion withDataInsertion" data-forinsertion="{template-{{ $t->id }}_{{$q->id}}_{{$t->name}}_{{$g->header}}_{{$q->text}}}"
+          <input checkstate="{{ $option == $answer ? 'true' : '' }}" data-input="question[{{ $q->id  }}]" class="form-check-input forInsertion withDataInsertion" data-forinsertion="{template-{{ $t->id }}_{{$q->id}}_{{$t->name}}_{{$g->header}}_{{$q->text}}}"
            type="radio" name="question[{{ $q->id  }}]" id="question.{{ $q->id}}.{{ $option }}"
             value="{{ $option }}" {{ $option == $answer ? 'checked' : '' }} {{ isset($disabled) ? 'disabled' : '' }} />
           <label class="form-check-label" for="question.{{ $q->id}}.{{ $option }}" style="white-space:pre-wrap;">{{ $option }}</label>
     </div>
     @endforeach
+    <input type="hidden" name="question[{{ $q->id  }}]" class="radioButtonInput" value="{{ $answer }}">
 @elseif($q->type == 'checkbox')
     <input type="hidden" id="checkbox.{{ $q->id}}">
     @foreach(explode('|', $q->for_checkbox) as $option)

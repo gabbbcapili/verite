@@ -13,6 +13,8 @@ use Yajra\DataTables\Facades\DataTables;
 use Validator;
 use Carbon\Carbon;
 use App\Models\Setting;
+use App\Mail\Audit\SendAudit;
+use Illuminate\Support\Facades\Mail;
 
 class AuditController extends Controller
 {
@@ -125,6 +127,26 @@ class AuditController extends Controller
                         'template_id' => $mt,
                         'isMultiple' => true
                     ]);
+                }
+            }
+            $schedule = $audit->schedule;
+            if($data['sendEmailClient']){
+                if($schedule){
+                    if($schedule->client){
+                        if($schedule->client->users->first()){
+                            Mail::to($schedule->client->users->first())->send(new SendAudit($schedule->client->users->first(), $audit));
+                        }
+                    }
+                }
+            }
+
+            if($data['sendEmailResource']){
+                if($schedule){
+                    if($schedule->event){
+                        foreach($schedule->event->users()->where('modelable_type', 'App\Models\User')->get() as $eventUser){
+                            Mail::to($eventUser->modelable)->send(new SendAudit($eventUser->modelable, $audit));
+                        }
+                    }
                 }
             }
             DB::commit();

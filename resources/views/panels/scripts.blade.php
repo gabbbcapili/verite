@@ -211,5 +211,36 @@
 
           }
       });
+
+    // $(document).on('mouseup', "input.form-check-input:radio", function(e){
+    //   var before = $(this).val();
+    //   console.log(before);
+
+    // }).change(function(before){
+    //   var after = $(this).val();
+    //   console.log(after);
+
+    // });
+
+    $("input.form-check-input:radio").click(function(){
+        var $self = $(this);
+        var $inputToUpdate = $('input.radioButtonInput:hidden[name="'+ $self.data('input') +'"]');
+        if ($self.attr('checkstate') == 'true')
+        {
+            $self.prop('checked', false);
+            $inputToUpdate.val('');
+            $self.each( function() {
+                $self.attr('checkstate', 'false');
+            })
+        }
+        else
+        {
+            $("input.form-check-input:radio").attr('checkstate', 'false');
+            $self.prop('checked', true);
+            $self.attr('checkstate', 'true');
+            $inputToUpdate.val($self.val());
+        }
+})
+
   });
 </script>

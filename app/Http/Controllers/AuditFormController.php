@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AuditForm;
+use App\Models\Template;
 use App\Models\AuditFormHeader;
 use Illuminate\Http\Request;
 use App\Models\Question;
@@ -19,7 +20,7 @@ class AuditFormController extends Controller
         //
     }
 
-    public function create(AuditForm $auditForm)
+    public function create(AuditForm $auditForm, $template = null)
     {
         $breadcrumbs = [
             ['link'=>"/",'name'=>"Home"],['link'=> route('audit.index'), 'name'=>"Audits"], ['link'=> route('audit.show', $auditForm->audit),'name'=> $auditForm->audit->schedule->title], ['name' => $auditForm->template->name]
@@ -71,7 +72,7 @@ class AuditFormController extends Controller
         return view('app.audit.auditForm.show', compact('auditFormHeader', 'breadcrumbs', 'auditForm'));
     }
 
-    public function edit(AuditFormHeader $auditFormHeader)
+    public function edit(AuditFormHeader $auditFormHeader, $template = null)
     {
         $auditForm = $auditFormHeader->form;
         $breadcrumbs = [

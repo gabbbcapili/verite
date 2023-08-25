@@ -27,9 +27,9 @@
                       <label>Type</label>
                       <select name="type" class="form-control select2Modal" id="SelectType">
                         <option disabled selected hidden></option>
-                        @can('schedule.manage')
+
                         <option value="Audit Schedule" {{ $event->type == 'Audit Schedule' ? 'selected' : '' }}>Audit Schedule</option>
-                        @endcan
+
                         <option value="Leave" {{ $event->type == 'Leave' ? 'selected' : '' }}>Leave</option>
                         <option value="Holiday" {{ $event->type == 'Holiday' ? 'selected' : '' }}>Holiday</option>
                         <option value="Unavailable" {{ $event->type == 'Unavailable' ? 'selected' : '' }}>Unavailable</option>
@@ -215,7 +215,9 @@
                           </select>
                         </div>
                         <div class="d-flex justify-content-end mb-1">
+                          @if($request->user()->can('schedule.manage'))
                           <button class="btn btn-primary" type="button" id="add_user"><i data-feather="plus-circle"></i> Add Resource</button>
+                          @endif
                         </div>
                         <div class="table-responsive" style="max-height:320px;" id="userTableResponsive">
                           <input type="hidden" id="user_row_count" value="1">
@@ -246,12 +248,17 @@
         </div>
       </div>
       <div class="modal-footer">
+        @if($event->schedule)
+          @if($event->schedule->audit)
+          <a target="_blank" href="{{ route('audit.show', $event->schedule->audit) }}" class="btn btn-success"><i data-feather="eye"></i> View Audit</a>
+          @endif
+        @endif
         @if($event->created_by == $request->user()->id || $request->user()->can('schedule.manage'))
           @if($event->schedule)
             @if(!$event->schedule->audit)
               <a href="#" data-action="{{ route('schedule.destroy', $event) }}" data-bs-toggle="tooltip" data-title="Are you sure to delete this schedule?" data-placement="top" title="Delete Schedule" class="btn btn-danger confirmDelete"><i data-feather="trash"></i> Delete Schedule</a>
             @else
-              <a target="_blank" href="{{ route('audit.show', $event->schedule->audit) }}" class="btn btn-success"><i data-feather="eye"></i> View Audit</a>
+              <!-- <a target="_blank" href="{{ route('audit.show', $event->schedule->audit) }}" class="btn btn-success"><i data-feather="eye"></i> View Audit</a> -->
             @endif
             @else
             <a href="#" data-action="{{ route('schedule.destroy', $event) }}" data-bs-toggle="tooltip" data-title="Are you sure to delete this schedule?" data-placement="top" title="Delete Schedule" class="btn btn-danger confirmDelete"><i data-feather="trash"></i> Delete Schedule</a>
@@ -418,7 +425,7 @@
         onChangeSelectType();
       });
 
-      @can('schedule.manage')
+
       $('#unavailabilityType').change(function(){
         onChangeUnavailabilityType();
       });
@@ -432,7 +439,7 @@
           $('#rowLeaveCompany').removeClass('d-none');
         }
       }
-      @endcan
+
 
       function onChangeSelectType(){
         if($('#SelectType').find(":selected").val() == 'Audit Schedule'){
@@ -448,11 +455,12 @@
           @endcan
         }
       }
-
-      $(document).on('click', '.delete_row', function(){
-        $('[data-bs-toggle-modal="tooltip"]').tooltip('hide')
-        $(this).closest('tr').remove();
-      });
+      @can('schedule.manage')
+        $(document).on('click', '.delete_row', function(){
+          $('[data-bs-toggle-modal="tooltip"]').tooltip('hide')
+          $(this).closest('tr').remove();
+        });
+      @endcan
 
       $(document).on('change', '#filterProficiency', function(){
         date = $('#dateRange').val();
@@ -537,7 +545,13 @@
       onChangeSelectType();//$('#SelectType').trigger('change');
       onChangeUnavailabilityType();
       loadData(true);
-      console.log(true);
+
+      @if(! $request->user()->can('schedule.manage'))
+        setTimeout(function(){
+          $('#formRow input').attr('disabled', 'disabled');
+          $('#formRow select').attr('disabled', 'disabled');
+        }, 1000);
+      @endif
     });
 
 </script>
