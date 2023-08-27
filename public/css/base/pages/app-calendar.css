@@ -130,7 +130,7 @@
   padding: 0.25rem 0.5rem;
 }
 .fc .fc-daygrid-event-harness + .fc-daygrid-event-harness {
-  margin-top: 0.3rem !important;
+  margin-top: 0.3rem;
 }
 .fc .fc-daygrid-day-bottom {
   margin-top: 0.3rem !important;

@@ -18,7 +18,7 @@
                 <div class="form-body">
                   <div class="row mb-2 justify-content-md-center">
                     <div class="col-6">
-                      <label>Start & End Date</label>
+                      <label data-bs-toggle="tooltip" title="Upon changing Start & End Date if any of client or supplier or resource are blank that means that they are not available on the selected date">Start & End Date <i data-feather="info"></i></label>
                       <input type="text" name="start_end_date" class="form-control rangePicker" id="dateRange">
                     </div>
                   </div>
@@ -315,18 +315,19 @@
         onClose: function(selectedDates, dateStr, instance) {
             var current_company = $('#client_company').find(":selected").val();
             var current_supplier = $('#supplier_company').find(":selected").val();
+            var current_supplier_text = $('#supplier_company').find(":selected").text();
             var current_users = $('.userSelection').find(":selected");
             loadData(false);
             setTimeout(function(){
               $('#client_company').val(current_company).trigger('change');
-            }, 1000)
+            }, 2000)
             setTimeout(function(){
               $('#supplier_company').val(current_supplier).trigger('change');
               $.each($('.userSelection'), function(index, item){
                 var current_user = $(current_users[index]).val();
                 $(item).val(current_user).trigger('change');
               });
-            }, 2000)
+            }, 3000)
         },
       });
 

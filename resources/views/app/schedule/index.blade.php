@@ -5,6 +5,9 @@
 @section('vendor-style')
   <!-- Vendor css files -->
   <link rel="stylesheet" href="{{ asset(mix('vendors/css/calendars/fullcalendar.min.css')) }}">
+  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar/main.min.css"> -->
+
+
   <link rel="stylesheet" href="{{ asset(mix('vendors/css/forms/select/select2.min.css')) }}">
   <link rel="stylesheet" href="{{ asset(mix('vendors/css/pickers/flatpickr/flatpickr.min.css')) }}">
 @endsection
@@ -146,6 +149,8 @@
 @section('vendor-script')
   <!-- Vendor js files -->
   <script src="{{ asset(mix('vendors/js/calendar/fullcalendar.min.js')) }}"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/fullcalendar/main.min.js"></script> -->
+
   <script src="{{ asset(mix('vendors/js/extensions/moment.min.js')) }}"></script>
   <script src="{{ asset(mix('vendors/js/forms/select/select2.full.min.js')) }}"></script>
   <script src="{{ asset(mix('vendors/js/forms/validation/jquery.validate.min.js')) }}"></script>
@@ -175,19 +180,19 @@
           info: 'info',
           danger: 'danger'
         },
-        eventForm = $('.event-form'),
-        selectAll = $('.select-all'),
-        calEventFilter = $('.calendar-events-filter'),
-        filterInput = $('.input-filter');
+        eventForm = $('.event-form');
+        // selectAll = $('.select-all'),
+        // calEventFilter = $('.calendar-events-filter'),
+        // filterInput = $('.input-filter');
 
       // Selected Checkboxes
-      function selectedCalendars() {
-        var selected = [];
-        $('.calendar-events-filter input:checked').each(function () {
-          selected.push($(this).attr('data-value'));
-        });
-        return selected;
-      }
+      // function selectedCalendars() {
+      //   var selected = [];
+      //   $('.calendar-events-filter input:checked').each(function () {
+      //     selected.push($(this).attr('data-value'));
+      //   });
+      //   return selected;
+      // }
 
       // --------------------------------------------------------------------------------------------------
       // AXIOS: fetchEvents
@@ -216,7 +221,7 @@
 
           eventOverlap: false,
 
-          dayMaxEvents: 2,
+          dayMaxEvents: 3,
           customButtons: {
             sidebarToggle: {
               text: 'Sidebar'
@@ -291,27 +296,27 @@
       });
 
       // Select all & filter functionality
-      if (selectAll.length) {
-        selectAll.on('change', function () {
-          var $this = $(this);
+      // if (selectAll.length) {
+      //   selectAll.on('change', function () {
+      //     var $this = $(this);
 
-          if ($this.prop('checked')) {
-            calEventFilter.find('input').prop('checked', true);
-          } else {
-            calEventFilter.find('input').prop('checked', false);
-          }
-          calendar.refetchEvents();
-        });
-      }
+      //     if ($this.prop('checked')) {
+      //       calEventFilter.find('input').prop('checked', true);
+      //     } else {
+      //       calEventFilter.find('input').prop('checked', false);
+      //     }
+      //     calendar.refetchEvents();
+      //   });
+      // }
 
-      if (filterInput.length) {
-        filterInput.on('change', function () {
-          $('.input-filter:checked').length < calEventFilter.find('input').length
-            ? selectAll.prop('checked', false)
-            : selectAll.prop('checked', true);
-          calendar.refetchEvents();
-        });
-      }
+      // if (filterInput.length) {
+      //   filterInput.on('change', function () {
+      //     $('.input-filter:checked').length < calEventFilter.find('input').length
+      //       ? selectAll.prop('checked', false)
+      //       : selectAll.prop('checked', true);
+      //     calendar.refetchEvents();
+      //   });
+      // }
     });
   </script>
   <script src="{{ asset(mix('js/scripts/pages/app-calendar-events.js')) }}"></script>

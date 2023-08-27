@@ -16,11 +16,11 @@ Cannot uncheck Radio Buttons - add option to uncheck - ok
 
 Display Audit Form Name and Assigned Name in Cached Forms page - add name to cached form (template name) ok
 
-No notification on overlapping events in Calendar - Add checking on all client supplier and resources on change date if available on selected date if no add notif
+No notification on overlapping events in Calendar - Add checking on all client supplier and resources on change date if available on selected date if no add notif - changed design added tooltip on start & end date that says "Upon changing Start & End Date if any of client or supplier or resource are blank that means that they are not available on the selected date"
 
 Null values displayed for Client, Supplier, Resources when Audit Schedule is displayed
 
-Overlapping entries in Calendar display
+Overlapping entries in Calendar display - fixed UI ok
 
 OOS
 No facility for Admin to set up public holiday per country and city
