@@ -73,7 +73,7 @@
 
 @section('page-script')
 <script type="text/javascript">
-    const PRECACHE = 'precache-v1';
+    const PRECACHE = 'runtime';
     const urlStartsWith = '/auditForm';
 
     var table = $('#cache_list_table').DataTable( {

@@ -1,4 +1,4 @@
-@extends('layouts/contentLayoutMaster')
+  @extends('layouts/contentLayoutMaster')
 
 @section('title', 'Calendar')
 
@@ -240,7 +240,8 @@
             return [
               // Background Color
               'bg-light-' + colorName,
-              'modal_button'
+              // 'modal_button',
+              'hrefButton'
             ];
           },
           dateClick: function (info) {
@@ -266,7 +267,8 @@
           });
           },
           eventDidMount: function(data) {
-            var url ="{{ route('schedule.edit', ':id') }}";
+            // var url ="{{ route('schedule.edit', ':id') }}";
+            var url ="{{ route('schedule.editNew', ':id') }}";
             url = url.replace(':id', data.event._def.publicId);
               data.el.setAttribute("data-action", url);
           },

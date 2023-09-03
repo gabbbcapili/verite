@@ -53,6 +53,10 @@
       });
   });
 
+  $(document).on('click', '.hrefButton', function() {
+    window.open($(this).data('action'), '_blank');
+  });
+
 
   $(document).on('click', '.confirmWithNotes', function(){
     Swal.fire({

@@ -183,6 +183,25 @@ class ScheduleController extends Controller
         return view('app.schedule.edit', compact('auditmodels','schedulestatuses','countries', 'event', 'schedule', 'client', 'supplier', 'companies', 'scheduleStatus', 'next_stop', 'proficiencies', 'auditors'));
     }
 
+    public function editNew(Event $event){
+        $breadcrumbs = [
+            ['link'=>"/",'name'=>"Home"],['link'=> route('schedule.index'), 'name'=>"Schedules"], ['name'=>"Edit Schedule"]
+        ];
+        $auditmodels = AuditModel::all();
+        $schedulestatuses = ScheduleStatus::all();
+        $countries = Country::all();
+        $schedule = $event->schedule ? $event->schedule : new Schedule();
+        $scheduleStatus = ScheduleStatus::withTrashed()->where('name', $schedule->status)->first();
+        $next_stop = $scheduleStatus == null ? [] : explode(',', $scheduleStatus->next_stop);
+        $client = $event->users->where('role', 'Client')->first();
+        $supplier = $event->users->where('role', 'Supplier')->first();
+        $companies = Company::all();
+        $proficiencies = Proficiency::orderBy('name', 'asc')->get();
+        $auditors = User::auditors();
+        return view('app.schedule.editNew', compact('auditmodels','schedulestatuses','countries', 'event', 'schedule', 'client', 'supplier', 'companies', 'scheduleStatus', 'next_stop', 'proficiencies', 'auditors', 'breadcrumbs'));
+    }
+
+
     public function store(Request $request)
     {
         $type = $request->type;
@@ -623,6 +642,44 @@ class ScheduleController extends Controller
             $output = ['success' => 0,
                         'msg' => env('APP_DEBUG') ? $e->getMessage() : 'Sorry something went wrong, please try again later.'
                     ];
+        }
+        return response()->json($output);
+    }
+
+    public function checkAvailability(Request $request){
+        $date = $request->date;
+
+        $output = ['success' => true, 'msg' => ''];
+        $client = Company::find($request->client);
+        $supplier = Company::find($request->supplier);
+
+        if($supplier){
+            $bool = $supplier->isAvailableOn($date);
+            if($bool){
+                $output['success'] = false;
+                $output['msg'] .= $supplier->full_name . ', ';
+            }
+        }else{
+            if($client){
+                $bool = $client->isAvailableOn($date);
+                if($bool){
+                    $output['success'] = false;
+                    $output['msg'] .= $client->full_name . ', ';
+                }
+            }
+        }
+        foreach($request->users as $resource){
+            $user = User::find($resource);
+            if($user){
+                $bool = $user->isAvailableOn($date);
+                if($bool){
+                    $output['success'] = false;
+                    $output['msg'] .= $user->full_name . ', ';
+                }
+            }
+        }
+        if($output['success'] == false){
+            $output['msg'] .= 'is not available on selected date are you sure to proceed?';
         }
         return response()->json($output);
     }

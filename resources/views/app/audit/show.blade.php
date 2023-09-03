@@ -116,6 +116,21 @@
                         <div class="card-content collapse">
                             @if(! $auditForm->isMultiple)
                             <div class="card-body">
+                                         @if($audit->status != 'completed')
+                                    @if(! $auditForm->headers->count() > 0)
+                                        <div class="row sticky-top">
+                                            <div class="col-12 align-items-center justify-content-center text-center">
+                                                <a href="{{ route('auditForm.create', ['auditForm' => $auditForm, 'template' => $auditForm->template->slug]) }}" class="btn btn-outline-secondary">Edit <i data-feather="arrow-right"></i></a>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="row sticky-top">
+                                            <div class="col-12 align-items-center justify-content-center text-center">
+                                                <a href="{{ route('auditForm.edit', ['auditFormHeader' => $auditForm->headers->first(), 'template' => $auditForm->template->slug]) }}" class="btn btn-outline-secondary">Edit <i data-feather="arrow-right"></i></a>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endif
                                 <div class="row mb-2">
                                     @php
                                         $answers = $auditForm->headers->count() > 0 ? $auditForm->headers->first()->answers : null;
@@ -126,21 +141,7 @@
                                     @include('app.template.spaf.preview', ['template' => $auditForm->template, 'answers' => $answers, 'disabled' => true])
                                 </div>
 
-                                @if($audit->status != 'completed')
-                                    @if(! $auditForm->headers->count() > 0)
-                                        <div class="row">
-                                            <div class="col-12 align-items-center justify-content-center text-center">
-                                                <a href="{{ route('auditForm.create', ['auditForm' => $auditForm, 'template' => $auditForm->template->slug]) }}" class="btn btn-outline-secondary">Edit <i data-feather="arrow-right"></i></a>
-                                            </div>
-                                        </div>
-                                    @else
-                                        <div class="row">
-                                            <div class="col-12 align-items-center justify-content-center text-center">
-                                                <a href="{{ route('auditForm.edit', ['auditFormHeader' => $auditForm->headers->first(), 'template' => $auditForm->template->slug]) }}" class="btn btn-outline-secondary">Edit <i data-feather="arrow-right"></i></a>
-                                            </div>
-                                        </div>
-                                    @endif
-                                @endif
+                       
                             </div>
                             @else
                                 <div class="card-body">

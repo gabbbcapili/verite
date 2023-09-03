@@ -320,14 +320,14 @@
             loadData(false);
             setTimeout(function(){
               $('#client_company').val(current_company).trigger('change');
-            }, 2000)
+            }, 2500)
             setTimeout(function(){
               $('#supplier_company').val(current_supplier).trigger('change');
               $.each($('.userSelection'), function(index, item){
                 var current_user = $(current_users[index]).val();
                 $(item).val(current_user).trigger('change');
               });
-            }, 3000)
+            }, 3500)
         },
       });
 

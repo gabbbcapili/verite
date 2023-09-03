@@ -77,7 +77,7 @@ Route::group(['middleware' => ['auth']], function()
     Route::delete('auditForm/{auditFormHeader}', [AuditFormController::class, 'destroy'])->name('auditForm.destroy')->middleware('permission:audit.manage,schedule.selectableAuditor');
 
     Route::post('audit/loadSchedulesFor/{company}', [AuditController::class, 'loadSchedulesFor'])->name('audit.loadSchedulesFor');
-
+    Route::get('schedule/editNew/{event}', [ScheduleController::class, 'editNew'])->name('schedule.editNew');
     Route::resource('schedule', ScheduleController::class)->except(['show'])->parameters(['schedule' => 'event']);
     Route::get('schedule/getEvents', [ScheduleController::class, 'getEvents'])->name('schedule.getEvents');
     Route::get('schedule/ganttChart', [ScheduleController::class, 'ganttChart'])->name('schedule.ganttChart');
@@ -85,7 +85,7 @@ Route::group(['middleware' => ['auth']], function()
 
     Route::resource('schedule/auditProgram', AuditProgramController::class, ['as' => 'schedule'])->parameters(['schedule' => 'auditProgram']);
 
-
+    Route::post('checkAvailability', [ScheduleController::class, 'checkAvailability'])->name('schedule.checkAvailability');
     Route::post('loadAvailableUsers', [ScheduleController::class, 'loadAvailableUsers'])->name('schedule.loadAvailableUsers');
     Route::post('loadScheduleDetails/{schedule}', [ScheduleController::class, 'loadScheduleDetails'])->name('schedule.loadScheduleDetails')->middleware('permission:schedule.manage');
 

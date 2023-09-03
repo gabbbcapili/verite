@@ -232,6 +232,14 @@ class User extends Authenticatable
         if($event){
             return $event;
         }
+        $hasEvents = Event::where('start_date', '>=', $from)->where('end_date', '<=', $to)
+            ->whereHas('users', function ($q){
+                $q->where('modelable_id', 1);
+                $q->where('modelable_type', 'App\Models\Company');
+            })->first();
+        if($hasEvents){
+            return $hasEvents;
+        }
         return false;
     }
 
