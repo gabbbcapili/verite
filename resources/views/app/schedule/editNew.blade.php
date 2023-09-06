@@ -265,7 +265,24 @@
                   </div>    
                   <div class="row">
                     <div class="col-12 align-items-center justify-content-center text-center">
-                      <input type="submit" name="save" class="btn btn-primary me-1 btn_save" value="Save">
+                      @if($event->schedule)
+                        @if($event->schedule->audit)
+                        <a target="_blank" href="{{ route('audit.show', $event->schedule->audit) }}" class="btn btn-success"><i data-feather="eye"></i> View Audit</a>
+                        @endif
+                      @endif
+                      @if($event->created_by == $request->user()->id || $request->user()->can('schedule.manage'))
+                        @if($event->schedule)
+                          @if(!$event->schedule->audit)
+                            <a href="#" data-action="{{ route('schedule.destroy', $event) }}" data-bs-toggle="tooltip" data-title="Are you sure to delete this schedule?" data-placement="top" title="Delete Schedule" class="btn btn-danger confirmDelete"><i data-feather="trash"></i> Delete Schedule</a>
+                          @else
+                            <!-- <a target="_blank" href="{{ route('audit.show', $event->schedule->audit) }}" class="btn btn-success"><i data-feather="eye"></i> View Audit</a> -->
+                          @endif
+                          @else
+                          <a href="#" data-action="{{ route('schedule.destroy', $event) }}" data-bs-toggle="tooltip" data-title="Are you sure to delete this schedule?" data-placement="top" title="Delete Schedule" class="btn btn-danger confirmDelete"><i data-feather="trash"></i> Delete Schedule</a>
+                        @endif
+                        <button type="submit" class="btn btn-primary no-print btn_save"><i data-feather="save"></i> Save
+                        </button>
+                        @endif
                     </div>
                   </div>
               </form>
