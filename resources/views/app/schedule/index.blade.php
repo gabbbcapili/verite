@@ -235,7 +235,7 @@
             end: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
           },
           direction: 'ltr',
-          initialDate: new Date('2023-08-01'),
+          initialDate: new Date(),
           navLinks: true, // can click day/week names to navigate views
           eventClassNames: function ({ event: calendarEvent }) {
             const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar];
