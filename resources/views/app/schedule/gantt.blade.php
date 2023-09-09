@@ -78,7 +78,8 @@
         tooltip: true
     });
     gantt.templates.tooltip_text = function(start,end,task){
-        return "<b>Title:</b> "+task.text;
+        console.log(task)
+        return "<b>Title:</b> "+task.tooltip;
     };
     var data_url = "/schedule/ganttChart/";
     gantt.init("gantt_here");

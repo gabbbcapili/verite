@@ -50,6 +50,7 @@ class ScheduleController extends Controller
                     'progress' => 1,
                     'text' => $event->ganttTitle,
                     'open' => true,
+                    'tooltip' => $event->ganttTooltip,
                     'backgroundColor' => $event->type == 'Audit Schedule' ? $schedule ? $schedule->status_color : 'primary' : 'danger',
                     'textColor' => '#FFF',
                 ];
@@ -84,53 +85,102 @@ class ScheduleController extends Controller
             }else{
                 $company = $request->company;
                 $auditor = $request->auditor;
-                if($auditor != "null" || $company != "null"){
-                    if($auditor != "null" && $company != "null"){
+                if(! in_array($auditor, ['null', 'all']) || ! in_array($company, ['null', 'all'])){
+                    if(! in_array($auditor, ['null', 'all']) && ! in_array($company, ['null', 'all'])){
                         $events->whereHas('users', function ($q) use($auditor, $company){
-                                $q->where(function($q1) use($auditor){
-                                    $q1->where('modelable_id', $auditor);
-                                    $q1->where('modelable_type', 'App\Models\User');
-                                });
-                                $q->orWhere(function($q2) use($company){
-                                    $q2->where('modelable_id', $company);
-                                    $q2->where('modelable_type', 'App\Models\Company');
-                                });
+                            $q->where(function($q1) use($auditor){
+                                $q1->where('modelable_id', $auditor);
+                                $q1->where('modelable_type', 'App\Models\User');
                             });
+                            $q->orWhere(function($q2) use($company){
+                                $q2->where('modelable_id', $company);
+                                $q2->where('modelable_type', 'App\Models\Company');
+                            });
+                        });
                     }else{
-                        if($auditor != "null"){
-                            $events->whereHas('users', function ($q) use($auditor){
-                                $q->where(function($q1) use($auditor){
-                                    $q1->where('modelable_id', $auditor);
-                                    $q1->where('modelable_type', 'App\Models\User');
+                        if(! in_array($auditor, ['null', 'all'])){
+                            if($company == "all"){ // all company and selected auditor
+                                $events->whereHas('users', function ($q) use($auditor){
+                                    $q->where(function($q1) use($auditor){
+                                        $q1->where('modelable_id', $auditor);
+                                        $q1->where('modelable_type', 'App\Models\User');
+                                    });
+                                })->orWhereHas('users', function ($q){
+                                    $q->where(function($q1){
+                                        $q1->where('modelable_type', 'App\Models\Company');
+                                    });
                                 });
-                            })->orWhereHas('users', function ($q){
+                            }else{ // selected auditor only
+                                $events->whereHas('users', function ($q) use($auditor){
+                                    $q->where(function($q1) use($auditor){
+                                        $q1->where('modelable_id', $auditor);
+                                        $q1->where('modelable_type', 'App\Models\User');
+                                    });
+                                })->orWhereHas('users', function ($q){
+                                    $q->where(function($q1){
+                                        $q1->where('modelable_id', 1);
+                                        $q1->where('modelable_type', 'App\Models\Company');
+                                    });
+                                });
+                            }
+                        }
+                        if(! in_array($company, ['null', 'all'])){
+                            if($auditor == "all"){ // all auditor and selected company
+                                $events->whereHas('users', function ($q) use($company){
+                                    $q->where(function($q1) use($company){
+                                        $q1->where('modelable_id', $company);
+                                        $q1->where('modelable_type', 'App\Models\Company');
+                                    });
+                                    $q->orWhere(function($q2) use($company){
+                                        $q2->where('modelable_id', 1);
+                                        $q2->where('modelable_type', 'App\Models\Company');
+                                    });
+                                })->orWhereHas('users', function ($q) use($company){
+                                    $q->where(function($q1){
+                                        $q1->where('modelable_type', 'App\Models\User');
+                                    });
+                                });
+                            }else{ // selected company only
+                                $events->whereHas('users', function ($q) use($company){
+                                    $q->where(function($q1) use($company){
+                                        $q1->where('modelable_id', $company);
+                                        $q1->where('modelable_type', 'App\Models\Company');
+                                    });
+                                    $q->orWhere(function($q2) use($company){
+                                        $q2->where('modelable_id', 1);
+                                        $q2->where('modelable_type', 'App\Models\Company');
+                                    });
+                                });
+                            }
+                            
+                        }
+                    }
+                }else{
+                    if($auditor == "null" && $company == "null"){
+                        $events->whereHas('schedule')
+                        ->orWhereHas('users', function ($q) use($company){
+                            $q->where(function($q1){
+                                $q1->where('modelable_id', 1);
+                                $q1->where('modelable_type', 'App\Models\Company');
+                            });
+                        });
+                    }else{
+                        if($auditor == "null"){
+                            $events->whereHas('schedule')
+                            ->orWhereHas('users', function ($q) use($company){
                                 $q->where(function($q1){
-                                    $q1->where('modelable_id', 1);
                                     $q1->where('modelable_type', 'App\Models\Company');
                                 });
                             });
-                        }
-                        if($company != "null"){
-                            $events->whereHas('users', function ($q) use($company){
-                                $q->where(function($q1) use($company){
-                                    $q1->where('modelable_id', $company);
-                                    $q1->where('modelable_type', 'App\Models\Company');
-                                });
-                                $q->orWhere(function($q2) use($company){
-                                    $q2->where('modelable_id', 1);
-                                    $q2->where('modelable_type', 'App\Models\Company');
+                        }else if ($company == "null"){
+                            $events->whereHas('schedule')
+                            ->orWhereHas('users', function ($q) use($company){
+                                $q->where(function($q1){
+                                    $q1->where('modelable_type', 'App\Models\User');
                                 });
                             });
                         }
                     }
-                }else{
-                    $events->whereHas('schedule')
-                    ->orWhereHas('users', function ($q) use($company){
-                        $q->where(function($q1){
-                            $q1->where('modelable_id', 1);
-                            $q1->where('modelable_type', 'App\Models\Company');
-                        });
-                    });
                 }
             }
             foreach($events->get() as $event){
@@ -613,6 +663,7 @@ class ScheduleController extends Controller
             DB::commit();
             $output = ['success' => 1,
                         'msg' => 'Schedule Deleted Successfully!',
+                        'redirect' => route('schedule.index')
                     ];
         } catch (\Exception $e) {
             \Log::emergency("File:" . $e->getFile(). " Line:" . $e->getLine(). " Message:" . $e->getMessage());

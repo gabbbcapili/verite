@@ -51,7 +51,41 @@ class Event extends Model
     }
 
     public function getGanttTitleAttribute(){
-        return $this->titleComputed;
+        $titleComputed = $this->titleComputed;
+        $schedule = $this->schedule;
+        if($schedule){
+            $resources = [];
+            foreach($this->users()->whereIn('role', ['Lead Auditor', 'Second Auditor'])->where('modelable_type', 'App\Models\User')->get() as $user){
+                $mainUser = $user->modelable;
+                if($mainUser){
+                    $resources[] = $mainUser->initials;
+                }
+            }
+            if(count($resources)){
+                $titleComputed = $titleComputed . ' (' . implode(', ', $resources) . ')';
+            }
+        }
+
+        return $titleComputed;
+    }
+
+    public function getGanttTooltipAttribute(){
+        $titleComputed = $this->titleComputed;
+        $schedule = $this->schedule;
+        if($schedule){
+            $resources = [];
+            foreach($this->users()->where('modelable_type', 'App\Models\User')->get() as $user){
+                $mainUser = $user->modelable;
+                if($mainUser){
+                    $resources[] = $mainUser->initials;
+                }
+            }
+            if(count($resources)){
+                $titleComputed = $titleComputed . ' (' . implode(', ', $resources) . ')';
+            }
+        }
+
+        return $titleComputed;
     }
 
     public function created_by_user(){

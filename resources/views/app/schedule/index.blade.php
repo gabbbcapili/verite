@@ -1,4 +1,4 @@
-  @extends('layouts/contentLayoutMaster')
+@extends('layouts/contentLayoutMaster')
 
 @section('title', 'Calendar')
 
@@ -92,7 +92,8 @@
               <div class="col-12">
                 <div class="form-group">
                   <select class="form-control select2 eventFilter" id="companyFilter">
-                    <option selected disabled value="null">Select Client/Supplier</option>
+                    <option value="all" selected>Show All Client / Supplier</option>
+                    <option value="null">Hide All Leave, Holiday, Unavailable</option>
                     @foreach($companies as $company)
                       <option value="{{ $company->id }}">{{ $company->displayName }}</option>
                     @endforeach
@@ -104,7 +105,8 @@
               <div class="col-12">
                 <div class="form-group">
                   <select class="form-control select2 eventFilter" id="auditorFilter">
-                    <option selected disabled value="null">Select Auditor</option>
+                    <option value="all" selected>Show All Resources</option>
+                    <option value="null">Hide All Leave, Holiday, Unavailable</option>
                     @foreach($auditors as $auditor)
                       <option value="{{ $auditor->id }}">{{ $auditor->fullName }}</option>
                     @endforeach
@@ -233,7 +235,7 @@
             end: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
           },
           direction: 'ltr',
-          initialDate: new Date(),
+          initialDate: new Date('2023-08-01'),
           navLinks: true, // can click day/week names to navigate views
           eventClassNames: function ({ event: calendarEvent }) {
             const colorName = calendarsColor[calendarEvent._def.extendedProps.calendar];
@@ -277,7 +279,7 @@
         calendar.render();
       }
 
-      renderCalendar(null, null);
+      renderCalendar("all", "all");
 
       $(document).on('change', '.eventFilter', function(){
         var company = $('#companyFilter').find(":selected").val();

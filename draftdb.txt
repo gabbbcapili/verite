@@ -1,3 +1,19 @@
+JGUSI-VSEA AMS Concerns 09062023
+
+1. Schedule module - Calendar View
+Unfiltered shows only the audit schedule and does not include the leave/holiday/unavailable sched (which only shows on filtered view) ok
+
+2. Schedule module - Audit Schedule
+Filter Resource selection and ADD Resource resets/displays the Client/Supplier field with NULL values. ok
+
+3. Delete Schedule
+- click DELETE SCHEDULE then After clicking OK on confirmation message page stays on the page. It does have a prompt on successful deletion but it does not automatically refreshes the page to the calendar view. ok
+
+#1 All leave of resources - automatically show ok
+#2 Put a "Show all button" ok
+#3 Gantt Chart acronym of lead and 2nd auditor up to 3 auditors ok
+#4 Gantt Chart tooltip add resources ok
+
 08-20-2023 Workshop
 
 IS

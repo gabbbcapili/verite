@@ -489,10 +489,10 @@
       });
 
       $(document).on('change', '#filterProficiency', function(){
-        loadData();
+        loadData(false);
       });
 
-      function loadData(){
+      function loadData(withClientsSuppliers = true){
         date = $('#dateRange').val();
           if(date == ""){
             $('#SelectType').val('').trigger('change');
@@ -514,16 +514,18 @@
                 $.each(result.data.users, function(k, u) {
                   userSelection += '<option value="'+ u.id +'">'+ u.displayName +'</option>'
                 });
-                $.each(result.data.clients, function(k, u) {
-                  clientSelection += '<option value="'+ u.id +'">'+ u.company_name +'</option>'
-                });
                 $.each(roleTypes, function(k, u) {
                   roleTypesSelection += '<option value="'+ u +'">'+ u +'</option>'
                 });
-                $('#client_company').find('option').remove().end().append(clientSelection).val('');
                 $('.userSelection').find('option').remove().end().append(userSelection).val('');
-                $('#supplier_company').find('option').remove().end().val('');
-                $('#rowSpaf').html('');
+                if(withClientsSuppliers){
+                  $.each(result.data.clients, function(k, u) {
+                    clientSelection += '<option value="'+ u.id +'">'+ u.company_name +'</option>'
+                  });
+                  $('#client_company').find('option').remove().end().append(clientSelection).val('');
+                  $('#supplier_company').find('option').remove().end().val('');
+                  $('#rowSpaf').html('');
+                }
               }
           });
       }

@@ -159,12 +159,17 @@
                 if($('#view_modal').hasClass('show')){
                   $('#view_modal').modal('toggle');
                 }
-                console.log(result);
-                if (result.removeRow) {
-                  console.log('yes');
-                      $('#'+ result.removeRow).remove();
-                  }
+
+                if(result.redirect){
+                  setTimeout(function(){
+                        window.location.replace(result.redirect);
+                    }, 1500);
                 }
+                
+                if (result.removeRow) {
+                    $('#'+ result.removeRow).remove();
+                }
+              }
           });
         }
       })

@@ -106,6 +106,13 @@ class User extends Authenticatable
         return $this->first_name . ' ' . $this->last_name;
     }
 
+    public function getInitialsAttribute(){
+        $str= $this->first_name . ' ' . $this->last_name;
+        preg_match_all('/(?<=\b)\w/iu',$str,$matches);
+        return mb_strtoupper(implode('',$matches[0]));
+        // return substr($this->first_name, 0, 1) . substr($this->last_name, 0, 1);
+    }
+
     public function getDisplayNameAttribute(){
         $skills = '';
         $client_preference = '';
