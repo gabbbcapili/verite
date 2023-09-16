@@ -1,3 +1,16 @@
+Clear Database 09162023
+Users 
+Created by Noli 
+OR email ending with '@verite.org' 
+OR email ending with '@vsea.org.au'
+OR ID1 (retain 1 Super Admin account for JGUS)
+
+Clients - created by Noli
+Suppliers - created by Noli
+Templates
+SPAF - SPAF V1.0
+Audit - IDs 113, 114, 115
+
 JGUSI-VSEA AMS Concerns 09062023
 
 1. Schedule module - Calendar View

@@ -25,6 +25,10 @@ class Audit extends Model
         return $this->hasMany(AuditForm::class, 'audit_id');
     }
 
+    public function reports(){
+        return $this->hasMany(Report::class, 'audit_id');
+    }
+
     public function getStatusDisplayAttribute(){
         if($this->status == 'pending'){
             return '<span class="badge rounded-pill badge-light-danger  me-1">Pending</span>';
