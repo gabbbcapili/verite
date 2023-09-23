@@ -1,3 +1,8 @@
+Audit Standard:
+-Added new permission "Manage Audit Standards" which will grant access to settings -> audit standards lists
+-Template -> Audit, a new column has been added "Audit Standard" multiple selection coming from List of Audit Standards in settigns
+-Under Report edit. There will be "Audit Standard" accordion on the right side next to the editor which will contain answers that contains audit standard in their template.
+
 Clear Database 09162023
 Users 
 Created by Noli 

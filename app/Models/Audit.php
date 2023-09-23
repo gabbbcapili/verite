@@ -29,6 +29,20 @@ class Audit extends Model
         return $this->hasMany(Report::class, 'audit_id');
     }
 
+    public function standardsIdsUsed(){
+        $standardsIds = [];
+        foreach($this->forms as $form){
+            foreach($form->template->groups()->orderBy('sort')->get() as $group){
+                foreach($group->questions()->orderBy('sort')->get() as $q){
+                    foreach(explode(',', $q->standards) as $standard){
+                        $standardsIds[$standard] = $standard;
+                    }
+                }
+            }
+        }
+        return array_filter($standardsIds, fn($value) => !is_null($value) && $value !== '');
+    }
+
     public function getStatusDisplayAttribute(){
         if($this->status == 'pending'){
             return '<span class="badge rounded-pill badge-light-danger  me-1">Pending</span>';

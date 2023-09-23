@@ -29,13 +29,16 @@ class AuditForm extends Model
         return $this->belongsTo(Template::class, 'template_id');
     }
 
-    public function summarizeAnswers(){
+    public function summarizeAnswers($standard = null){
         $headers = $this->headers;
         $summarized = [];
         foreach($this->template->groups()->orderBy('sort')->get() as $group){
             $summarized[$group->id] = ['name' => $group->header, 'questions' => []];
             foreach($group->questions()->orderBy('sort')->get() as $q){
                 if(! in_array($q->type, ['file', 'file_multiple', 'table'])){
+                    if($standard != null && ! in_array($standard, explode(',', $q->standards))){
+                        continue;
+                    }
                     $summarized[$group->id]['questions'][$q->id] = ['text' => $q->text, 'answers' => []];
                     foreach($headers as $header){
                         $answers = $header->answers;

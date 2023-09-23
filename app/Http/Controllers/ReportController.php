@@ -7,6 +7,7 @@ use App\Models\Audit;
 use App\Models\Schedule;
 use App\Models\Template;
 use App\Models\Company;
+use App\Models\Standard;
 use Illuminate\Http\Request;
 use App\Models\Utilities;
 use Illuminate\Support\Facades\DB;
@@ -161,12 +162,14 @@ class ReportController extends Controller
        $breadcrumbs = [
             ['link'=>"/",'name'=>"Home"],['link'=> route('report.index'), 'name'=>"Reports"], ['name'=>"Edit Report"]
         ];
+        
         $audit = $report->audit;
         $schedule = $audit->schedule;
         $company = $schedule->client;
         $spafs = $company->loadSpafForReport();
         $settings = Setting::first();
-        return view('app.report.edit', compact('breadcrumbs', 'report', 'schedule', 'company', 'spafs', 'settings', 'audit'));
+        $standards = Standard::whereIn('id', $audit->standardsIdsUsed())->get();
+        return view('app.report.edit', compact('breadcrumbs', 'report', 'schedule', 'company', 'spafs', 'settings', 'audit', 'standards'));
     }
 
     /**

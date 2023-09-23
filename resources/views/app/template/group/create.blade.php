@@ -10,7 +10,7 @@
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" id="modal-body">
         <div class="row">
           <div class="col-sm-12">
             <div class="card">
@@ -41,6 +41,9 @@
                           <th style="width: 10%;">Required <i data-feather="info" data-bs-toggle-modal="tooltip" data-bs-placement="top" title="Check / Uncheck this field whether this field is required to fill up or not."></i></th>
                           <th style="width: 10%;">Next Line <i data-feather="info" data-bs-toggle-modal="tooltip" data-bs-placement="top" title="Uncheck if multiple questions in one line."></i></th>
                           <th style="width: 25%;">For Checkbox/Radio/Table <i data-feather="info" data-bs-toggle-modal="tooltip" data-bs-placement="top" title="If the field is checkbox or radio or table, put all the options/columns in this field separated by vertical bar ( | ) e.g. 'Yes|No' 'Management|Direct|Outsource|Dispatch, Column1|Column2|Column3'."></i></th>
+                          @if(in_array($template->type, App\Models\Template::$forAudit))
+                          <th style="width: 15%">Standards</th>
+                          @endif
                           <th style="width: 10%;">Action</th>
                         </tr>
                       </thead>
@@ -82,6 +85,15 @@
                           <td>
                             <textarea name="question[1][for_checkbox]" id="question.1.for_checkbox" class="form-control for_checkbox" placeholder="Management|Direct|Outsource|Dispatch"></textarea>
                           </td>
+                          @if(in_array($template->type, App\Models\Template::$forAudit))
+                          <td>
+                            <select class="form-control select2Modal" multiple="multiple" name="question[1][standards][]" id="question.1.standards">
+                              @foreach($standards as $standard)
+                                <option value="{{ $standard->id }}">{{ $standard->name }}</option>
+                              @endforeach
+                            </select>
+                          </td>
+                          @endif
                           <td>
                             <div class="d-flex justify-content-end">
                                 <div class="btn-group" role="group">
@@ -111,6 +123,14 @@
 <script src="{{ asset(mix('js/scripts/forms-validation/form-modal.js')) }}"></script>
 <script type="text/javascript">
     $(document).ready(function(){
+      $('.select2Modal').select2({
+        dropdownParent: $("#modal-body")
+      });
+      var standards = @json($standards);
+      var standardsSelection = '';
+      $.each(standards, function(k, u) {
+        standardsSelection += '<option value="'+ u.id +'">'+ u.name +'</option>';
+      });
       function changeType(select){
         if(select.find('option:selected').val() == 'checkbox' || select.find('option:selected').val() == 'radio' || select.find('option:selected').val() == 'table'){
           select.closest('tr').find('.for_checkbox').removeAttr('disabled');
@@ -157,6 +177,9 @@
         $tr += '<td><div class="form-check"><input class="form-check-input for_required" type="checkbox" value="1" name="question['+ row +'][required]" id="question.'+ row +'.required"><label class="form-check-label">Required</label></div></td>';
         $tr += '<td><div class="form-check"><input class="form-check-input for_next_line" type="checkbox" value="1" name="question['+ row +'][next_line]" id="question.'+ row +'.next_line" checked><label class="form-check-label">Next Line</label></div></td>';
         $tr += '<td><textarea name="question['+ row +'][for_checkbox]" id="question.'+ row +'.for_checkbox" class="form-control for_checkbox" placeholder="Management|Direct|Outsource|Dispatch" disabled></textarea></td>';
+        @if(in_array($template->type, App\Models\Template::$forAudit))
+        $tr += '<td><select class="form-control select2Modal" multiple="multiple" name="question['+ row +'][standards][]" id="question.'+ row +'.standards">'+ standardsSelection +'</select></td>';
+        @endif
         $tr += '<td><div class="d-flex justify-content-end"><div class="btn-group" role="group"><button type="button" class="btn btn-sm btn-outline-success delete_row" data-bs-toggle-modal="tooltip" title="Delete"><i data-feather="delete"></i></button><span role="button" class="btn btn-sm btn-outline-success cursor-move ui-icon" data-bs-toggle-modal="tooltip" title="Move"><i class="" data-feather="move"></i></span></div></div></td>';
         $tr += '</tr>';
         $('#question_table tr:last').after($tr);
@@ -164,6 +187,11 @@
           width: 14,height: 14
         });
         $('[data-bs-toggle-modal="tooltip"]').tooltip();
+        @if(in_array($template->type, App\Models\Template::$forAudit))
+          $('.select2Modal').select2({
+            dropdownParent: $("#modal-body")
+          });
+        @endif
       });
 
       $(document).on('click', '.delete_row', function(){

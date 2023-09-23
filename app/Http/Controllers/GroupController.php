@@ -10,6 +10,7 @@ use Validator;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Validation\Rule;
+use App\Models\Standard;
 
 class GroupController extends Controller
 {
@@ -30,7 +31,8 @@ class GroupController extends Controller
      */
     public function create(Template $template)
     {
-        return view('app.template.group.create', compact('template'));
+        $standards = Standard::all();
+        return view('app.template.group.create', compact('template', 'standards'));
     }
 
     /**
@@ -67,6 +69,9 @@ class GroupController extends Controller
                     $q['required'] = false;
                     $q['next_line'] = true;
                 }
+                if(isset($q['standards'])){
+                    $q['standards'] = implode(',', $q['standards']);
+                }
                 $question = $group->questions()->create($q);
             }
             DB::commit();
@@ -102,7 +107,8 @@ class GroupController extends Controller
      */
     public function edit(Group $group)
     {
-        return view('app.template.group.edit', compact('group'));
+        $standards = Standard::all();
+        return view('app.template.group.edit', compact('group', 'standards'));
     }
 
     /**
@@ -127,6 +133,9 @@ class GroupController extends Controller
             $count = 0;
             foreach($request->question as $q){
                 $q['sort'] = $count;
+                if(isset($q['standards'])){
+                    $q['standards'] = implode(',', $q['standards']);
+                }
                 $count+= 1;
                 $question = $group->questions()->create($q);
             }
@@ -140,6 +149,9 @@ class GroupController extends Controller
                 if($q['type'] == 'title'){
                     $q['required'] = false;
                     $q['next_line'] = true;
+                }
+                if(isset($q['standards'])){
+                    $q['standards'] = implode(',', $q['standards']);
                 }
                 if(isset($q['question_id'])){
                     $updateQuestion = Question::findOrFail($q['question_id']);

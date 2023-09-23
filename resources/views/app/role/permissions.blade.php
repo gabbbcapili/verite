@@ -327,6 +327,18 @@
           </td>
           <td></td>
         </tr>
+        <tr>
+          <td></td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="settings.standard.manage" name="permissions[]" {{ isset($roleList) ? in_array('settings.standard.manage', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="clipboard" class="vs-icon"></i></span>
+              </span>
+              <span class="">Manage Audit Standard Settings</span>
+            </div></fieldset>
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>

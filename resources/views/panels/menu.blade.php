@@ -205,7 +205,7 @@
 
 
 
-  @if( $request->user()->can('settings.email.manage') || $request->user()->can('settings.country.manage') || $request->user()->can('settings.scheduleStatus.manage') || $request->user()->can('settings.auditModel.manage') || $request->user()->can('settings.audit.manage'))
+  @if( $request->user()->can('settings.email.manage') || $request->user()->can('settings.country.manage') || $request->user()->can('settings.scheduleStatus.manage') || $request->user()->can('settings.auditModel.manage') || $request->user()->can('settings.audit.manage') || $request->user()->can('settings.standard.manage'))
   <li class="nav-item has-sub" style=""><a class="d-flex align-items-center" href="#">
     <i data-feather="settings"></i>
     <span class="menu-title text-truncate">Settings</span></a>
@@ -257,6 +257,13 @@
           <li class="nav-item {{ $request->segment(1) == 'settings' && $request->segment(2) == 'audit' ? 'active' : '' }}">
             <a class="d-flex align-items-center" href="{{ route('settings.audit') }}"><i data-feather="folder"></i>
             <span class="menu-item text-truncate">Audit</span></a>
+          </li>
+        @endcan
+
+        @can('settings.standard.manage')
+          <li class="nav-item {{ $request->segment(1) == 'settings' && $request->segment(2) == 'standard' ? 'active' : '' }}">
+            <a class="d-flex align-items-center" href="{{ route('settings.standard.index') }}"><i data-feather="clipboard"></i>
+            <span class="menu-item text-truncate">Audit Standards</span></a>
           </li>
         @endcan
 

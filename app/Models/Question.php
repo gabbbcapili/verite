@@ -11,7 +11,7 @@ class Question extends Model
 
     protected $table = 'question';
 
-    protected $fillable = ['group_id', 'text', 'type' ,'next_line' ,'sort', 'for_checkbox', 'required'];
+    protected $fillable = ['group_id', 'text', 'type' ,'next_line' ,'sort', 'for_checkbox', 'required', 'standards'];
 
     public function group(){
         return $this->belongsTo(Group::class, 'group_id');

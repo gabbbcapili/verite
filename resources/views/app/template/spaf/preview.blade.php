@@ -5,6 +5,11 @@
     <div class="table-responsive">
         <table class="table table-bordered">
             @foreach($group->questions()->orderBy('sort')->get() as $q)
+            @if(isset($appliedStandard))
+                @if(! in_array($appliedStandard, explode(',', $q->standards)))
+                    @continue
+                @endif
+            @endif
             @if($q->next_line || $loop->iteration == 1)
                 <tr >
                     <td style="width: 30%; white-space:pre-wrap;">{{ $q->text }} {{ $q->required ? '* ' : '' }}</td>

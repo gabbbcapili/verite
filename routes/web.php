@@ -21,6 +21,7 @@ use App\Http\Controllers\AuditProgramController;
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\AuditFormController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\StandardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -106,6 +107,7 @@ Route::group(['middleware' => ['auth']], function()
         Route::resource('country', CountryController::class, ['names' => 'settings.country'])->middleware('permission:settings.country.manage');
         Route::resource('scheduleStatus', ScheduleStatusController::class, ['names' => 'settings.scheduleStatus'])->middleware('permission:settings.scheduleStatus.manage');
         Route::resource('auditModel', AuditModelController::class, ['names' => 'settings.auditModel'])->middleware('permission:settings.auditModel.manage');
+        Route::resource('standard', StandardController::class, ['names' => 'settings.standard'])->middleware('permission:settings.standard.manage');
     });
 
 
