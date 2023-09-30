@@ -39,6 +39,19 @@
                           <input type="text" class="form-control" name="name" placeholder="Template Name">
                       </div>
                     </div>
+                    @if(in_array($type, App\Models\Template::$forAudit))
+                    <div class="col-lg-4 col-xs-12">
+                      <div class="form-group">
+                          <label for="name">Audit Template Type</label>
+                          <select type="text" class="form-control select2" name="audit_type">
+                            <option disabled selected></option>
+                            @foreach(App\Models\Template::$auditTypes as $auditType => $permission)
+                              <option value="{{ $auditType }}">{{ $auditType }}</option>
+                            @endforeach
+                          </select>
+                      </div>
+                    </div>
+                    @endif
                   </div>
                   <div class="row">
                     <div class="col-6">
@@ -66,6 +79,9 @@
             <tr>
               <th>Id</th>
               <th>Name</th>
+              @if(in_array($type, App\Models\Template::$forAudit))
+              <th>Audit Template Type</th>
+              @endif
               <th>Active</th>
               <th>Status</th>
               <th>Created</th>
@@ -100,7 +116,7 @@
 @section('page-script')
   {{-- Page js files --}}
   <script type="text/javascript">
-
+    $('.select2').select2();
     var table_id = 'spaf_table'
     var table_title = 'Template List';
     var table_route = {
@@ -112,6 +128,9 @@
       var columnns = [
             { data: 'id', name: 'id'},
             { data: 'name', name: 'name'},
+            @if(in_array($type, App\Models\Template::$forAudit))
+            { data: 'audit_type', name: 'audit_type'},
+            @endif
             { data: 'statusText', name: 'status'},
             { data: 'is_approved', name: 'is_approved'},
             { data: 'created_at', name: 'created_at'},

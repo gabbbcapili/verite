@@ -17,6 +17,7 @@ class CreateTemplateTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('type');
+            $table->string('audit_type')->nullable();
             $table->boolean('is_approved')->default(0);
             $table->boolean('is_deleted')->default(0);
             $table->boolean('status')->default(1);

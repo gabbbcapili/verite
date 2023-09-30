@@ -100,11 +100,16 @@
             </div>
         </div>
         @foreach($audit->forms as $auditForm)
+            @if($auditForm->template->audit_type)
+                @if(! $request->user()->can(App\Models\Template::$auditTypes[$auditForm->template->audit_type]))
+                    @continue
+                @endif
+            @endif
             <div class="row mb-2">
                 <div class="col-lg-12 col-md-12 col-sm-12">
                     <div class="card">
                         <div class="card-header">
-                          <h4 class="card-title text-center">{{ $auditForm->template->name }}</h4>
+                          <h4 class="card-title text-center">{{ $auditForm->template->name }} {{ $auditForm->template->audit_type }}</h4>
                           <div class="heading-elements">
                             <ul class="list-inline mb-0">
                               <li>

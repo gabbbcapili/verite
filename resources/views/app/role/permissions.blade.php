@@ -262,6 +262,29 @@
           </td>
           <td></td>
         </tr>
+
+        <tr>
+          <td></td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="audit.auditform" name="permissions[]" {{ isset($roleList) ? in_array('audit.auditform', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="circle" class="vs-icon"></i></span>
+              </span>
+              <span class="">Audit Forms</span>
+            </div></fieldset>
+          </td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="audit.wif" name="permissions[]" {{ isset($roleList) ? in_array('audit.wif', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="circle" class="vs-icon"></i></span>
+              </span>
+              <span class="">Worker Interviewer Forms</span>
+            </div></fieldset>
+          </td>
+          <td></td>
+        </tr>
       </tbody>
       <thead>
         <tr>

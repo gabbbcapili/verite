@@ -105,6 +105,7 @@ class SpafTemplateController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'name' => ['required'],
+            'audit_type' => ['required_if:type,audit']
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()]);
