@@ -19,6 +19,7 @@
           <div class="row">
             <div class="col-3">
               <div class="form-group">
+                <label>Role:</label>
                 <select class="form-control select2 selectFilter" id="role">
                   <option value="all">ALL ROLES</option>
                   @foreach($roles as $role)
@@ -27,6 +28,7 @@
                 </select>
               </div>
             </div>
+            <!-- @include('app.setting.country.entry') -->
           </div>
         </div>
         <table class="datatables-basic table" id="user_table">
@@ -36,6 +38,8 @@
               <th>Full Name</th>
               <th>Email</th>
               <th>Role</th>
+              <th>Country</th>
+              <th>State</th>
               <th>Status</th>
               <th>Skills / Client Preference</th>
               <th>Created</th>
@@ -77,6 +81,8 @@
           url: '{{ route('user.index') }}',
           data: function (data) {
                 data.role = $("#role").val();
+                // data.country = $("#country").val();
+                // data.state = $("#state").val();
             }
         };
       var columnns = [
@@ -84,6 +90,8 @@
             { data: 'fullName', name: 'fullName'},
             { data: 'email', name: 'email'},
             { data: 'role', name: 'role'},
+            { data: 'country', name: 'country.name'},
+            { data: 'state', name: 'state.name'},
             { data: 'statusText', name: 'status'},
             { data: 'skillsFormatted', name: 'skillsFormatted', 'orderable' : false, visible : false},
             { data: 'created_at', name: 'created_at'},

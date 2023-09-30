@@ -22,6 +22,8 @@ use App\Mail\Auth\WelcomeClient;
 use App\Mail\Auth\WelcomeSupplier;
 use App\Models\Company;
 use App\Models\Proficiency;
+use App\Models\Country;
+use App\Models\State;
 
 class UserController extends Controller
 {
@@ -36,7 +38,7 @@ class UserController extends Controller
             ['link'=>"/",'name'=>"Home"],['link'=> route('user.index'), 'name'=>"Users"], ['name'=>"List of Users"]
         ];
         if (request()->ajax()) {
-            $user = User::with('roles')->whereHas("roles", function($q) {
+            $user = User::with(['roles', 'country', 'state'])->whereHas("roles", function($q) {
                 $q->whereNotIn('id', [3,4]);
             });
             if($request->role != "all"){
@@ -50,6 +52,12 @@ class UserController extends Controller
                         })
             ->addColumn('fullName', function(User $user) {
                             return $user->fullName;
+                        })
+            ->editColumn('country', function(User $user) {
+                            return $user->country ? $user->country->name : '';
+                        })
+            ->editColumn('state', function(User $user) {
+                            return $user->state ? $user->state->name : '';
                         })
             ->addColumn('skillsFormatted', function(User $user) {
                             return $user->DisplaySkills;
@@ -73,9 +81,11 @@ class UserController extends Controller
             ->make(true);
         }
         $roles = Role::where('is_deleted', false)->whereNotIn('id', [3,4])->get();
+        $countries = Country::all();
         return view('app.user.index', [
             'breadcrumbs' => $breadcrumbs,
             'roles' => $roles,
+            'countries' => $countries,
         ]);
     }
 
@@ -90,7 +100,8 @@ class UserController extends Controller
             ['link'=>"/",'name'=>"Home"],['link'=> route('user.index'), 'name'=>"Users"], ['name'=>"Create New User"]
         ];
         $roles = Role::where('is_deleted', false)->whereNotIn('id', [3,4])->get();
-        return view('app.user.create', compact('breadcrumbs', 'roles'));
+        $countries = Country::all();
+        return view('app.user.create', compact('breadcrumbs', 'roles', 'countries'));
     }
 
     /**
@@ -106,6 +117,8 @@ class UserController extends Controller
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'role' => ['required', 'exists:roles,name'],
+            'country_id' => ['required'],
+            'state_id' => ['required']
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()]);
@@ -116,6 +129,8 @@ class UserController extends Controller
             $user =  User::create([
                 'first_name' => $data['first_name'],
                 'last_name' => $data['last_name'],
+                'country_id' => $data['country_id'],
+                'state_id' => $data['state_id'],
                 'email' => $data['email'],
                 'password' => Hash::make(Str::random(10)),
                 'company_id' => 1,
@@ -161,7 +176,9 @@ class UserController extends Controller
         $roles = Role::where('is_deleted', false)->whereNotIn('id', [3,4])->get();
         $companies = Company::where('type', 'Client')->orWhere('type', 'Supplier')->get();
         $proficiencies = Proficiency::all();
-        return view('app.user.edit', compact('user', 'roles', 'companies', 'proficiencies'));
+        $countries = Country::all();
+        $states = State::where('country_id', $user->country_id)->get();
+        return view('app.user.edit', compact('user', 'roles', 'companies', 'proficiencies', 'countries', 'states'));
     }
 
     /**
@@ -173,7 +190,7 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $validator = Validator::make($request->all(),[
+        $validation = [
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
@@ -187,7 +204,13 @@ class UserController extends Controller
                             ->length(8)
                             ->requireNumeric()
                             ->requireSpecialCharacter()]
-        ]);
+        ];
+        if(! $user->hasRole('Supplier') && ! $user->hasRole('Client')){
+            $validation['state_id'] = ['required'];
+            $validation['country_id'] = ['required'];
+        }
+        // dd($validation);
+        $validator = Validator::make($request->all(), $validation);
         if($request->has('status')){
             if($request->status == false){
                 if(! $user->canSetToInactive()){
@@ -200,7 +223,7 @@ class UserController extends Controller
         }
         try {
             DB::beginTransaction();
-            $data = $request->only(['first_name','last_name','email', 'notes', 'status', 'skills', 'client_preference']);
+            $data = $request->only(['first_name','last_name','email', 'notes', 'status', 'skills', 'client_preference', 'country_id', 'state_id']);
             if($request->has('password')){
                 if($request->password != null){
                     $data['password'] = Hash::make($request->password);

@@ -1,6 +1,6 @@
 <div class="row mb-2">
     <h4 class="card-title">Company Details</h4>
-    <div class="col-lg-4 col-xs-12">
+    <div class="col-lg-4 col-xs-12 mb-2">
         <div class="form-group">
             <label for="name">Company Name:</label>
             <input type="text" class="form-control" name="company_name" placeholder="Company Name" value="{{ isset($company) ? $company->company_name : '' }}">
@@ -39,4 +39,3 @@
     </div>
   </div>
 </div>
-<hr>

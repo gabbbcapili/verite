@@ -45,6 +45,9 @@
                       </div>
                     </div>
                   </div>
+                  <div class="row mb-2">
+                    @include('app.setting.country.entry')
+                  </div>
                   <div class="row">
                         <div class="col-12 align-items-center justify-content-center text-center">
                           <input type="submit" name="save" class="btn btn-primary me-1 btn_save" value="Save">

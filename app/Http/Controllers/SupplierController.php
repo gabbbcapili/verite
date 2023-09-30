@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Models\ClientSuppliers;
 use App\Models\Company;
+use App\Models\Country;
+use App\Models\State;
 
 class SupplierController extends Controller
 {
@@ -109,7 +111,8 @@ class SupplierController extends Controller
             ['link'=>"/",'name'=>"Home"],['link'=> route('supplier.index'), 'name'=>"List Suppliers"], ['name'=>"Create New Supplier"]
         ];
         $clients = Company::where('type', 'client')->get();
-        return view('app.supplier.create', compact('breadcrumbs', 'clients'));
+        $countries = Country::all();
+        return view('app.supplier.create', compact('breadcrumbs', 'clients', 'countries'));
     }
 
     /**
@@ -127,13 +130,15 @@ class SupplierController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'clients' => ['required'],
             'logo' => ['mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'country_id' => ['required'],
+            'state_id' => ['required']
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()]);
         }
         try {
             DB::beginTransaction();
-            $companyData = $request->only(['company_name', 'website', 'contact_number', 'address', 'logo', 'acronym']);
+            $companyData = $request->only(['company_name', 'website', 'contact_number', 'address', 'logo', 'acronym', 'country_id', 'state_id']);
             $companyData['type'] = 'supplier';
             if($request->hasFile('logo')){
               $photo = $companyData['logo'];
@@ -142,7 +147,7 @@ class SupplierController extends Controller
               $companyData['logo'] = $new_name;
             }
             $company = Company::create($companyData);
-            $userData = $request->only(['first_name', 'last_name', 'email']);
+            $userData = $request->only(['first_name', 'last_name', 'email', 'country_id', 'state_id']);
             $userData['password'] = Hash::make('admin123');
             $user = $company->users()->create($userData);
             $user->assignRole('Supplier');
@@ -191,7 +196,9 @@ class SupplierController extends Controller
     {
         $clients = Company::where('type', 'client')->get();
         $suppliers = Company::where('type', 'supplier')->get();
-        return view('app.supplier.edit', compact('company', 'clients', 'suppliers'));
+        $countries = Country::all();
+        $states = State::where('country_id', $company->country_id)->get();
+        return view('app.supplier.edit', compact('company', 'clients', 'suppliers', 'countries', 'states'));
     }
 
     public function addContact(Company $company)
@@ -211,13 +218,15 @@ class SupplierController extends Controller
         $validator = Validator::make($request->all(),[
             'company_name' => ['required'],
             'logo' => ['mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'country_id' => ['required'],
+            'state_id' => ['required'],
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()]);
         }
         try {
             DB::beginTransaction();
-            $companyData = $request->only(['company_name', 'website', 'contact_number', 'address', 'logo', 'acronym']);
+            $companyData = $request->only(['company_name', 'website', 'contact_number', 'address', 'logo', 'acronym', 'country_id', 'state_id']);
             if($request->hasFile('logo')){
               $photo = $companyData['logo'];
               $new_name = 'logo_'  . sha1(time()) . '.' . $photo->getClientOriginalExtension();
@@ -241,6 +250,8 @@ class SupplierController extends Controller
             }else{
                 ClientSuppliers::where('client_id', $company->id)->delete();
             }
+
+            $company->users()->update($request->only(['country_id', 'state_id']));
             DB::commit();
             $output = ['success' => 1,
                         'msg' => 'Supplier updated successfully!',
@@ -271,6 +282,8 @@ class SupplierController extends Controller
             $data = $request->all();
             $data['password'] = Hash::make(Str::random(10));
             $data['company_id'] = $company->id;
+            $data['country_id'] = $company->country_id;
+            $data['state_id'] = $company->state_id;
             $user = $company->users()->create($data);
             if($company->type == 'client'){
                 $user->assignRole('Client');

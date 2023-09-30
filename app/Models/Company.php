@@ -5,15 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\CreatedUpdatedBy;
+use App\Traits\HasCountry;
 
 class Company extends Model
 {
     use HasFactory;
     use CreatedUpdatedBy;
+    use HasCountry;
 
     protected $table = 'company';
 
-    protected $fillable = ['company_name','address','contact_number','website', 'type', 'logo', 'acronym'];
+    protected $fillable = ['company_name','address','contact_number','website', 'type', 'logo', 'acronym', 'country_id', 'state_id'];
 
     public function created_by_user(){
         return $this->belongsTo(User::class, 'created_by');

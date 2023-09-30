@@ -19,6 +19,9 @@
           <div class="card-content">
             <div class="card-body">
               @include('app.user.company_details')
+                <div class="row mb-2">
+                  @include('app.setting.country.entry')
+                </div>
                 <!-- <div class="form-body"> -->
                   <div class="row mb-2">
                     <h4 class="card-title">Primary Contact Details</h4>

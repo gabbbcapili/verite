@@ -45,29 +45,28 @@
                       </div>
                     </div>
                   </div>
-
-                    <div class="row mb-2">
-                      @if(! $user->hasRole('Supplier') && ! $user->hasRole('Client'))
-                        <div class="col-lg-6 col-xs-12">
-                          <div class="form-group">
-                              <label for="name">Role:</label>
-                              <select class="form-control select2Modal" name="role" id="role">
-                                @foreach($roles as $role)
-                                  <option value="{{ $role->name }}" {{ $user->getRoleNames()->first() == $role->name ? 'selected' : '' }}>{{ $role->name }}</option>
-                                @endforeach
-                              </select>
-                          </div>
+                  <div class="row mb-2">
+                    @if(! $user->hasRole('Supplier') && ! $user->hasRole('Client'))
+                      <div class="col-lg-6 col-xs-12">
+                        <div class="form-group">
+                            <label for="name">Role:</label>
+                            <select class="form-control select2Modal" name="role" id="role">
+                              @foreach($roles as $role)
+                                <option value="{{ $role->name }}" {{ $user->getRoleNames()->first() == $role->name ? 'selected' : '' }}>{{ $role->name }}</option>
+                              @endforeach
+                            </select>
                         </div>
-                        @endif
-                        <div class="col-lg-6 col-xs-12">
-                          <div class="form-group">
-                              <label for="name">Status:</label>
-                              <select class="form-control select2Modal" name="status">
-                                <option value="1" {{ $user->status == 1 ? 'selected' : '' }}>Active</option>
-                                <option value="0" {{ $user->status == 0 ? 'selected' : '' }}>Inactive</option>
-                              </select>
-                          </div>
+                      </div>
+                      @endif
+                      <div class="col-lg-6 col-xs-12">
+                        <div class="form-group">
+                            <label for="name">Status:</label>
+                            <select class="form-control select2Modal" name="status">
+                              <option value="1" {{ $user->status == 1 ? 'selected' : '' }}>Active</option>
+                              <option value="0" {{ $user->status == 0 ? 'selected' : '' }}>Inactive</option>
+                            </select>
                         </div>
+                      </div>
                   </div>
                   <div class="row mb-2">
                     <div class="col-lg-12 col-xs-12">
@@ -78,6 +77,30 @@
                         </div>
                   </div>
                   @if(! $user->hasRole('Supplier') && ! $user->hasRole('Client'))
+                  <div class="row mb-2">
+                    <div class="col-lg-6 col-xs-12">
+                      <div class="form-group">
+                          <label for="name">Country:</label>
+                          <select class="form-control select2Modal" name="country_id" id="country-modal">
+                            <option disabled selected></option>
+                            @foreach($countries as $country)
+                              <option value="{{ $country->id }}" {{ $user->country_id == $country->id ? 'selected' : '' }}>{{ $country->name }}</option>
+                            @endforeach
+                          </select>
+                      </div>
+                    </div>
+                    <div class="col-lg-6 col-xs-12">
+                      <div class="form-group" id="fg-state-modal">
+                        <label for="state">State:</label>
+                          <select class="form-control select2Modal" name="state_id" id="state">
+                              <option disabled selected></option>
+                              @foreach($states as $state)
+                              <option value="{{ $state->id }}" {{ $user->state_id == $state->id ? 'selected' : '' }}>{{ $state->name }}</option>
+                            @endforeach
+                          </select>
+                      </div>
+                    </div>
+                  </div>
                   <div class="row mb-2">
                     <div class="col-lg-12 col-xs-12">
                       <div class="form-group">
@@ -124,6 +147,22 @@
     $(document).ready(function(){
       $('.select2Modal').select2({
         dropdownParent: $("#view_modal")
+      });
+
+      $(document).on('change', '#country-modal', function(){
+        var url = '{{ route("country.loadStates", ":id") }}';
+                    url = url.replace(':id', $(this).val());
+        $.ajax({
+            url: url,
+            method: "POST",
+            success:function(result)
+            {
+              $('#fg-state-modal').html(result);
+              $('#view_modal').find('#state').select2({
+                dropdownParent: $("#view_modal")
+              });
+            }
+        });
       });
     });
 </script>

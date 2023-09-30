@@ -31,9 +31,43 @@
                         <option value="Audit Schedule">Audit Schedule</option>
                         @endcan
                         <option value="Leave">Leave</option>
-                        <option value="Holiday">Holiday</option>
+                        <option value="Holiday">Holiday (Resource / Company)</option>
+                        @can('schedule.manage')
+                        <option value="Holiday Country">Holiday (Country / State)</option>
+                        @endcan
                         <option value="Unavailable">Unavailable</option>
                       </select>
+                    </div>
+                  </div>
+                  <div id="rowHolidayCountry" class="d-none">
+                    <div class="row mb-2 justify-content-md-center">
+                      <div class="col-lg-6 col-xs-12">
+                        <label>Title:</label>
+                        <input type="text" name="event_title" class="form-control">
+                      </div>
+                    </div>
+                    <div class="row mb-2 justify-content-md-center">
+                      <div class="col-lg-6 col-xs-12">
+                        <div class="form-group">
+                            <label for="name">Country:</label>
+                            <select class="form-control select2Modal" name="country_id" id="country-modal">
+                              <option disabled selected></option>
+                              @foreach($countries as $country)
+                                <option value="{{ $country->id }}">{{ $country->name }}</option>
+                              @endforeach
+                            </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row mb-2 justify-content-md-center">
+                      <div class="col-lg-6 col-xs-12">
+                        <div class="form-group" id="fg-state-modal">
+                          <label for="state">State:</label>
+                            <select class="form-control select2Modal" name="state_id" id="state">
+                                <option disabled selected></option>
+                            </select>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div id="rowLeave" class="d-none">
@@ -458,13 +492,19 @@
       $('#SelectType').change(function(){
         if($(this).find(":selected").val() == 'Audit Schedule'){
           $('#rowSchedule').removeClass('d-none');
+          $('#rowHolidayCountry').addClass('d-none');
           loadData();
           @can('schedule.manage')
             $('#rowLeave').addClass('d-none');
           @endcan
-        }else{
-
+        }else if($(this).find(":selected").val() == 'Holiday Country'){
+          $('#rowHolidayCountry').removeClass('d-none');
           $('#rowSchedule').addClass('d-none');
+          $('#rowLeave').addClass('d-none');
+        }
+        else{
+          $('#rowSchedule').addClass('d-none');
+          $('#rowHolidayCountry').addClass('d-none');
           @can('schedule.manage')
           $('#rowLeave').removeClass('d-none');
           @endcan
@@ -472,6 +512,23 @@
       })
 
       @can('schedule.manage')
+
+      $(document).on('change', '#country-modal', function(){
+        var url = '{{ route("country.loadStates", ":id") }}';
+                    url = url.replace(':id', $(this).val());
+        $.ajax({
+            url: url,
+            method: "POST",
+            success:function(result)
+            {
+              $('#fg-state-modal').html(result);
+              $('#view_modal').find('#state').select2({
+                dropdownParent: $("#view_modal")
+              });
+            }
+        });
+      });
+
       $('#unavailabilityType').change(function(){
         if($(this).find(":selected").val() == 'resource'){
           $('#rowLeaveResource').removeClass('d-none');

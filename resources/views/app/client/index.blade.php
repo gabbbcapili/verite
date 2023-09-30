@@ -20,6 +20,8 @@
             <tr>
               <th>Id</th>
               <th>Company</th>
+              <th>Country</th>
+              <th>State</th>
               <th class="noexport">Active Contact Persons</th>
               <th class="noexport">Inactive Contact Persons</th>
               <th>Active Contact Persons</th>
@@ -70,6 +72,8 @@
       var columnns = [
             { data: 'id', name: 'id'},
             { data: 'company_display', name: 'company_name'},
+            { data: 'country', name: 'country.name'},
+            { data: 'state', name: 'state.name'},
             { data: 'contact_persons', name: 'contact_persons', 'orderable' : false},
             { data: 'contact_persons_inactive', name: 'contact_persons_inactive', 'orderable' : false},
             { data: 'contactPersonsExport', name: 'contactPersonsExport', visible: false},

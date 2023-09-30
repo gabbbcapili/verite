@@ -18,6 +18,9 @@ class CreateEventTable extends Migration
             $table->string('type');
             $table->date('start_date');
             $table->date('end_date');
+            $table>string('title')->nullable();
+            $table>unsignedBigInteger('coutnry_id')->nullable();
+            $table>unsignedBigInteger('state_id')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->softDeletes();

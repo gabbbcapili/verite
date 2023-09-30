@@ -27,7 +27,7 @@ class CountryController extends Controller
             return Datatables::eloquent($countries)
             ->addColumn('action', function(Country $country) {
                             return Utilities::actionButtons([['route' => route('settings.country.edit', $country->id), 'name' => 'Edit'],
-                                                             ['route' => route('settings.country.destroy', $country->id), 'name' => 'Delete', 'type' => 'confirmDelete', 'title' => 'Are you sure to delete this country ' . $country->name . '?', 'text' => 'Delete']
+                                                             // ['route' => route('settings.country.destroy', $country->id), 'name' => 'Delete', 'type' => 'confirmDelete', 'title' => 'Are you sure to delete this country ' . $country->name . '?', 'text' => 'Delete']
                                                             ]);
                         })
             ->editColumn('updated_at', function (Country $country) {
@@ -170,5 +170,10 @@ class CountryController extends Controller
              DB::rollBack();
         }
         return response()->json($output);
+    }
+
+    public function loadStates(Country $country, Request $request){
+        $states = $country->states;
+        return view('app.setting.country.states', compact('states'));
     }
 }

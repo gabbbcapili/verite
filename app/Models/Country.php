@@ -110,4 +110,8 @@ class Country extends Model
     public function getUpdatedByNameAttribute(){
         return $this->updated_by_user ? $this->updated_by_user->fullName : null;
     }
+
+    public function states(){
+        return $this->hasMany(State::class, 'country_id');
+    }
 }

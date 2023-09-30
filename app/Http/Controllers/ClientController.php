@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Models\ClientSuppliers;
 use App\Models\Company;
+use App\Models\Country;
 
 
 class ClientController extends Controller
@@ -33,7 +34,7 @@ class ClientController extends Controller
             ['link'=>"/",'name'=>"Home"],['link'=> route('supplier.index'), 'name'=>"Clients"], ['name'=>"List of Clients"]
         ];
         if (request()->ajax()) {
-            $company = Company::where('type', 'client');
+            $company = Company::with(['country', 'state'])->where('type', 'client');
             return Datatables::eloquent($company)
             ->addColumn('action', function(Company $company) {
                             return Utilities::actionButtons([['route' => route('supplier.addContact', $company->id), 'name' => 'Add', 'title' => 'Add Contact Person'],['route' => route('supplier.edit', $company->id), 'name' => 'Edit']]);
@@ -45,6 +46,12 @@ class ClientController extends Controller
                             }
                             $html .= '</div>';
                             return $html;
+                        })
+            ->editColumn('country', function(Company $company) {
+                            return $company->country ? $company->country->name : '';
+                        })
+            ->editColumn('state', function(Company $company) {
+                            return $company->state ? $company->state->name : '';
                         })
             ->addColumn('suppliersExport', function(Company $company) {
                             $html = '';
@@ -111,7 +118,8 @@ class ClientController extends Controller
             ['link'=>"/",'name'=>"Home"],['link'=> route('client.index'), 'name'=>"List Clients"], ['name'=>"Create New Client"]
         ];
         $suppliers = Company::where('type', 'supplier')->get();
-        return view('app.client.create', compact('breadcrumbs', 'suppliers'));
+        $countries = Country::all();
+        return view('app.client.create', compact('breadcrumbs', 'suppliers', 'countries'));
     }
 
     /**
@@ -128,13 +136,15 @@ class ClientController extends Controller
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'logo' => ['mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'country_id' => ['required'],
+            'state_id' => ['required']
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()]);
         }
         try {
             DB::beginTransaction();
-            $companyData = $request->only(['company_name', 'website', 'contact_number', 'address', 'logo', 'acronym']);
+            $companyData = $request->only(['company_name', 'website', 'contact_number', 'address', 'logo', 'acronym', 'country_id', 'state_id']);
             $companyData['type'] = 'client';
             if($request->hasFile('logo')){
               $photo = $companyData['logo'];
@@ -143,7 +153,7 @@ class ClientController extends Controller
               $companyData['logo'] = $new_name;
             }
             $company = Company::create($companyData);
-            $userData = $request->only(['first_name', 'last_name', 'email']);
+            $userData = $request->only(['first_name', 'last_name', 'email', 'country_id', 'state_id']);
             $userData['password'] = Hash::make(Str::random(10));
             $user = $company->users()->create($userData);
             $user->assignRole('Client');

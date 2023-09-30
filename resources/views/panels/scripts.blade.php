@@ -158,14 +158,14 @@
 
                 if($('#view_modal').hasClass('show')){
                   $('#view_modal').modal('toggle');
+                }else{
+                  if(result.redirect){
+                    setTimeout(function(){
+                          window.location.replace(result.redirect);
+                      }, 1500);
+                  }
                 }
-
-                if(result.redirect){
-                  setTimeout(function(){
-                        window.location.replace(result.redirect);
-                    }, 1500);
-                }
-                
+                            
                 if (result.removeRow) {
                     $('#'+ result.removeRow).remove();
                 }
@@ -249,7 +249,20 @@
             $self.attr('checkstate', 'true');
             $inputToUpdate.val($self.val());
         }
-})
+  });
 
+    $(document).on('change', '#country', function(){
+      var url = '{{ route("country.loadStates", ":id") }}';
+                  url = url.replace(':id', $(this).val());
+      $.ajax({
+          url: url,
+          method: "POST",
+          success:function(result)
+          {
+            $('#fg_state').html(result);
+            $('#state').select2();
+          }
+      });
+    });
   });
 </script>

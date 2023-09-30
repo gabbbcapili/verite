@@ -18,12 +18,12 @@
   <link rel="stylesheet" href="{{ asset(mix('css/base/pages/app-calendar.css')) }}">
   <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/forms/form-validation.css')) }}">
   <style type="text/css">
-    html, body{
+ /*   html, body{
         height:100%;
         padding:0px;
         margin:0px;
         overflow: hidden;
-    }
+    }*/
     .gantt_task_line.primary {
         background-color: rgb(115, 103, 240);
     }
@@ -49,6 +49,62 @@
 @endsection
 
 @section('content')
+<div class="row">
+    <div class="col-md-12 col-sm-12">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">Filters</h4>
+          <div class="heading-elements">
+            <ul class="list-inline mb-0">
+              <li>
+                <a data-action="collapse"><i data-feather="chevron-down"></i></a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="card-content collapse">
+          <div class="card-body">
+            <div class="row mb-2">
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <select class="form-control select2 eventFilter" id="companyFilter">
+                    <option value="all" selected>Show All Client / Supplier</option>
+                    <option value="null">Hide All Leave, Holiday, Unavailable</option>
+                    @foreach($companies as $company)
+                      <option value="{{ $company->id }}">{{ $company->displayName }}</option>
+                    @endforeach
+                  </select>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="form-group">
+                  <select class="form-control select2 eventFilter" id="auditorFilter">
+                    <option value="all" selected>Show All Resources</option>
+                    <option value="null">Hide All Leave, Holiday, Unavailable</option>
+                    @foreach($auditors as $auditor)
+                      <option value="{{ $auditor->id }}">{{ $auditor->fullName }}</option>
+                    @endforeach
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <div class="col-12">
+                        <button class="btn btn-warning btn-toggle-sidebar" id="resetValuesButton">
+                            <span class="align-middle">Reset Filters</span>
+                    </button>
+                </div>
+            </div>
+          </div>
+            <div class="card-body d-flex justify-content-center">
+            
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 <div class="card">
     <div class="card-body">
         <div class="row g-0">
@@ -71,7 +127,7 @@
 
 @section('page-script')
 <script type="text/javascript">
-
+    $('.select2').select2();
     gantt.config.date_format = "%Y-%m-%d";
     gantt.config.readonly = true;
     gantt.plugins({
@@ -82,6 +138,14 @@
         return "<b>Title:</b> "+task.tooltip;
     };
     var data_url = "/schedule/ganttChart/";
+
+    $(document).on('change', '.eventFilter', function(){
+        var company = $('#companyFilter').find(":selected").val();
+        var auditor = $('#auditorFilter').find(":selected").val();
+        data_url = "/schedule/ganttChart/?company=" + company + "&auditor=" + auditor;
+        gantt.clearAll(); gantt.load(data_url);
+    });
+    $('.eventFilter').trigger('change');
     gantt.init("gantt_here");
     gantt.load(data_url);
     gantt.attachEvent("onBeforeLightbox", function (id, mode, event) {
@@ -112,9 +176,13 @@
         return task.backgroundColor;
     };
     $(document).on('hidden.bs.modal', '#view_modal', function () {
-        console.log('hidden');
           gantt.clearAll(); gantt.load(data_url);
     });
+
+    $('#resetValuesButton').click(function(){
+        $("#companyFilter").val("null").trigger('change');
+        $("#auditorFilter").val("null").trigger('change');
+      });
 </script>
 @endsection
 

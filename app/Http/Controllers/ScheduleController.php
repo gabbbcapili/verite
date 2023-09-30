@@ -10,6 +10,7 @@ use App\Models\Company;
 use App\Models\AuditModel;
 use App\Models\ScheduleStatus;
 use App\Models\Country;
+use App\Models\State;
 use App\Models\User;
 use App\Models\Utilities;
 use Validator;
@@ -28,15 +29,16 @@ class ScheduleController extends Controller
         return view('app.schedule.index', compact('breadcrumbs', 'auditors', 'companies'));
     }
 
-    public function ganttChart(Request $request){
+    public function ganttChart(Request $request,){
         $breadcrumbs = [
             ['link'=>"/",'name'=>"Home"],['link'=> route('schedule.ganttChart'), 'name'=>"Gantt Chart"], ['name'=>"Gantt Chart"]
         ];
         if($request->ajax()){
             $data = [];
-            $events = Event::where('type', 'Audit Schedule')->get();
+            $events = Event::orderBy('start_date', 'desc');
+            $events = Event::filter($events, $request);
 
-            foreach($events as $event){
+            foreach($events->get() as $event){
                 $start = new Carbon($event->start_date);
                 $end = new Carbon($event->end_date);
                 $diff = $start->diff($end)->days;
@@ -61,7 +63,9 @@ class ScheduleController extends Controller
                 'links' => null,
             ]);
         }
-        return view('app.schedule.gantt', compact('breadcrumbs'));
+        $auditors = User::auditors();
+        $companies = Company::where('type', 'Client')->orWhere('type', 'Supplier')->get();
+        return view('app.schedule.gantt', compact('breadcrumbs', 'auditors', 'companies'));
     }
 
     public function getEvents(Request $request){
@@ -71,118 +75,7 @@ class ScheduleController extends Controller
             $events = Event::whereDate('start_date', '>=', $request->start)
                        ->whereDate('end_date', '<=', $request->end);
 
-            if(! $request->user()->can('schedule.manage')){
-                $events->whereHas('users', function ($q) use($request){
-                    $q->where(function($q1) use($request){
-                        $q1->where('modelable_id', $request->user()->id);
-                        $q1->where('modelable_type', 'App\Models\User');
-                    });
-                    $q->orWhere(function($q2) use($request){
-                        $q2->where('modelable_id', $request->user()->company_id);
-                        $q2->where('modelable_type', 'App\Models\Company');
-                    });
-                });
-            }else{
-                $company = $request->company;
-                $auditor = $request->auditor;
-                if(! in_array($auditor, ['null', 'all']) || ! in_array($company, ['null', 'all'])){
-                    if(! in_array($auditor, ['null', 'all']) && ! in_array($company, ['null', 'all'])){
-                        $events->whereHas('users', function ($q) use($auditor, $company){
-                            $q->where(function($q1) use($auditor){
-                                $q1->where('modelable_id', $auditor);
-                                $q1->where('modelable_type', 'App\Models\User');
-                            });
-                            $q->orWhere(function($q2) use($company){
-                                $q2->where('modelable_id', $company);
-                                $q2->where('modelable_type', 'App\Models\Company');
-                            });
-                        });
-                    }else{
-                        if(! in_array($auditor, ['null', 'all'])){
-                            if($company == "all"){ // all company and selected auditor
-                                $events->whereHas('users', function ($q) use($auditor){
-                                    $q->where(function($q1) use($auditor){
-                                        $q1->where('modelable_id', $auditor);
-                                        $q1->where('modelable_type', 'App\Models\User');
-                                    });
-                                })->orWhereHas('users', function ($q){
-                                    $q->where(function($q1){
-                                        $q1->where('modelable_type', 'App\Models\Company');
-                                    });
-                                });
-                            }else{ // selected auditor only
-                                $events->whereHas('users', function ($q) use($auditor){
-                                    $q->where(function($q1) use($auditor){
-                                        $q1->where('modelable_id', $auditor);
-                                        $q1->where('modelable_type', 'App\Models\User');
-                                    });
-                                })->orWhereHas('users', function ($q){
-                                    $q->where(function($q1){
-                                        $q1->where('modelable_id', 1);
-                                        $q1->where('modelable_type', 'App\Models\Company');
-                                    });
-                                });
-                            }
-                        }
-                        if(! in_array($company, ['null', 'all'])){
-                            if($auditor == "all"){ // all auditor and selected company
-                                $events->whereHas('users', function ($q) use($company){
-                                    $q->where(function($q1) use($company){
-                                        $q1->where('modelable_id', $company);
-                                        $q1->where('modelable_type', 'App\Models\Company');
-                                    });
-                                    $q->orWhere(function($q2) use($company){
-                                        $q2->where('modelable_id', 1);
-                                        $q2->where('modelable_type', 'App\Models\Company');
-                                    });
-                                })->orWhereHas('users', function ($q) use($company){
-                                    $q->where(function($q1){
-                                        $q1->where('modelable_type', 'App\Models\User');
-                                    });
-                                });
-                            }else{ // selected company only
-                                $events->whereHas('users', function ($q) use($company){
-                                    $q->where(function($q1) use($company){
-                                        $q1->where('modelable_id', $company);
-                                        $q1->where('modelable_type', 'App\Models\Company');
-                                    });
-                                    $q->orWhere(function($q2) use($company){
-                                        $q2->where('modelable_id', 1);
-                                        $q2->where('modelable_type', 'App\Models\Company');
-                                    });
-                                });
-                            }
-                            
-                        }
-                    }
-                }else{
-                    if($auditor == "null" && $company == "null"){
-                        $events->whereHas('schedule')
-                        ->orWhereHas('users', function ($q) use($company){
-                            $q->where(function($q1){
-                                $q1->where('modelable_id', 1);
-                                $q1->where('modelable_type', 'App\Models\Company');
-                            });
-                        });
-                    }else{
-                        if($auditor == "null"){
-                            $events->whereHas('schedule')
-                            ->orWhereHas('users', function ($q) use($company){
-                                $q->where(function($q1){
-                                    $q1->where('modelable_type', 'App\Models\Company');
-                                });
-                            });
-                        }else if ($company == "null"){
-                            $events->whereHas('schedule')
-                            ->orWhereHas('users', function ($q) use($company){
-                                $q->where(function($q1){
-                                    $q1->where('modelable_type', 'App\Models\User');
-                                });
-                            });
-                        }
-                    }
-                }
-            }
+            $events = Event::filter($events, $request);
             foreach($events->get() as $event){
                 $schedule = $event->schedule;
                 $data[] = [
@@ -230,7 +123,9 @@ class ScheduleController extends Controller
         $companies = Company::all();
         $proficiencies = Proficiency::orderBy('name', 'asc')->get();
         $auditors = User::auditors();
-        return view('app.schedule.edit', compact('auditmodels','schedulestatuses','countries', 'event', 'schedule', 'client', 'supplier', 'companies', 'scheduleStatus', 'next_stop', 'proficiencies', 'auditors'));
+        $countries = Country::all();
+        $states = State::where('country_id', $event->country_id)->get();
+        return view('app.schedule.edit', compact('auditmodels','schedulestatuses','countries', 'event', 'schedule', 'client', 'supplier', 'companies', 'scheduleStatus', 'next_stop', 'proficiencies', 'auditors', 'countries', 'states'));
     }
 
     public function editNew(Event $event){
@@ -248,7 +143,9 @@ class ScheduleController extends Controller
         $companies = Company::all();
         $proficiencies = Proficiency::orderBy('name', 'asc')->get();
         $auditors = User::auditors();
-        return view('app.schedule.editNew', compact('auditmodels','schedulestatuses','countries', 'event', 'schedule', 'client', 'supplier', 'companies', 'scheduleStatus', 'next_stop', 'proficiencies', 'auditors', 'breadcrumbs'));
+        $countries = Country::all();
+        $states = State::where('country_id', $event->country_id)->get();
+        return view('app.schedule.editNew', compact('auditmodels','schedulestatuses','countries', 'event', 'schedule', 'client', 'supplier', 'companies', 'scheduleStatus', 'next_stop', 'proficiencies', 'auditors', 'breadcrumbs', 'countries', 'states'));
     }
 
 
@@ -275,6 +172,8 @@ class ScheduleController extends Controller
                     'start_end_date' => 'required',
                     'type' => 'required',
                     'unavailability_type' => 'required_if:type,Leave,Holiday,Unavailable',
+                    'event_title' => 'required_if:type,Holiday Country',
+                    'country_id' => 'required_if:type,Holiday Country',
                     'company_id' => 'required_if:unavailability_type,company',
                     'user_id' => 'required_if:unavailability_type,resource',
                 ];
@@ -303,6 +202,8 @@ class ScheduleController extends Controller
         }else{
             if($type == 'Audit Schedule'){
 
+            }else if($type == 'Holiday Country'){
+
             }else{
                 if($request->user()->can('schedule.manage')){
                     if($request->company_id){
@@ -330,85 +231,121 @@ class ScheduleController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->all();
-            $event['type'] = $type;
-            $start_end = explode('to', $request->start_end_date);
-            $event['start_date'] = $start_end[0];
-            $event['end_date'] = array_key_exists(1, $start_end) ? $start_end[1] : $start_end[0];
-            $event = Event::create($event);
-            if($type == 'Audit Schedule'){
-                $supplier = null;
-                $schedule = $request->only(['status','audit_model','audit_model_type','with_completed_spaf', 'with_quotation','city','turnaround_days','report_submitted','cf_1','cf_2','cf_3','cf_4','cf_5']);
-                $scheduleStatus = ScheduleStatus::where('name', $schedule['status'])->first();
-                $schedule['status_color'] = $scheduleStatus ? $scheduleStatus->color : 'primary';
-                $blockable = $scheduleStatus ? $scheduleStatus->blockable : 1;
-                foreach($request->users as $user){
-                    EventUser::firstOrCreate([
-                        'role' => $user['role'],
-                        'event_id' => $event->id,
-                        'modelable_id' => $user['id'],
-                        'modelable_type' => 'App\Models\User',
-                        'blockable' => $blockable,
-                    ]);
+            if($type == 'Holiday Country'){
+                $verite_users = User::where('country_id', $request->country_id)->where('company_id', 1);
+                if($request->state_id){
+                    $verite_users = $verite_users->where('state_id', $request->state_id);
                 }
-                $client = EventUser::create([
-                        'role' => 'Client',
-                        'event_id' => $event->id,
-                        'modelable_id' => $request->client_company_id,
-                        'modelable_type' => 'App\Models\Company',
-                        'blockable' => $request->has('supplier_company_id') ? 0 : $blockable,
-                    ]);
-                if($request->has('supplier_company_id')){
-                    $supplier = EventUser::create([
-                        'role' => 'Supplier',
-                        'event_id' => $event->id,
-                        'modelable_id' => $request->supplier_company_id,
-                        'modelable_type' => 'App\Models\Company',
-                        'blockable' => $blockable,
-                    ]);
+                $companies = Company::where('country_id', $request->country_id)->whereNotIn('id', [1]);
+                if($request->state_id){
+                    $companies = $companies->where('state_id', $request->state_id);
                 }
-
-                $schedule['client_id'] = $request->has('supplier_company_id') ? $request->supplier_company_id : $request->client_company_id;
-                $country = Country::find($request->country);
-                $schedule['title'] = Schedule::computeTitle($client, $supplier, $country->acronym ,$event->start_date);
-                $schedule['country'] = $country->name;
-                $schedule['timezone'] = $country->timezone;
-                $schedule['event_id'] = $event->id;
-                $schedule['due_date'] = Carbon::now()->addDays($schedule['turnaround_days'])->format('Y-m-d');
-                $schedule = Schedule::create($schedule);
-                $schedule->scheduleStatusLogs()->create(['schedule_status_id' => $scheduleStatus->id]);
-            }else{
-                if($request->user()->hasRole('Client') || $request->user()->hasRole('Supplier')){
+                $event['type'] = $type;
+                $event['country_id'] = $request->country_id;
+                $event['state_id'] = $request->state_id;
+                $event['title'] = $request->event_title;
+                $start_end = explode('to', $request->start_end_date);
+                $event['start_date'] = $start_end[0];
+                $event['end_date'] = array_key_exists(1, $start_end) ? $start_end[1] : $start_end[0];
+                $event = Event::create($event);
+                foreach($verite_users->get() as $user){
                     $eventuser = EventUser::create([
-                        'role' => $type,
-                        'event_id' => $event->id,
-                        'modelable_id' => $request->user()->company_id,
-                        'modelable_type' => 'App\Models\Company',
-                    ]);
-                }else{
-                    if($request->user()->can('schedule.manage')){
-                        if($request->company_id){
-                            $eventuser = EventUser::create([
                                 'role' => $type,
                                 'event_id' => $event->id,
-                                'modelable_id' => $request->company_id,
+                                'modelable_id' => $user->id,
+                                'modelable_type' => 'App\Models\User',
+                            ]);
+                }
+                foreach($companies->get() as $company_id){
+                    $eventuser = EventUser::create([
+                                'role' => $type,
+                                'event_id' => $event->id,
+                                'modelable_id' => $company_id->id,
                                 'modelable_type' => 'App\Models\Company',
                             ]);
+                }
+            }else{
+                $event['type'] = $type;
+                $start_end = explode('to', $request->start_end_date);
+                $event['start_date'] = $start_end[0];
+                $event['end_date'] = array_key_exists(1, $start_end) ? $start_end[1] : $start_end[0];
+                $event = Event::create($event);
+                if($type == 'Audit Schedule'){
+                    $supplier = null;
+                    $schedule = $request->only(['status','audit_model','audit_model_type','with_completed_spaf', 'with_quotation','city','turnaround_days','report_submitted','cf_1','cf_2','cf_3','cf_4','cf_5']);
+                    $scheduleStatus = ScheduleStatus::where('name', $schedule['status'])->first();
+                    $schedule['status_color'] = $scheduleStatus ? $scheduleStatus->color : 'primary';
+                    $blockable = $scheduleStatus ? $scheduleStatus->blockable : 1;
+                    foreach($request->users as $user){
+                        EventUser::firstOrCreate([
+                            'role' => $user['role'],
+                            'event_id' => $event->id,
+                            'modelable_id' => $user['id'],
+                            'modelable_type' => 'App\Models\User',
+                            'blockable' => $blockable,
+                        ]);
+                    }
+                    $client = EventUser::create([
+                            'role' => 'Client',
+                            'event_id' => $event->id,
+                            'modelable_id' => $request->client_company_id,
+                            'modelable_type' => 'App\Models\Company',
+                            'blockable' => $request->has('supplier_company_id') ? 0 : $blockable,
+                        ]);
+                    if($request->has('supplier_company_id')){
+                        $supplier = EventUser::create([
+                            'role' => 'Supplier',
+                            'event_id' => $event->id,
+                            'modelable_id' => $request->supplier_company_id,
+                            'modelable_type' => 'App\Models\Company',
+                            'blockable' => $blockable,
+                        ]);
+                    }
+
+                    $schedule['client_id'] = $request->has('supplier_company_id') ? $request->supplier_company_id : $request->client_company_id;
+                    $country = Country::find($request->country);
+                    $schedule['title'] = Schedule::computeTitle($client, $supplier, $country->acronym ,$event->start_date);
+                    $schedule['country'] = $country->name;
+                    $schedule['timezone'] = $country->timezone;
+                    $schedule['event_id'] = $event->id;
+                    $schedule['due_date'] = Carbon::now()->addDays($schedule['turnaround_days'])->format('Y-m-d');
+                    $schedule = Schedule::create($schedule);
+                    $schedule->scheduleStatusLogs()->create(['schedule_status_id' => $scheduleStatus->id]);
+                }
+                else{
+                    if($request->user()->hasRole('Client') || $request->user()->hasRole('Supplier')){
+                        $eventuser = EventUser::create([
+                            'role' => $type,
+                            'event_id' => $event->id,
+                            'modelable_id' => $request->user()->company_id,
+                            'modelable_type' => 'App\Models\Company',
+                        ]);
+                    }else{
+                        if($request->user()->can('schedule.manage')){
+                            if($request->company_id){
+                                $eventuser = EventUser::create([
+                                    'role' => $type,
+                                    'event_id' => $event->id,
+                                    'modelable_id' => $request->company_id,
+                                    'modelable_type' => 'App\Models\Company',
+                                ]);
+                            }else{
+                                $eventuser = EventUser::create([
+                                    'role' => $type,
+                                    'event_id' => $event->id,
+                                    'modelable_id' => $request->user_id,
+                                    'modelable_type' => 'App\Models\User',
+                                ]);
+                            }
+
                         }else{
                             $eventuser = EventUser::create([
                                 'role' => $type,
                                 'event_id' => $event->id,
-                                'modelable_id' => $request->user_id,
+                                'modelable_id' => $request->user()->id,
                                 'modelable_type' => 'App\Models\User',
                             ]);
                         }
-
-                    }else{
-                        $eventuser = EventUser::create([
-                            'role' => $type,
-                            'event_id' => $event->id,
-                            'modelable_id' => $request->user()->id,
-                            'modelable_type' => 'App\Models\User',
-                        ]);
                     }
                 }
             }
@@ -447,6 +384,8 @@ class ScheduleController extends Controller
                 'start_end_date' => 'required',
                 'type' => 'required',
                 'unavailability_type' => 'required_if:type,Leave,Holiday,Unavailable',
+                'event_title' => 'required_if:type,Holiday Country',
+                'country_id' => 'required_if:type,Holiday Country',
                 'company_id' => 'required_if:unavailability_type,company',
                 'user_id' => 'required_if:unavailability_type,resource',
             ];
@@ -556,6 +495,33 @@ class ScheduleController extends Controller
                     $schedule['with_quotation'] = false;
                 }
                 $schedule = $event->schedule()->update($schedule);
+            }else if($type == 'Holiday Country'){
+                $event->update(['title' => $request->event_title]);
+                $event->users()->delete();
+                $verite_users = User::where('country_id', $request->country_id)->where('company_id', 1);
+                if($request->state_id){
+                    $verite_users = $verite_users->where('state_id', $request->state_id);
+                }
+                $companies = Company::where('country_id', $request->country_id)->whereNotIn('id', [1]);
+                if($request->state_id){
+                    $companies = $companies->where('state_id', $request->state_id);
+                }
+                foreach($verite_users->get() as $user){
+                    $eventuser = EventUser::create([
+                                'role' => $type,
+                                'event_id' => $event->id,
+                                'modelable_id' => $user->id,
+                                'modelable_type' => 'App\Models\User',
+                            ]);
+                }
+                foreach($companies->get() as $company_id){
+                    $eventuser = EventUser::create([
+                                'role' => $type,
+                                'event_id' => $event->id,
+                                'modelable_id' => $company_id->id,
+                                'modelable_type' => 'App\Models\Company',
+                            ]);
+                }
             }else{
                 if($request->user()->hasRole('Client') || $request->user()->hasRole('Supplier')){
                     $event->users()->first()->update([

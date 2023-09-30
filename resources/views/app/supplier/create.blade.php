@@ -20,6 +20,9 @@
             <div class="card-body">
               @include('app.user.company_details')
               <div class="row mb-2">
+                  @include('app.setting.country.entry')
+                </div>
+              <div class="row mb-2">
                 <h4 class="card-title">Primary Contact Details</h4>
                   <div class="col-lg-4 col-xs-12">
                     <div class="form-group">

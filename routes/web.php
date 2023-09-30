@@ -110,6 +110,8 @@ Route::group(['middleware' => ['auth']], function()
         Route::resource('standard', StandardController::class, ['names' => 'settings.standard'])->middleware('permission:settings.standard.manage');
     });
 
+    Route::post('countryget/states/{country}', [CountryController::class, 'loadStates'])->name('country.loadStates');
+
 
     Route::resource('role', RoleController::class)->middleware('permission:role.manage');
     Route::get('supplier/{company}/addContact', [SupplierController::class, 'addContact'])->name('supplier.addContact')->middleware('permission:supplier.manage');

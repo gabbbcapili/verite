@@ -17,6 +17,30 @@
               <div class="card-body">
                 <div class="form-body">
                   @include('app.user.company_details', ['company' => $company])
+                  <div class="row mb-2">
+                    <div class="col-lg-6 col-xs-12">
+                      <div class="form-group">
+                          <label for="name">Country:</label>
+                          <select class="form-control select2Modal" name="country_id" id="country-modal">
+                            <option disabled selected></option>
+                            @foreach($countries as $country)
+                              <option value="{{ $country->id }}" {{ $company->country_id == $country->id ? 'selected' : '' }}>{{ $country->name }}</option>
+                            @endforeach
+                          </select>
+                      </div>
+                    </div>
+                    <div class="col-lg-6 col-xs-12">
+                      <div class="form-group" id="fg-state-modal">
+                        <label for="state">State:</label>
+                          <select class="form-control select2Modal" name="state_id" id="state">
+                              <option disabled selected></option>
+                              @foreach($states as $state)
+                              <option value="{{ $state->id }}" {{ $company->state_id == $state->id ? 'selected' : '' }}>{{ $state->name }}</option>
+                            @endforeach
+                          </select>
+                      </div>
+                    </div>
+                  </div>
                   <div class="row">
                     @if($company->type == 'supplier')
                     <div class="col-lg-12 col-xs-12">
@@ -67,6 +91,22 @@
     $(document).ready(function(){
       $('.select2Modal').select2({
         dropdownParent: $("#view_modal")
+      });
+
+      $(document).on('change', '#country-modal', function(){
+        var url = '{{ route("country.loadStates", ":id") }}';
+                    url = url.replace(':id', $(this).val());
+        $.ajax({
+            url: url,
+            method: "POST",
+            success:function(result)
+            {
+              $('#fg-state-modal').html(result);
+              $('#view_modal').find('#state').select2({
+                dropdownParent: $("#view_modal")
+              });
+            }
+        });
       });
     });
 </script>

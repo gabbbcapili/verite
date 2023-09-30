@@ -1,3 +1,16 @@
+"add country and citv qxy to company - verite, supplier and client and verite user -- schedule -> create -> holiday -> add option to select country then city and holiday name
+
+verite - user wide
+client/supplier - company wide
+
+retain dropdown holiday, add Holiday (Per Country/City - different implementation)"
+"Can be achived by:
+Default display to audit schedule only then add filter to filter by company and resources"
+"create access matrix for every resource in the audit schedule add checkbox for each forms selected if they have access or no default yes then creator of audit can turn off (uncheck each form per user) for those who do not have access
+
+add new permission ""Manage Audit Access Matrix"""
+
+
 Audit Standard:
 -Added new permission "Manage Audit Standards" which will grant access to settings -> audit standards lists
 -Template -> Audit, a new column has been added "Audit Standard" multiple selection coming from List of Audit Standards in settigns

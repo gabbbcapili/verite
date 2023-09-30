@@ -18,6 +18,7 @@ use Spatie\Permission\Models\Permission;
 use App\Notifications\ResetPassword as ResetPasswordNotification;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ResetPassword;
+use App\Traits\HasCountry;
 
 class User extends Authenticatable
 {
@@ -28,6 +29,7 @@ class User extends Authenticatable
     use Notifiable;
     use TwoFactorAuthenticatable;
     use CreatedUpdatedBy;
+    use HasCountry;
 
     /**
      * The attributes that are mass assignable.
@@ -45,6 +47,8 @@ class User extends Authenticatable
         'notes',
         'skills',
         'client_preference',
+        'country_id',
+        'state_id',
     ];
 
     /**
