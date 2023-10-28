@@ -33,7 +33,13 @@ class SupplierController extends Controller
             ['link'=>"/",'name'=>"Home"],['link'=> route('supplier.index'), 'name'=>"Suppliers"], ['name'=>"List of Suppliers"]
         ];
         if (request()->ajax()) {
-            $company = Company::where('type', 'supplier');
+            $company = Company::with(['country', 'state'])->where('type', 'supplier');
+            if($request->country){
+                $company = $company->where('country_id', $request->country)->whereNotNull('country_id');
+            }
+            if($request->state){
+                $company = $company->where('state_id', $request->state)->whereNotNull('state_id');
+            }
             return Datatables::eloquent($company)
             ->addColumn('action', function(Company $company) {
                             return Utilities::actionButtons([['route' => route('supplier.addContact', $company->id), 'name' => 'Add', 'title' => 'Add Contact Person'],['route' => route('supplier.edit', $company->id), 'name' => 'Edit']]);
@@ -45,6 +51,12 @@ class SupplierController extends Controller
                             }
                             $html .= '</div>';
                             return $html;
+                        })
+            ->editColumn('country', function(Company $company) {
+                            return $company->country ? $company->country->name : '';
+                        })
+            ->editColumn('state', function(Company $company) {
+                            return $company->state ? $company->state->name : '';
                         })
             ->addColumn('company_display', function(Company $company) {
                             return $company->companyDisplay;
@@ -95,8 +107,10 @@ class SupplierController extends Controller
             ->rawColumns(['action', 'clients', 'contact_persons', 'company_display', 'contact_persons_inactive'])
             ->make(true);
         }
+        $countries = Country::all();
         return view('app.supplier.index', [
             'breadcrumbs' => $breadcrumbs,
+            'countries' => $countries,
         ]);
     }
 

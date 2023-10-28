@@ -17,6 +17,10 @@ class Company extends Model
 
     protected $fillable = ['company_name','address','contact_number','website', 'type', 'logo', 'acronym', 'country_id', 'state_id'];
 
+    public function state(){
+        return $this->belongsTo(State::class, 'state_id');
+    }
+
     public function created_by_user(){
         return $this->belongsTo(User::class, 'created_by');
     }

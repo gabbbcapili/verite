@@ -35,6 +35,12 @@ class ClientController extends Controller
         ];
         if (request()->ajax()) {
             $company = Company::with(['country', 'state'])->where('type', 'client');
+            if($request->country){
+                $company = $company->where('country_id', $request->country)->whereNotNull('country_id');
+            }
+            if($request->state){
+                $company = $company->where('state_id', $request->state)->whereNotNull('state_id');
+            }
             return Datatables::eloquent($company)
             ->addColumn('action', function(Company $company) {
                             return Utilities::actionButtons([['route' => route('supplier.addContact', $company->id), 'name' => 'Add', 'title' => 'Add Contact Person'],['route' => route('supplier.edit', $company->id), 'name' => 'Edit']]);
@@ -102,8 +108,10 @@ class ClientController extends Controller
             ->rawColumns(['action', 'suppliers', 'contact_persons', 'company_display', 'contact_persons_inactive'])
             ->make(true);
         }
+        $countries = Country::all();
         return view('app.client.index', [
             'breadcrumbs' => $breadcrumbs,
+            'countries' => $countries,
         ]);
     }
 

@@ -15,6 +15,11 @@
   <div class="row">
     <div class="col-12">
       <div class="card">
+        <div class="card-body">
+          <div class="row">
+            @include('app.setting.country.entry')
+          </div>
+        </div>
         <table class="datatables-basic table" id="client_table">
           <thead>
             <tr>
@@ -66,14 +71,15 @@
     var table_route = {
           url: '{{ route('client.index') }}',
           data: function (data) {
-                // data.status = $("#status").val();
+                data.country = $("#country").val();
+                data.state = $("#state").val();
             }
         };
       var columnns = [
             { data: 'id', name: 'id'},
             { data: 'company_display', name: 'company_name'},
-            { data: 'country', name: 'country.name'},
-            { data: 'state', name: 'state.name'},
+            { data: 'country', name: 'country.name', 'orderable' : false},
+            { data: 'state', name: 'state.name', 'orderable' : false},
             { data: 'contact_persons', name: 'contact_persons', 'orderable' : false},
             { data: 'contact_persons_inactive', name: 'contact_persons_inactive', 'orderable' : false},
             { data: 'contactPersonsExport', name: 'contactPersonsExport', visible: false},

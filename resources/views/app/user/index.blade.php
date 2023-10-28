@@ -28,7 +28,7 @@
                 </select>
               </div>
             </div>
-            <!-- @include('app.setting.country.entry') -->
+            @include('app.setting.country.entry')
           </div>
         </div>
         <table class="datatables-basic table" id="user_table">
@@ -81,8 +81,8 @@
           url: '{{ route('user.index') }}',
           data: function (data) {
                 data.role = $("#role").val();
-                // data.country = $("#country").val();
-                // data.state = $("#state").val();
+                data.country = $("#country").val();
+                data.state = $("#state").val();
             }
         };
       var columnns = [
@@ -90,8 +90,8 @@
             { data: 'fullName', name: 'fullName'},
             { data: 'email', name: 'email'},
             { data: 'role', name: 'role'},
-            { data: 'country', name: 'country.name'},
-            { data: 'state', name: 'state.name'},
+            { data: 'country', name: 'country.name', 'orderable' : false},
+            { data: 'state', name: 'state.name', 'orderable' : false},
             { data: 'statusText', name: 'status'},
             { data: 'skillsFormatted', name: 'skillsFormatted', 'orderable' : false, visible : false},
             { data: 'created_at', name: 'created_at'},

@@ -46,6 +46,12 @@ class UserController extends Controller
                             $q->where('id', $request->role);
                         });
             }
+            if($request->country){
+                $user = $user->where('country_id', $request->country)->whereNotNull('country_id');
+            }
+            if($request->state){
+                $user = $user->where('state_id', $request->state)->whereNotNull('state_id');
+            }
             return Datatables::eloquent($user)
             ->addColumn('action', function(User $user) {
                             return Utilities::actionButtons([['route' => route('user.edit', $user->id), 'name' => 'Edit']]);
@@ -76,7 +82,7 @@ class UserController extends Controller
             })
             ->filterColumn('fullName', function($query, $keyword) {
                     $query->whereRaw('CONCAT(first_name," ",last_name)  like ?', ["%{$keyword}%"]);
-                })
+            })
             ->rawColumns(['action', 'statusText'])
             ->make(true);
         }
