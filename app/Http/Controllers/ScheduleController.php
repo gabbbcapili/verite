@@ -35,7 +35,16 @@ class ScheduleController extends Controller
         ];
         if($request->ajax()){
             $data = [];
-            $events = Event::orderBy('start_date', 'desc');
+            $events = Event::orderBy('start_date', 'asc');
+
+            if($request->has('dateRange')){
+               $start_end = explode('to', $request->dateRange);
+               $start_date = $start_end[0];
+               $end_date = array_key_exists(1, $start_end) ? $start_end[1] : $start_end[0];
+               $events = $events->whereDate('start_date', '>=', $start_date)
+                                ->whereDate('end_date', '<=', $end_date);
+            }
+
             $events = Event::filter($events, $request);
 
             foreach($events->get() as $event){
@@ -71,9 +80,11 @@ class ScheduleController extends Controller
     public function getEvents(Request $request){
         try {
             $data = [];
+            $start = Carbon::parse($request->start)->subDays(30);
+            $end = Carbon::parse($request->end)->addDays(30);
 
-            $events = Event::whereDate('start_date', '>=', $request->start)
-                       ->whereDate('end_date', '<=', $request->end);
+            $events = Event::whereDate('start_date', '>=', $start)
+                       ->whereDate('end_date', '<=', $end);
 
             $events = Event::filter($events, $request);
             foreach($events->get() as $event){
@@ -203,7 +214,19 @@ class ScheduleController extends Controller
             if($type == 'Audit Schedule'){
 
             }else if($type == 'Holiday Country'){
-
+                $start_end = explode('to', $request->start_end_date);
+                $holidayCountryEvent = Event::where('country_id', $request->country_id)
+                                                ->whereDate('start_date', '>=', $start_end[0])
+                                                ->whereDate('end_date', '<=', array_key_exists(1, $start_end) ? $start_end[1] : $start_end[0]);
+                if($request->state_id){
+                    $holidayCountryEvent = $holidayCountryEvent->where('state_id', $request->state_id);
+                }else{
+                    $holidayCountryEvent = $holidayCountryEvent->whereNull('state_id');
+                }
+                $holidayCountryEvent = $holidayCountryEvent->first();
+                if($holidayCountryEvent){
+                    return response()->json(['error' => ['start_end_date' => 'You already have schedule on this date entitled ' . $holidayCountryEvent->TitleComputed]]);
+                }
             }else{
                 if($request->user()->can('schedule.manage')){
                     if($request->company_id){
@@ -395,14 +418,30 @@ class ScheduleController extends Controller
             'users.*.*.required' => 'This field is required',
         ]);
         if($request->user()->can('schedule.manage')){
-            if($request->company_id != "Select Company"){
-                if($request->company_id != $event->users()->first()->modelable_id){
-                    $eventUser = Company::where('id',$request->company_id)->first()->isAvailableOn($request->start_end_date);
-                    if($eventUser){
-                        return response()->json(['error' => ['start_end_date' => 'You already have schedule on this date entitled ' . $eventUser->event->TitleComputed]]);
-                    }
+            if($type == 'Holiday Country'){
+                $start_end = explode('to', $request->start_end_date);
+                $holidayCountryEvent = Event::where('country_id', $request->country_id)
+                                                ->whereNotIn('id', [$event->id])
+                                                ->whereDate('start_date', '>=', $start_end[0])
+                                                ->whereDate('end_date', '<=', array_key_exists(1, $start_end) ? $start_end[1] : $start_end[0]);
+                if($request->state_id){
+                    $holidayCountryEvent = $holidayCountryEvent->where('state_id', $request->state_id);
+                }else{
+                    $holidayCountryEvent = $holidayCountryEvent->whereNull('state_id');
+                }
+                $holidayCountryEvent = $holidayCountryEvent->first();
+                if($holidayCountryEvent){
+                    return response()->json(['error' => ['start_end_date' => 'You already have schedule on this date entitled ' . $holidayCountryEvent->TitleComputed]]);
                 }
             }else{
+                if($request->company_id != "Select Company"){
+                    if($request->company_id != $event->users()->first()->modelable_id){
+                        $eventUser = Company::where('id',$request->company_id)->first()->isAvailableOn($request->start_end_date);
+                        if($eventUser){
+                            return response()->json(['error' => ['start_end_date' => 'You already have schedule on this date entitled ' . $eventUser->event->TitleComputed]]);
+                        }
+                    }
+                }else{
                     $unavailableUser = User::where('id', $request->user_id)->first();
                     if($unavailableUser != $event->users()->first()->modelable_id){
                         $eventUser = $unavailableUser->isAvailableOn($request->start_end_date);
@@ -411,6 +450,7 @@ class ScheduleController extends Controller
                         }
                     }
                 }
+            }
         }
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()]);
@@ -685,13 +725,15 @@ class ScheduleController extends Controller
                 }
             }
         }
-        foreach($request->users as $resource){
-            $user = User::find($resource);
-            if($user){
-                $bool = $user->isAvailableOn($date);
-                if($bool){
-                    $output['success'] = false;
-                    $output['msg'] .= $user->full_name . ', ';
+        if($request->users){
+            foreach($request->users as $resource){
+                $user = User::find($resource);
+                if($user){
+                    $bool = $user->isAvailableOn($date);
+                    if($bool){
+                        $output['success'] = false;
+                        $output['msg'] .= $user->full_name . ', ';
+                    }
                 }
             }
         }

@@ -54,7 +54,8 @@
   });
 
   $(document).on('click', '.hrefButton', function() {
-    window.open($(this).data('action'), '_blank');
+    // window.open($(this).data('action'), '_blank');
+    window.location.href = $(this).data('action');
   });
 
 

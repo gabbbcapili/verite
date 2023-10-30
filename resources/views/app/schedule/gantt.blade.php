@@ -66,7 +66,12 @@
           <div class="card-body">
             <div class="row mb-2">
               <div class="col-lg-4">
+                <label>Start & End Date</label>
+                <input type="text" class="form-control filterRangePicker eventFilter" id="filterDateRange">
+              </div>
+              <div class="col-lg-4">
                 <div class="form-group">
+                  <label></label>
                   <select class="form-control select2 eventFilter" id="companyFilter">
                     <option value="all" selected>Show All Client / Supplier</option>
                     <option value="null">Hide All Leave, Holiday, Unavailable</option>
@@ -78,6 +83,7 @@
               </div>
               <div class="col-lg-4">
                 <div class="form-group">
+                  <label></label>
                   <select class="form-control select2 eventFilter" id="auditorFilter">
                     <option value="all" selected>Show All Resources</option>
                     <option value="null">Hide All Leave, Holiday, Unavailable</option>
@@ -128,13 +134,22 @@
 @section('page-script')
 <script type="text/javascript">
     $('.select2').select2();
+    $('.filterRangePicker').flatpickr({
+        mode: 'range',
+        altFormat: 'Y-m-d',
+        defaultDate: ["{{ Carbon\Carbon::now()->startOfMonth()->format('Y-m-d') }}", "{{ Carbon\Carbon::now()->endOfMonth()->format('Y-m-d') }}"],
+        onReady: function (selectedDates, dateStr, instance) {
+          if (instance.isMobile) {
+            $(instance.mobileInput).attr('step', null);
+          }
+        },
+      });
     gantt.config.date_format = "%Y-%m-%d";
     gantt.config.readonly = true;
     gantt.plugins({
         tooltip: true
     });
     gantt.templates.tooltip_text = function(start,end,task){
-        console.log(task)
         return "<b>Title:</b> "+task.tooltip;
     };
     var data_url = "/schedule/ganttChart/";
@@ -142,7 +157,8 @@
     $(document).on('change', '.eventFilter', function(){
         var company = $('#companyFilter').find(":selected").val();
         var auditor = $('#auditorFilter').find(":selected").val();
-        data_url = "/schedule/ganttChart/?company=" + company + "&auditor=" + auditor;
+        var filterDateRange = $('#filterDateRange').val();
+        data_url = "/schedule/ganttChart/?company=" + company + "&auditor=" + auditor + "&dateRange=" + filterDateRange;
         gantt.clearAll(); gantt.load(data_url);
     });
     $('.eventFilter').trigger('change');
@@ -152,24 +168,26 @@
         gantt.config.buttons_right = [];
     });
     gantt.attachEvent("onTaskClick", function(id,e){
-        var url ="{{ route('schedule.edit', ':id') }}";
-            url = url.replace(':id', id);
-        $.ajax({
-          url: url,
-          method: "GET",
-          success:function(result)
-          {
-            $('#view_modal').html(result);
-              $('#view_modal').modal({backdrop: 'static', keyboard: false}).modal('toggle');
-              if (feather) {
-                feather.replace({
-                  width: 14, height: 14
-                });
+        if($(e.srcElement).hasClass('gantt_task_content')){
+            var url ="{{ route('schedule.edit', ':id') }}";
+                url = url.replace(':id', id);
+            $.ajax({
+              url: url,
+              method: "GET",
+              success:function(result)
+              {
+                $('#view_modal').html(result);
+                  $('#view_modal').modal({backdrop: 'static', keyboard: false}).modal('toggle');
+                  if (feather) {
+                    feather.replace({
+                      width: 14, height: 14
+                    });
+                  }
               }
-          }
-      });
-
-        return true;
+          });
+        }else{
+            return true;
+        }
     });
 
     gantt.templates.task_class  = function(start, end, task){

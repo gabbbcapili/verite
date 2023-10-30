@@ -1,3 +1,26 @@
+Agenda: Project Status Update
+
+Results on P2 Sep30 release
+1.  Intermittent non-display of Client/Supplier, Resources
+             Action: Refresh page several times - bug confirmed added 2 seconds delay for client re-testing
+2.   Multiple pages generated (removed new tab / will open same window) ok
+3.  Holiday Country/State testing
+             3.1 Holiday Dec 23-Jan 7 (crossing a year) not displayed in Calendar but
+                     displayed in Gantt Chart - ok fixed
+             3.2 No error called on overlapping Holiday dates added error message ok
+             3.3 Delay(?) in display of Holiday in Calendar - ??
+             3.4 Effect on availability of resource still to be tested - c/o Noli
+        4. Gantt Chart revisions not yet implemented, when to be released? ok
+              4.1 Sorting by Start Date ok
+              4.2 Default display of Today's Week (defaulted to 1 month view) ok
+              4.3 Facility to see Month-View ok
+
+Gantt chart make it 1 month ok
+date filter set to 1 month default ok
+left side click = scroll to ok 
+right side click = open edit schedule ok 
+Conformance drop down- find a good UI
+
 "add country and citv qxy to company - verite, supplier and client and verite user -- schedule -> create -> holiday -> add option to select country then city and holiday name
 
 verite - user wide

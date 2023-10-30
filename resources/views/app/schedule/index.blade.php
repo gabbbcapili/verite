@@ -34,7 +34,7 @@
 
           </div>
           <div class="px-1 d-flex justify-content-center">
-            <a class="btn btn-primary btn-toggle-sidebar w-100" target="_blank" href="{{ route('schedule.ganttChart') }}">
+            <a class="btn btn-primary btn-toggle-sidebar w-100" href="{{ route('schedule.ganttChart') }}">
               <span class="align-middle">View Gantt Chart</span>
             </a>
 

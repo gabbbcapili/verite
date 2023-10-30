@@ -79,8 +79,8 @@
                         <label>Resource / Company</label>
                         <select name="unavailability_type" id="unavailabilityType" class="form-control select2Modal">
                           <option disabled selected>Select Option</option>
-                          <option value="resource" {{$event->users()->first()->modelable_type == 'App\Models\User' ?  'selected' : ''}}>Resource</option>
-                          <option value="company" {{$event->users()->first()->modelable_type == 'App\Models\Company' ?  'selected' : ''}}>Company</option>
+                          <option value="resource" @if($event->users()->first()){{$event->users()->first()->modelable_type == 'App\Models\User' ?  'selected' : ''}}@endif>Resource</option>
+                          <option value="company" @if($event->users()->first()){{$event->users()->first()->modelable_type == 'App\Models\Company' ?  'selected' : ''}}@endif>Company</option>
                         </select>
                       </div>
                     </div>
@@ -90,10 +90,14 @@
                         <select name="company_id" class="form-control select2Modal">
                           <option disabled>Select Company</option>
                           @foreach($companies as $company)
-                            @if($event->users()->first()->modelable_type == 'App\Models\Company')
-                              <option value="{{ $company->id }}" {{ $event->users()->first()->modelable_id == $company->id ? 'selected' : '' }}>{{ $company->displayName }}</option>
+                            @if($event->users()->first()))
+                              @if($event->users()->first()->modelable_type == 'App\Models\Company')
+                                <option value="{{ $company->id }}" {{ $event->users()->first()->modelable_id == $company->id ? 'selected' : '' }}>{{ $company->displayName }}</option>
+                              @else
+                              <option value="{{ $company->id }}">{{ $company->displayName }}</option>
+                              @endif
                             @else
-                            <option value="{{ $company->id }}">{{ $company->displayName }}</option>
+                              <option value="{{ $company->id }}">{{ $company->displayName }}</option>
                             @endif
                           @endforeach
                         </select>
@@ -105,10 +109,14 @@
                         <select name="user_id" class="form-control select2Modal">
                           <option disabled>Select Resource</option>
                           @foreach($auditors as $auditor)
-                            @if($event->users()->first()->modelable_type == 'App\Models\User')
-                              <option value="{{ $auditor->id }}" {{ $event->users()->first()->modelable_id == $auditor->id ? 'selected' : '' }}>{{ $auditor->displayName }}</option>
+                            @if($event->users()->first()))
+                              @if($event->users()->first()->modelable_type == 'App\Models\User')
+                                <option value="{{ $auditor->id }}" {{ $event->users()->first()->modelable_id == $auditor->id ? 'selected' : '' }}>{{ $auditor->displayName }}</option>
+                              @else
+                              <option value="{{ $auditor->id }}">{{ $auditor->displayName }}</option>
+                              @endif
                             @else
-                            <option value="{{ $auditor->id }}">{{ $auditor->displayName }}</option>
+                              <option value="{{ $auditor->id }}">{{ $auditor->displayName }}</option>
                             @endif
                           @endforeach
                         </select>
