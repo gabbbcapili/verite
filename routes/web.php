@@ -130,7 +130,8 @@ Route::group(['middleware' => ['auth']], function()
              Route::post('spaf/clone/{template}', [SpafTemplateController::class, 'clone'])->name('spaf.clone')->middleware('permission:template.manage');
              Route::get('{type}', [SpafTemplateController::class, 'index'])->name('spaf.index')->middleware('permission:template.manage,template.approve');
              Route::get('spaf/show/{template}', [SpafTemplateController::class, 'show'])->name('spaf.show')->middleware('permission:template.manage,template.approve');
-             Route::resource('spaf', SpafTemplateController::class)->parameters(['spaf' => 'template'])->except(['index', 'show'])->middleware('permission:template.manage');
+             Route::get('{type}/{template}/edit', [SpafTemplateController::class, 'edit'])->name('spaf.edit');
+             Route::resource('spaf', SpafTemplateController::class)->parameters(['spaf' => 'template'])->except(['index', 'show', 'edit'])->middleware('permission:template.manage');
              // group
              Route::post('group/updateSort/{template}', [GroupController::class, 'updateSort'])->name('group.updateSort')->middleware('permission:template.manage');
              Route::post('group/clone/{group}', [GroupController::class, 'clone'])->name('group.clone')->middleware('permission:template.manage');

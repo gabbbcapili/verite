@@ -1,3 +1,57 @@
+reports
+
+full screen
+sa kanan lahat select variable / audit standard
+selectable audits -> all (even not approved) Add header beside select variable show audit status
+
+Right Side
+Ratings - galing sa settings
+Audit standards
+Audit
+
+
+Report Template
+Add audit summary
+
+
+Select Variables
+-> Add indication if double clickable
+-> Totals change font weight to Bold
+-> Totals arrange highest to lowest (including extract from template)
+-> remove clickable like radio, checkbox (unchangable)
+
+
+
+Template
+ group edit -> beside move button -> add new question on the buttom 
+ audit standard -> wrap standards column ( sobrang haba)
+
+
+Audit
+    -> before approve validate all questionnaires
+    -> Multiple answer -> add columns -> status (pending, submitted, approved) (add approve button), completeion (3/10 per question)
+    -> buttons -> Save & continue later: for temporary saving -> Save & Submit: to post finalized Audit
+
+4. For offline
+-Prompt user to connect to internet every 30 minutes to be able to save & submit the form.
+-Should not allow closing of browser tabs
+
+
+
+
+2. Reports
+- Display Interviewer/Interviewee names
+- Format:
+   a.Ruler/Page Break
+   b.Watermark
+   c.Logo per page section
+   d.Header/Footer
+   e.Background color
+- Template creation/uploading for Standard Report
+
+3. Role
+- Audit section: Add SPAF assignment to edit and view access only
+
 Agenda: Project Status Update
 
 Results on P2 Sep30 release

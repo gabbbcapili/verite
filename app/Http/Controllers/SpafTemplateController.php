@@ -39,7 +39,7 @@ class SpafTemplateController extends Controller
                             if(request()->user()->can('template.manage')){
                                 if($template->is_approved == false){
                                     $html .= Utilities::actionButtons([
-                                        ['route' => route('template.spaf.edit', $template->id), 'name' => 'Edit', 'type' => 'href'],
+                                        ['route' => route('template.spaf.edit', ['template' => $template->id, 'type' => $template->type]), 'name' => 'Edit', 'type' => 'href'],
                                         ['route' => route('template.spaf.delete', $template->id), 'name' => 'Delete'],
                                         ['route' => route('template.spaf.clone', $template->id), 'type' => 'confirmWithNotes', 'name' => 'confirmWithNotes', 'title' => 'Clone', 'text' => 'Template Name:', 'confirmButtonText' => 'Clone']
                                     ]);
@@ -116,14 +116,14 @@ class SpafTemplateController extends Controller
             // $data['type'] = 'spaf';
             $template = Template::create($data);
             if($template->type == 'spaf'){
-                $template->createDefault();
+                // $template->createDefault();
             }else if($template->type == 'report'){
                 $template->createDefaultForReport();
             }
             DB::commit();
             $output = ['success' => 1,
                         'msg' => 'Template added successfully!',
-                        'redirect' => route('template.spaf.edit', $template)
+                        'redirect' => route('template.spaf.edit', ['template' => $template, 'type' => $template->type])
                     ];
         } catch (\Exception $e) {
             \Log::emergency("File:" . $e->getFile(). " Line:" . $e->getLine(). " Message:" . $e->getMessage());
@@ -152,7 +152,7 @@ class SpafTemplateController extends Controller
      * @param  \App\Models\Template  $template
      * @return \Illuminate\Http\Response
      */
-    public function edit(Template $template)
+    public function edit($type, Template $template)
     {
         $breadcrumbs = [
             ['link'=>"/",'name'=>"Home"],['link'=> route('template.spaf.index', ['type' => $template->type]), 'name'=>"List Templates"], ['name'=> $template->name]
@@ -269,7 +269,7 @@ class SpafTemplateController extends Controller
             DB::commit();
             $output = ['success' => 1,
                         'msg' => 'Template cloned successfully!',
-                        'redirect' => route('template.spaf.edit', $newTemplate)
+                        'redirect' => route('template.spaf.edit', ['template' => $newTemplate, 'type' => $newTemplate->type])
                     ];
         } catch (\Exception $e) {
             \Log::emergency("File:" . $e->getFile(). " Line:" . $e->getLine(). " Message:" . $e->getMessage());

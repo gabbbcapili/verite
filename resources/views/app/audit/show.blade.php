@@ -170,7 +170,7 @@
                                                             <td>@if($audit->status != 'completed')
                                                                     <a target="_blank" href="{{ route('auditForm.show', $header) }}" data-bs-toggle="tooltip" data-placement="top" title="" data-href="http://127.0.0.1:8000/auditForm/12" class="me-50" data-bs-original-title="Show" aria-label="Show"><i data-feather="eye"></i></a>
                                                                     {!! App\Models\Utilities::actionButtons([
-                                                                        ['route' => route('auditForm.edit', ['auditFormHeader' => $header, 'template' => $auditForm->template->slug]), 'name' => 'Edit', 'type' => 'href'],
+                                                                        ['route' => route('auditForm.edit', ['auditFormHeader' => $header, 'template' => $auditForm->template->slug, 'assigned_name' => $header->name]), 'name' => 'Edit', 'type' => 'href'],
                                                                         ['route' => route('auditForm.destroy', $header), 'name' => 'Delete', 'type' => 'confirmDelete', 'title' => 'Are you sure to delete this audit form answer?', 'text' => 'Delete']
                                                                     ]); !!}
                                                                 @else

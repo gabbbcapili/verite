@@ -83,6 +83,13 @@
   @endcan
 
   @if( $request->user()->can('template.manage') || $request->user()->can('template.approve'))
+  @php
+    if(isset($template)){
+      $template_type = $template->type;
+    }else{
+      $template_type = null;
+    }
+  @endphp
   <li class="nav-item has-sub" style=""><a class="d-flex align-items-center" href="#">
     <i data-feather="file"></i>
     <span class="menu-title text-truncate">Templates</span><span class="badge badge-light-warning rounded-pill ms-auto me-1" id="badge_templates"></span></a>
