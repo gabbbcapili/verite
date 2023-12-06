@@ -84,6 +84,7 @@
               @endif
               <th>Active</th>
               <th>Status</th>
+              <th>Approved By</th>
               <th>Created</th>
               <th>Updated</th>
               <th class="noexport">Action</th>
@@ -133,6 +134,7 @@
             @endif
             { data: 'statusText', name: 'status'},
             { data: 'is_approved', name: 'is_approved'},
+            { data: 'approved_by', name: 'approved_by'},
             { data: 'created_at', name: 'created_at'},
             { data: 'updated_at', name: 'updated_at'},
             { data: 'action', name: 'action', 'orderable' : false}

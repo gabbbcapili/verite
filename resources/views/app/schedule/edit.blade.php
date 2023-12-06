@@ -27,9 +27,9 @@
                       <label>Type</label>
                       <select name="type" class="form-control select2Modal" id="SelectType">
                         <option disabled selected hidden></option>
-                        @can('schedule.manage')
+                        
                         <option value="Audit Schedule" {{ $event->type == 'Audit Schedule' ? 'selected' : '' }}>Audit Schedule</option>
-                        @endcan
+                        
                         <option value="Leave" {{ $event->type == 'Leave' ? 'selected' : '' }}>Leave</option>
                         <option value="Holiday" {{ $event->type == 'Holiday' ? 'selected' : '' }}>Holiday (Resource / Company)</option>
                         @can('schedule.manage')

@@ -14,7 +14,7 @@ class Template extends Model
 
     protected $table = 'template';
 
-    protected $fillable = ['name', 'type', 'is_deleted', 'is_approved', 'status', 'audit_type'];
+    protected $fillable = ['name', 'type', 'is_deleted', 'is_approved', 'status', 'audit_type', 'approved_by'];
 
     public static $typeList = ['spaf', 'spaf_extension', 'risk_management', 'audit', 'report'];
 
@@ -25,6 +25,14 @@ class Template extends Model
     public static $forSpaf = ['spaf', 'spaf_extension', 'risk_management'];
 
     public static $forReport = ['report'];
+
+    public function approved_by_user(){
+        return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function getApprovedByNameAttribute(){
+        return $this->approved_by_user ?  $this->approved_by_user->fullName : null;
+    }
 
     public function getSlugAttribute(){
         return Str::slug($this->name, "-");

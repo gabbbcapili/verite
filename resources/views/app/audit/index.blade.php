@@ -1,6 +1,6 @@
 @inject('request', 'Illuminate\Http\Request')
 @extends('layouts/contentLayoutMaster')
-@section('title', 'Audit Programs')
+@section('title', 'Audits')
 
 @section('vendor-style')
   <link rel="stylesheet" href="{{ asset('vendors/css/tables/datatable/dataTables.bootstrap5.min.css') }}">

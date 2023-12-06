@@ -73,6 +73,11 @@ class SpafTemplateController extends Controller
                     return '<span class="badge rounded-pill badge-light-danger  me-1">Waiting for Approval</span>';
                 }
             })
+            ->addColumn('approved_by', function (Template $template) {
+                return $template->approvedByName;
+            })
+
+            
             ->rawColumns(['action', 'is_approved', 'statusText'])
             ->make(true);
         }
@@ -230,10 +235,10 @@ class SpafTemplateController extends Controller
         return view('layouts.delete', compact('action' , 'title'));
     }
 
-    public function approve(Template $template){
+    public function approve(Template $template, Request $request){
         try {
             DB::beginTransaction();
-            $template->update(['is_approved' => true]);
+            $template->update(['is_approved' => true, 'approved_by' => $request->user()->id]);
             DB::commit();
             $output = ['success' => 1,
                         'msg' => 'Template successfully approved!'
@@ -257,6 +262,7 @@ class SpafTemplateController extends Controller
                 $newTemplate->name = $request->notes;
             }
             $newTemplate->is_approved = false;
+            $newTemplate->approved_by = null;
             $newTemplate->created_by = $request->user()->id;
             $newTemplate->updated_by = $request->user()->id;
             $newTemplate->push();

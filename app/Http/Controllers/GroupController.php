@@ -168,6 +168,7 @@ class GroupController extends Controller
             if (!empty($newQuestions)) {
                 $group->questions()->saveMany($newQuestions);
              }
+             $group->template->touch();
             DB::commit();
             $output = ['success' => 1,
                         'msg' => 'Question Group successfully updated!',
