@@ -223,6 +223,23 @@ class AuditController extends Controller
         try {
             DB::beginTransaction();
             $data = [];
+            $unapprovedHeaders = [];
+
+            foreach($audit->forms as $auditForm){
+                foreach($auditForm->headers as $header){
+                    if($header->status != 'approved'){
+                        $unapprovedHeaders[] = $header;
+                    }
+                }
+            }
+
+            if(count($unapprovedHeaders) > 0){
+                $output = ['success' => 0,
+                        'msg' => 'Please approve all form answers first',
+                    ];
+                return response()->json($output);
+            }
+
             if($request->has('notes')){
                 $data['notes'] = $request->notes;
                 $audit->update($data);

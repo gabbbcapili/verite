@@ -109,7 +109,7 @@
                 <div class="col-lg-12 col-md-12 col-sm-12">
                     <div class="card">
                         <div class="card-header">
-                          <h4 class="card-title text-center">{{ $auditForm->template->name }} {{ $auditForm->template->audit_type }}</h4>
+                          <h4 class="card-title text-center">{{ $auditForm->template->name }} {{ $auditForm->template->audit_type }} - <span class="text-{{$auditForm->isMultiple ? 'danger' : 'info'}}">[{{$auditForm->isMultiple ? 'Multiple' : 'One Time'}}]</span></h4>
                           <div class="heading-elements">
                             <ul class="list-inline mb-0">
                               <li>
@@ -119,73 +119,60 @@
                           </div>
                         </div>
                         <div class="card-content collapse">
-                            @if(! $auditForm->isMultiple)
                             <div class="card-body">
-                                         @if($audit->status != 'completed')
-                                    @if(! $auditForm->headers->count() > 0)
-                                        <div class="row sticky-top">
-                                            <div class="col-12 align-items-center justify-content-center text-center">
-                                                <a href="{{ route('auditForm.create', ['auditForm' => $auditForm, 'template' => $auditForm->template->slug]) }}" class="btn btn-outline-secondary">Edit <i data-feather="arrow-right"></i></a>
-                                            </div>
-                                        </div>
-                                    @else
-                                        <div class="row sticky-top">
-                                            <div class="col-12 align-items-center justify-content-center text-center">
-                                                <a href="{{ route('auditForm.edit', ['auditFormHeader' => $auditForm->headers->first(), 'template' => $auditForm->template->slug]) }}" class="btn btn-outline-secondary">Edit <i data-feather="arrow-right"></i></a>
-                                            </div>
-                                        </div>
-                                    @endif
-                                @endif
-                                <div class="row mb-2">
-                                    @php
-                                        $answers = $auditForm->headers->count() > 0 ? $auditForm->headers->first()->answers : null;
-                                    @endphp
-                                    @if($answers)
-                                        <h4>{{ $auditForm->headers->first()->name }}</h4>
-                                    @endif
-                                    @include('app.template.spaf.preview', ['template' => $auditForm->template, 'answers' => $answers, 'disabled' => true])
-                                </div>
-
-                       
-                            </div>
-                            @else
-                                <div class="card-body">
-                                    <div class="row mb-2 align-items-center justify-content-center text-center">
-                                      <div class="col-lg-6 col-sm-12">
-                                            @if($audit->status != 'completed')
+                                <div class="row mb-2 align-items-center justify-content-center text-center">
+                                  <div class="col-lg-6 col-sm-12">
+                                        @if($audit->status != 'completed')
+                                            @if($auditForm->isMultiple)
                                               <div class="d-flex justify-content-end mb-1 no-print">
                                                 <a class="btn btn-primary" href="{{ route('auditForm.create', ['auditForm' => $auditForm, 'template' => $auditForm->template->slug]) }}"><i data-feather="plus-circle"></i> Add Answer</a>
                                               </div>
+                                            @else
+                                                @if(! $auditForm->headers->count() > 0)
+                                                    <div class="d-flex justify-content-end mb-1 no-print">
+                                                        <a class="btn btn-primary" href="{{ route('auditForm.create', ['auditForm' => $auditForm, 'template' => $auditForm->template->slug]) }}"><i data-feather="plus-circle"></i> Add Answer</a>
+                                                      </div>
+                                                @endif
                                             @endif
-                                          <div class="table-responsive">
-                                            <table class="table table-bordered">
-                                                <thead>
-                                                    <th>Assigned Name</th>
-                                                    <th>Action</th>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach($auditForm->headers as $header)
-                                                        <tr id="header{{ $header->id }}">
-                                                            <td>{{ $header->name }}</td>
-                                                            <td>@if($audit->status != 'completed')
-                                                                    <a target="_blank" href="{{ route('auditForm.show', $header) }}" data-bs-toggle="tooltip" data-placement="top" title="" data-href="http://127.0.0.1:8000/auditForm/12" class="me-50" data-bs-original-title="Show" aria-label="Show"><i data-feather="eye"></i></a>
+                                        @endif
+                                      <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <th>Assigned Name</th>
+                                                <th>Status</th>
+                                                <th>Completion</th>
+                                                <th>Action</th>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($auditForm->headers as $header)
+                                                    <tr id="header{{ $header->id }}">
+                                                        <td>{{ $header->name }}</td>
+                                                        <td>{!! $header->statusDisplay !!}</td>
+                                                        <td>{{ $header->groupCompleted }} / {{$auditForm->template->groups->count()}} groups</td>
+                                                        <td>@if($audit->status != 'completed' && $header->status != 'approved')
+                                                                <a target="_blank" href="{{ route('auditForm.show', $header) }}" data-bs-toggle="tooltip" data-placement="top" title="" class="me-50" data-bs-original-title="Show" aria-label="Show"><i data-feather="eye"></i></a>
+                                                                @if($auditForm->isMultiple)
                                                                     {!! App\Models\Utilities::actionButtons([
                                                                         ['route' => route('auditForm.edit', ['auditFormHeader' => $header, 'template' => $auditForm->template->slug, 'assigned_name' => $header->name]), 'name' => 'Edit', 'type' => 'href'],
                                                                         ['route' => route('auditForm.destroy', $header), 'name' => 'Delete', 'type' => 'confirmDelete', 'title' => 'Are you sure to delete this audit form answer?', 'text' => 'Delete']
                                                                     ]); !!}
                                                                 @else
-                                                                    <a target="_blank" href="{{ route('auditForm.show', $header) }}" data-bs-toggle="tooltip" data-placement="top" title="" data-href="http://127.0.0.1:8000/auditForm/12" class="me-50" data-bs-original-title="Show" aria-label="Show"><i data-feather="eye"></i></a>
+                                                                    {!! App\Models\Utilities::actionButtons([
+                                                                        ['route' => route('auditForm.edit', ['auditFormHeader' => $header, 'template' => $auditForm->template->slug, 'assigned_name' => $header->name]), 'name' => 'Edit', 'type' => 'href']
+                                                                    ]); !!}
                                                                 @endif
-                                                                </td>
-                                                        </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-                                          </div>
+                                                            @else
+                                                                <a target="_blank" href="{{ route('auditForm.show', $header) }}" data-bs-toggle="tooltip" data-placement="top" title="" class="me-50" data-bs-original-title="Show" aria-label="Show"><i data-feather="eye"></i></a>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
                                       </div>
-                                    </div>
+                                  </div>
                                 </div>
-                            @endif
+                            </div>
                         </div>
                     </div>
                 </div>

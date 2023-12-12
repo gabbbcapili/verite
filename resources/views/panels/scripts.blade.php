@@ -3,6 +3,14 @@
 <!-- BEGIN Vendor JS-->
 <!-- BEGIN: Page Vendor JS-->
 <script src="{{asset(mix('vendors/js/ui/jquery.sticky.js'))}}"></script>
+<script type="text/javascript">
+  function promptConfirmationBeforeUnload(e){
+      // Cancel the event
+      e.preventDefault();
+      // Chrome requires returnValue to be set
+      e.returnValue = '';
+    }
+</script>
 @yield('vendor-script')
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.6.0/tinymce.min.js" integrity="sha512-hMjDyb/4G3SapFEM71rK+Gea0+ZEr9vDlhBTyjSmRjuEgza0Ytsb67GE0aSpRMYW++z6kZPPcnddwlUG6VKm9w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -81,20 +89,30 @@
               },
               success:function(result)
               {
-                Swal.fire({
-                  icon: 'success',
-                  title: result.msg,
-                  showConfirmButton: false,
-                  timer: 1500,
-                  showClass: {
-                    popup: 'animate__animated animate__fadeIn'
-                  },
-                });
-                $(".view_modal").trigger("hidden.bs.modal");
-                if(result.redirect){
-                  setTimeout(function(){
-                        window.location.replace(result.redirect);
-                    }, 1500);
+                if(result.success){
+                  Swal.fire({
+                    icon: 'success',
+                    title: result.msg,
+                    showConfirmButton: false,
+                    timer: 1500,
+                    showClass: {
+                      popup: 'animate__animated animate__fadeIn'
+                    },
+                  });
+                  $(".view_modal").trigger("hidden.bs.modal");
+                  if(result.redirect){
+                    setTimeout(function(){
+                          window.location.replace(result.redirect);
+                      }, 1500);
+                  }
+                }else{
+                  Swal.fire({
+                    icon: 'error',
+                    title: result.msg,
+                    showClass: {
+                      popup: 'animate__animated animate__fadeIn'
+                    },
+                  });
                 }
               }
           });

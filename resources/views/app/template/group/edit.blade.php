@@ -93,7 +93,7 @@
                             <td>
                               <select class="form-control select2Modal" multiple="multiple" name="question[{{ $loop->iteration }}][standards][]" id="question.{{ $loop->iteration }}.standards">
                                 @foreach($standards as $standard)
-                                  <option value="{{ $standard->id }}" {{ in_array($standard->id, explode(',', $q->standards)) ? 'selected' : '' }}>{{ $standard->name }}</option>
+                                  <option value="{{ $standard->id }}" {{ in_array($standard->id, explode(',', $q->standards)) ? 'selected' : '' }}>{{ $standard->nameTruncated }}</option>
                                 @endforeach
                               </select>
                             </td>
@@ -103,6 +103,7 @@
                                   <div class="btn-group" role="group">
                                       <button type="button" class="btn btn-sm btn-outline-success delete_row" data-bs-toggle-modal="tooltip" title="Delete"><i data-feather="delete"></i></button>
                                       <!-- <button type="button" class="btn btn-sm btn-outline-success duplicate_row" data-bs-toggle-modal="tooltip" title="Copy"><i data-feather="copy"></i></button> -->
+                                      <button type="button" class="btn btn-sm btn-outline-success add_row_question_bottom" data-bs-toggle-modal="tooltip" title="Add Question"><i data-feather="plus-circle"></i></button>
                                       <span role="button" class="btn btn-sm btn-outline-success cursor-move ui-icon" data-bs-toggle-modal="tooltip" title="Move"><i class="" data-feather="move"></i></span>
                                   </div>
                               </div>
@@ -225,7 +226,7 @@
         items: "tr",
       });
 
-      $('.add_row_question').click(function(){
+      function addQuestion(target){
         var row = parseInt($('#question_row_count').val()) + 1;
         $('#question_row_count').val(row);
         var $tr = '';
@@ -239,9 +240,9 @@
         @if(in_array($group->template->type, App\Models\Template::$forAudit))
         $tr += '<td><select class="form-control select2Modal" multiple="multiple" name="question['+ row +'][standards][]" id="question.'+ row +'.standards">'+ standardsSelection +'</select></td>';
         @endif
-        $tr += '<td><div class="d-flex justify-content-end"><div class="btn-group" role="group"><button type="button" class="btn btn-sm btn-outline-success delete_row" data-bs-toggle-modal="tooltip" title="Delete"><i data-feather="delete"></i></button><span role="button" class="btn btn-sm btn-outline-success cursor-move ui-icon" data-bs-toggle-modal="tooltip" title="Move"><i class="" data-feather="move"></i></span></div></div></td>';
+        $tr += '<td><div class="d-flex justify-content-end"><div class="btn-group" role="group"><button type="button" class="btn btn-sm btn-outline-success delete_row" data-bs-toggle-modal="tooltip" title="Delete"><i data-feather="delete"></i></button><button type="button" class="btn btn-sm btn-outline-success add_row_question_bottom" data-bs-toggle-modal="tooltip" title="Add Question"><i data-feather="plus-circle"></i></button><span role="button" class="btn btn-sm btn-outline-success cursor-move ui-icon" data-bs-toggle-modal="tooltip" title="Move"><i class="" data-feather="move"></i></span></div></div></td>';
         $tr += '</tr>';
-        $('#question_table tr:last').after($tr);
+        target.after($tr);
         feather.replace({
           width: 14,height: 14
         });
@@ -254,7 +255,24 @@
             dropdownParent: $("#modal-body")
           });
         @endif
+      }
+
+      $('.add_row_question').click(function(){
+        addQuestion($('#question_table tr:last'));
       });
+
+      $('.add_row_question_bottom').click(function(){
+        addQuestion($(this).closest('tr'));
+      });
+
+      // $(document).on('click', '.add_row_question', function(){
+      //   addQuestion($('#question_table tr:last'));
+      // });
+
+      // $(document).on('click', '.add_row_question_bottom', function(){
+      //   addQuestion($(this).closest('tr'));
+      // });
+
 
       $(document).on('click', '.delete_row', function(){
         $('[data-bs-toggle-modal="tooltip"]').tooltip('hide')

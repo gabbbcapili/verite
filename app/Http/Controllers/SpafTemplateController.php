@@ -165,12 +165,14 @@ class SpafTemplateController extends Controller
         if(! in_array($template->type, Template::$forReport)){
             $templates = [];
             $templatesReport = [];
+            $pageConfigs = [];
         }else{
             $templates = Template::where('is_deleted', false)->where('is_approved', true)->where('status', true)->whereIn('type', Template::$forSpaf)->orderBy('id', 'desc')->get();
             $templatesReport = Template::where('is_deleted', false)->where('is_approved', true)->where('status', true)->whereIn('type', Template::$forReport)->orderBy('id', 'desc')->get();
+            $pageConfigs = ['layoutWidth' => 'full'];
         }
         $settings = Setting::first();
-        return view('app.template.spaf.edit', compact('template', 'breadcrumbs', 'settings', 'templates', 'templatesReport'));
+        return view('app.template.spaf.edit', compact('template', 'breadcrumbs', 'settings', 'templates', 'templatesReport', 'pageConfigs'));
     }
 
     /**

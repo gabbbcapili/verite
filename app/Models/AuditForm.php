@@ -69,12 +69,12 @@ class AuditForm extends Model
                 $html .= '<th align="left" width="50%">'. $questions['text'] .'</th>';
                 $html .= '<td align="left">';
                 foreach($questions['answers'] as $answer){
-                    $html.= $answer['value'] . ' - ' . $answer['times'] . '<br>';
+                    $html.= $answer['value'] . ' - <b>' . $answer['times'] . '</b><br>';
                 }
                 $html .= '</td>';
                 $html .= '</tr>';
             }
-            $html .= '<tr><th align="left">Total Submission</th><td align="left">'. $headers->count() .'</td></tr>';
+            $html .= '<tr><th align="left">Total Submission</th><td align="left"><b>'. $headers->count() .'</b></td></tr>';
             $html .= '</tbody></table></div>';
         }
         return $html;

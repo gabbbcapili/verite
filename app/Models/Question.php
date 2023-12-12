@@ -17,9 +17,16 @@ class Question extends Model
         return $this->belongsTo(Group::class, 'group_id');
     }
 
-    public static function getValidation($model){
+    public static function getValidation($model, $groupOnly = false){
         $validation = [];
-        foreach($model->template->questions  as $q){
+        $questions = [];
+
+        if($groupOnly){
+            $questions = $model->questions;
+        }else{
+            $questions = $model->template->questions;
+        }
+        foreach($questions as $q){
             if(in_array($q->type, ['checkbox', 'email', 'number', 'file', 'file_multiple', 'table'])){
                 if($q->type == 'checkbox'){
                     $validation['checkbox.'. $q->id] = $q->required ? 'required' : '';

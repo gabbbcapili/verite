@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\CreatedUpdatedBy;
+use Illuminate\Support\Str;
 
 class Standard extends Model
 {
@@ -20,6 +21,10 @@ class Standard extends Model
     public function getNameDisplayAttribute(){
         // return '<span style="color:'. $this->color .'">'. $this->name .'</span>';
         return $this->name;
+    }
+
+    public function getNameTruncatedAttribute(){
+        return Str::of($this->name)->limit(40);
     }
 
     public function created_by_user(){

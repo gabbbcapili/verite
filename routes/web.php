@@ -67,7 +67,6 @@ Route::group(['middleware' => ['auth']], function()
     Route::resource('audit', AuditController::class)->middleware('permission:audit.manage,schedule.selectableAuditor');
 
 
-
     Route::resource('report', ReportController::class);
     Route::get('auditForm/create/{auditForm}/{template:slug?}', [AuditFormController::class, 'create'])->name('auditForm.create')->middleware('permission:audit.manage,schedule.selectableAuditor');
     Route::post('auditForm/{auditForm}', [AuditFormController::class, 'store'])->name('auditForm.store')->middleware('permission:audit.manage,schedule.selectableAuditor');
@@ -76,6 +75,7 @@ Route::group(['middleware' => ['auth']], function()
     Route::get('forms/cachedForms', [AuditFormController::class, 'cachedForms'])->name('auditForm.cachedForms')->middleware('permission:audit.manage,schedule.selectableAuditor');
     Route::put('auditForm/{auditFormHeader}', [AuditFormController::class, 'update'])->name('auditForm.update')->middleware('permission:audit.manage,schedule.selectableAuditor');
     Route::delete('auditForm/{auditFormHeader}', [AuditFormController::class, 'destroy'])->name('auditForm.destroy')->middleware('permission:audit.manage,schedule.selectableAuditor');
+    Route::post('auditForm/approve/{auditFormHeader}/', [AuditFormController::class, 'approve'])->name('auditForm.approve')->middleware('permission:audit.approve');
 
     Route::post('audit/loadSchedulesFor/{company}', [AuditController::class, 'loadSchedulesFor'])->name('audit.loadSchedulesFor');
     Route::get('schedule/editNew/{event}', [ScheduleController::class, 'editNew'])->name('schedule.editNew');

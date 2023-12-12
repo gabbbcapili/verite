@@ -41,6 +41,10 @@ $(function() {
             $('.form')[0].reset();
             $('#' + table_id).DataTable().ajax.reload();
           }else if(button == 'save'){
+            if (typeof promptConfirmationBeforeUnload === 'function') {
+              console.log('beforeUnload Function Exists');
+              window.removeEventListener('beforeunload', promptConfirmationBeforeUnload);
+            }
             setTimeout(function(){
                 window.location.replace(result.redirect);
             }, 1500);

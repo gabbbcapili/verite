@@ -82,17 +82,15 @@
                               @method('put')
                               @csrf
                                 <div class="form-body">
-                                    <div class="row mb-2">
-                                        <div class="col-lg-4">
-                                            <button type="button" class="btn btn-primary" id="selectVariableModalButton">Select Variable</button>
-                                        </div>
-                                    </div>
                                     <input type="hidden" name="header" placeholder="Header" class="form-control" value="{{ $group->header }}">
-                                      <div class="row mb-2 justify-content-center align-items-center">
-                                        <div class="col-10">
+                                      <div class="row mb-2">
+                                        <div class="col-lg-7">
                                           <input type="hidden" name="question[0][question_id]" value="{{ $group->questions->first()->id }}">
                                           <input type="hidden" name="question[0][type]" value="editor">
                                           <textarea class="form-control tinymce" name="question[0][text]">{{ $group->questions->first()->text }}</textarea>
+                                        </div>
+                                        <div class="col-lg-5">
+                                            @include('app.template.group.forInsertionModal')
                                         </div>
                                       </div>
                                       <div class="row">
@@ -128,7 +126,6 @@
             </div>
         </div>
       <!-- </form> -->
-      @include('app.template.group.forInsertionModal')
 </section>
 @endsection
 
@@ -216,7 +213,7 @@
                 tinymce.init({
                       selector: ".tinymce",
                       plugins: 'pagebreak image code fullscreen table lists',
-                      height : "700"
+                      height : "1000"
                     });
                 $('.forInsertion').dblclick(function(){
                     var self = $(this);
@@ -238,13 +235,14 @@
                         console.log(text);
                     }
                     tinymce.activeEditor.execCommand('mceInsertContent', false, text);
-                    $('#selectVariableModal').modal('toggle');
+                    // $('#selectVariableModal').modal('toggle');
                 });
                 $('#selectVariableModalButton').click(function(){
-                    $('#selectVariableModal').modal('toggle');
+                    // $('#selectVariableModal').modal('toggle');
                 });
 
                 $('input,textarea').attr('readonly', 'readonly');
+                $('input:not([checkstate="true"])').attr('disabled', true);
 
               });
         });

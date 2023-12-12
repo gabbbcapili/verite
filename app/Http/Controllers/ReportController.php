@@ -93,7 +93,7 @@ class ReportController extends Controller
         $breadcrumbs = [
             ['link'=>"/",'name'=>"Home"],['link'=> route('report.index'), 'name'=>"Reports"], ['name'=>"Create New Report"]
         ];
-        $audits = Audit::where('status', 'completed')->orderBy('id', 'desc')->get();
+        $audits = Audit::orderBy('id', 'desc')->get();
         $templates = Template::where('is_deleted', false)->where('is_approved', true)->where('status', true)->whereIn('type', Template::$forReport)->orderBy('id', 'desc')->get();
         return view('app.report.create', compact('breadcrumbs', 'audits', 'templates'));
     }
@@ -169,7 +169,9 @@ class ReportController extends Controller
         $spafs = $company->loadSpafForReport();
         $settings = Setting::first();
         $standards = Standard::whereIn('id', $audit->standardsIdsUsed())->get();
-        return view('app.report.edit', compact('breadcrumbs', 'report', 'schedule', 'company', 'spafs', 'settings', 'audit', 'standards'));
+
+        $pageConfigs = ['layoutWidth' => 'full'];
+        return view('app.report.edit', compact('breadcrumbs', 'report', 'schedule', 'company', 'spafs', 'settings', 'audit', 'standards', 'pageConfigs'));
     }
 
     /**

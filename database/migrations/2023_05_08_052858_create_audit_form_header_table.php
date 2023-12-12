@@ -17,6 +17,8 @@ class CreateAuditFormHeaderTable extends Migration
             $table->id();
             $table->unsignedInteger('audit_form_id');
             $table->string('name');
+            $table->string('status')->default('open');
+            $table->unsignedInteger('groupCompleted')->default(0);
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->softDeletes();

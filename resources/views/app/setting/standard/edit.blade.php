@@ -17,7 +17,7 @@
               <div class="card-body">
                 <div class="form-body">
                   <div class="row mb-2">
-                    <div class="col-lg-6 col-xs-12">
+                    <div class="col-lg-12 col-xs-12">
                       <div class="form-group">
                           <label for="name">Name:</label>
                           <input type="text" class="form-control" name="name" placeholder="Name" value="{{ $standard->name }}">

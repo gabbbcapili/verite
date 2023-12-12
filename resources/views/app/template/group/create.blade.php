@@ -89,7 +89,7 @@
                           <td>
                             <select class="form-control select2Modal" multiple="multiple" name="question[1][standards][]" id="question.1.standards">
                               @foreach($standards as $standard)
-                                <option value="{{ $standard->id }}">{{ $standard->name }}</option>
+                                <option value="{{ $standard->id }}">{{ $standard->nameTruncated }}</option>
                               @endforeach
                             </select>
                           </td>
@@ -180,7 +180,7 @@
         @if(in_array($template->type, App\Models\Template::$forAudit))
         $tr += '<td><select class="form-control select2Modal" multiple="multiple" name="question['+ row +'][standards][]" id="question.'+ row +'.standards">'+ standardsSelection +'</select></td>';
         @endif
-        $tr += '<td><div class="d-flex justify-content-end"><div class="btn-group" role="group"><button type="button" class="btn btn-sm btn-outline-success delete_row" data-bs-toggle-modal="tooltip" title="Delete"><i data-feather="delete"></i></button><span role="button" class="btn btn-sm btn-outline-success cursor-move ui-icon" data-bs-toggle-modal="tooltip" title="Move"><i class="" data-feather="move"></i></span></div></div></td>';
+        $tr += '<td><div class="d-flex justify-content-end"><div class="btn-group" role="group"><button type="button" class="btn btn-sm btn-outline-success delete_row" data-bs-toggle-modal="tooltip" title="Delete"><i data-feather="delete"></i></button><button type="button" class="btn btn-sm btn-outline-success add_row_question_bottom" data-bs-toggle-modal="tooltip" title="Add Question"><i data-feather="plus-circle"></i></button><span role="button" class="btn btn-sm btn-outline-success cursor-move ui-icon" data-bs-toggle-modal="tooltip" title="Move"><i class="" data-feather="move"></i></span></div></div></td>';
         $tr += '</tr>';
         $('#question_table tr:last').after($tr);
         feather.replace({

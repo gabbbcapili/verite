@@ -18,8 +18,10 @@
                             <div class="row">
                             <div class="col-12 align-items-center justify-content-center text-center">
                                 <input type="checkbox" name="save_finish_later" id="save_finish_later" hidden>
-                                <button type="button" class="btn btn-warning save_finish_later"><i data-feather="save"></i> Save & Finish Later</button>
-                                <button type="submit" class="btn btn-primary me-1 btn_save"><i data-feather="save"></i> Save</button>
+                                <input type="checkbox" name="approveForm" id="approveForm" hidden>
+                                <button type="button" class="btn btn-warning save_finish_later"><i data-feather="pocket"></i> Save & Continue Later</button>
+                                <button type="submit" class="btn btn-primary btn_save"><i data-feather="save"></i> Save & Submit</button>
+                                <button type="button" class="btn btn-success approve" data-title="Are you sure to approve this form?"><i data-feather="check-circle"></i> Save & Approve</button>
                             </div>
                           </div>
                         </div>
@@ -66,6 +68,21 @@
             $('#save_finish_later').prop('checked', true);
             $('.btn_save').click();
         });
+
+        $(document).on('click', '.approve', function(){
+            Swal.fire({
+                title:$(this).data('title'),
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+              }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#approveForm').prop('checked', true);
+                    $('.btn_save').click();
+                }
+              });
+        });
     </script>
     <script type="text/javascript">
     if ('serviceWorker' in navigator) {
@@ -105,5 +122,7 @@
               });
         }
     }
+    
+    window.addEventListener('beforeunload', promptConfirmationBeforeUnload);
     </script>
 @endsection

@@ -41,11 +41,39 @@ class AuditFormController extends Controller
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors(), 'msg' => 'Please check all errors']);
         }
+
+
         try {
             DB::beginTransaction();
-            $auditFormHeader = $auditForm->headers()->create([
-                'name' => $request->formName
-            ]);
+
+            $groupCompleted = 0;
+            $formHeaderStatus = 'open';
+            foreach($auditForm->template->groups as $group){
+                $groupValidation = Question::getValidation($group, true);
+                $validator = Validator::make($request->all(),
+                $groupValidation, Question::getValidationMessages());
+                if(! $validator->fails()){
+                    $groupCompleted += 1;
+                }
+            }
+            
+            if($groupCompleted > 0){
+                if($request->has('approveForm')){
+                    $formHeaderStatus = 'approved';
+                } else if(! $request->has('save_finish_later') && ! $request->has('approveForm')){
+                    $formHeaderStatus = 'submitted';
+                }else{
+                    $formHeaderStatus = 'partial';
+                }
+            }
+
+            $requestFormHeaders = [
+                'name' => $request->formName,
+                'status' => $formHeaderStatus,
+                'groupCompleted' => $groupCompleted,
+            ];
+
+            $auditFormHeader = $auditForm->headers()->create($requestFormHeaders);
 
             Question::processAnswers($request, $auditFormHeader, 'uploads/audit/');
             DB::commit();
@@ -96,9 +124,35 @@ class AuditFormController extends Controller
         }
         try {
             DB::beginTransaction();
-            $auditFormHeader->update([
-                'name' => $request->formName
-            ]);
+
+            $groupCompleted = 0;
+            $formHeaderStatus = 'open';
+            foreach($auditForm->template->groups as $group){
+                $groupValidation = Question::getValidation($group, true);
+                $validator = Validator::make($request->all(),
+                $groupValidation, Question::getValidationMessages());
+                if(! $validator->fails()){
+                    $groupCompleted += 1;
+                }
+            }
+            
+            if($groupCompleted > 0){
+                if($request->has('approveForm')){
+                    $formHeaderStatus = 'approved';
+                } else if(! $request->has('save_finish_later') && ! $request->has('approveForm')){
+                    $formHeaderStatus = 'submitted';
+                }else{
+                    $formHeaderStatus = 'partial';
+                }
+            }
+
+            $requestFormHeaders = [
+                'name' => $request->formName,
+                'status' => $formHeaderStatus,
+                'groupCompleted' => $groupCompleted,
+            ];
+
+            $auditFormHeader->update($requestFormHeaders);
 
             Question::processAnswers($request, $auditFormHeader, 'uploads/audit/');
             DB::commit();
@@ -142,5 +196,32 @@ class AuditFormController extends Controller
             ['link'=>"/",'name'=>"Home"],['link'=> route('audit.index'), 'name'=>"Audits"], ['name' => 'Cached Forms']
         ];
         return view('app.audit.auditForm.cachedForms', compact('breadcrumbs'));
+    }
+
+    public function approve(AuditFormHeader $auditFormHeader, Request $request){
+        try {
+            DB::beginTransaction();
+            $data = [];
+            if($request->has('approve')){
+                if(! $request->approve){
+                    $data['status'] = 'additional';
+                }else{
+                    $data['status'] = 'completed';
+                }
+            }
+            $auditFormHeader->update($data);
+            DB::commit();
+            $output = ['success' => 1,
+                        'msg' => 'Audit Form successfully updated!',
+                        'redirect' => route('audit.show', $auditFormHeader->form->audit)
+                    ];
+        } catch (\Exception $e) {
+            \Log::emergency("File:" . $e->getFile(). " Line:" . $e->getLine(). " Message:" . $e->getMessage());
+            $output = ['success' => 0,
+                        'msg' => env('APP_DEBUG') ? $e->getMessage() : 'Sorry something went wrong, please try again later.'
+                    ];
+             DB::rollBack();
+        }
+        return response()->json($output);
     }
 }
