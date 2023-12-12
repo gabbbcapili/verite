@@ -21,7 +21,7 @@
                                 <input type="checkbox" name="approveForm" id="approveForm" hidden>
                                 <button type="button" class="btn btn-warning save_finish_later"><i data-feather="pocket"></i> Save & Continue Later</button>
                                 <button type="submit" class="btn btn-primary btn_save"><i data-feather="save"></i> Save & Submit</button>
-                                @if(request()->user()->can('audit.approve')
+                                @if(request()->user()->can('audit.approve'))
                                 <button type="button" class="btn btn-success approve" data-title="Are you sure to approve this form?"><i data-feather="check-circle"></i> Save & Approve</button>
                                 @endif
                             </div>
