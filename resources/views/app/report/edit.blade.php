@@ -12,6 +12,12 @@
 
 @section('page-style')
   <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/forms/pickers/form-flat-pickr.css')) }}">
+  <style type="text/css">
+    .forInsertion{
+      cursor: pointer !important;
+      border: 1px solid #7367f0 !important;
+    }
+  </style>
 @endsection
 
 @section('content')

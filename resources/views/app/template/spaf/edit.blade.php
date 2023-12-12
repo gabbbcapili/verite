@@ -7,6 +7,10 @@
     .ui-sortable-helper {
         display: table;
     }
+    .forInsertion{
+      cursor: pointer !important;
+      border: 1px solid #7367f0 !important;
+    }
 </style>
 <link rel="stylesheet" href="{{ asset(mix('vendors/css/trumbowyg/trumbowyg.min.css')) }}">
 <link rel="stylesheet" href="{{ asset(mix('vendors/css/trumbowyg/trumbowyg.colors.min.css')) }}">
