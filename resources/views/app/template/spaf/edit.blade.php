@@ -82,28 +82,31 @@
                             $group = $template->groups->first();
                         @endphp
                         <div class="card-body">
+                            
+                          <div class="row mb-2">
+                            <div class="col-lg-7">
                             <form action="{{ route('template.group.update', ['group' => $group]) }}" method="POST" class="form" enctype='multipart/form-data'>
                               @method('put')
                               @csrf
-                                <div class="form-body">
-                                    <input type="hidden" name="header" placeholder="Header" class="form-control" value="{{ $group->header }}">
-                                      <div class="row mb-2">
-                                        <div class="col-lg-7">
-                                          <input type="hidden" name="question[0][question_id]" value="{{ $group->questions->first()->id }}">
-                                          <input type="hidden" name="question[0][type]" value="editor">
+                             <!-- <div class="form-body"> -->
+                                <input type="hidden" name="question[0][question_id]" value="{{ $group->questions->first()->id }}">
+                                <input type="hidden" name="question[0][type]" value="editor">
+                                <input type="hidden" name="header" placeholder="Header" class="form-control" value="{{ $group->header }}">
+                                    <div class="row">
+                                        <div class="col-lg-12 mb-2">
                                           <textarea class="form-control tinymce" name="question[0][text]">{{ $group->questions->first()->text }}</textarea>
                                         </div>
-                                        <div class="col-lg-5">
-                                            @include('app.template.group.forInsertionModal')
-                                        </div>
-                                      </div>
-                                      <div class="row">
                                         <div class="col-12 align-items-center justify-content-center text-center">
                                           <input type="submit" name="no_action" class="btn btn-primary me-1 btn_save" value="Save">
                                         </div>
-                                      </div>
-                                </div>
-                              </form>
+                                    </div>
+                                <!-- </div> -->
+                               </form>
+                              </div>
+                            <div class="col-lg-5" id="forInsertion">
+                                @include('app.template.group.forInsertionModal')
+                            </div>
+                          </div> 
                         </div>
                     </div>
                 </div>
@@ -246,7 +249,7 @@
                 });
 
                 $('input,textarea').attr('readonly', 'readonly');
-                $('input:not([checkstate="true"])').attr('disabled', true);
+                $('#forInsertion input:not([checkstate="true"])').attr('disabled', true);
 
               });
         });
