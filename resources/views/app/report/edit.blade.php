@@ -24,31 +24,37 @@
 <section id="basic-vertical-layouts">
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('report.update', $report) }}" method="POST" class="form form-vertical" enctype="multipart/form-data">
-                @csrf
-                @method('put')
-                <div class="row mb-2">
-                    <div class="col-lg-4">
-                        <a target="_blank" href="{{ route('audit.show', $report->audit->id) }}" class="btn btn-success"><i data-feather="eye"></i> View Audit</a>
-                    </div>
+            <div class="row mb-2">
+                <div class="col-lg-4">
+                    <a target="_blank" href="{{ route('audit.show', $report->audit->id) }}" class="btn btn-success"><i data-feather="eye"></i> View Audit</a>
                 </div>
-                <div class="row mb-2">
-                    <div class="col-lg-7">
-                        <textarea class="form-control tinymce" name="content" id="content">{!! $report->content !!}</textarea>
+            </div>
+            <div class="row">
+                <div class="col-lg-7">
+                    <form action="{{ route('report.update', $report) }}" method="POST" class="form form-vertical" enctype="multipart/form-data">
+                    @csrf
+                    @method('put')
+                    <div class="row">
+                        <div class="col-lg-12 mb-2">
+                            <textarea class="form-control tinymce" name="content" id="content">{!! $report->content !!}</textarea>
+                        </div>
                     </div>
-                    <div class="col-lg-5">
-                      @include('app.template.group.forInsertionModal')
-                    </div>
+                    @if($request->user()->hasRole('Client') || $request->user()->hasRole('Supplier'))
+                    @else
+                      <div class="row">
+                        <div class="col-12 align-items-center justify-content-center text-center">
+                          <input type="submit" name="save" class="btn btn-primary me-1 btn_save" value="Save">
+                        </div>
+                      </div>
+                    @endif
+                    </form>
                 </div>
-                @if($request->user()->hasRole('Client') || $request->user()->hasRole('Supplier'))
-                @else
-                  <div class="row">
-                    <div class="col-12 align-items-center justify-content-center text-center">
-                      <input type="submit" name="save" class="btn btn-primary me-1 btn_save" value="Save">
-                    </div>
-                  </div>
-                @endif
-              </form>
+                <div class="col-lg-5" id="forInsertion">
+                  @include('app.template.group.forInsertionModal')
+                </div>
+            </div>
+            
+ 
         </div>
     </div>
 <!-- Modal -->
@@ -99,7 +105,7 @@
             });
 
             $('input,textarea').attr('readonly', 'readonly');
-            $('input:not([checked])').attr('disabled', true);
+            $('#forInsertion input:not([checkstate="true"])').attr('disabled', true);
 
 
           });

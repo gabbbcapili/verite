@@ -27,6 +27,20 @@ class StaterkitController extends Controller
         $totals['scheduleStatus'] = ScheduleStatus::all();
         if (request()->ajax()) {
             $schedules = Schedule::with('event');
+            if(! $request->user()->can('schedule.manage')){
+                $schedules->whereHas('event', function ($events) use ($request){
+                    $events->whereHas('users', function ($q) use($request){
+                        $q->where(function($q1) use($request){
+                            $q1->where('modelable_id', $request->user()->id);
+                            $q1->where('modelable_type', 'App\Models\User');
+                        });
+                        $q->orWhere(function($q2) use($request){
+                            $q2->where('modelable_id', $request->user()->company_id);
+                            $q2->where('modelable_type', 'App\Models\Company');
+                        });
+                    });
+                });
+            }
             if($request->scheduleStatus != "all"){
                 $schedules = $schedules->where('status', $request->scheduleStatus);
             }
