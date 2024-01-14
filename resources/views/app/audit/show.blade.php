@@ -71,7 +71,7 @@
                                                 <td style="width: 40%">{!! $audit->statusDisplay !!}</td>
                                             </tr>
                                             <tr>
-                                                <th class="text-end" style="width: 20%">Approved On:</th>
+                                                <th class="text-end" style="width: 20%">Completed At:</th>
                                                 <td style="width: 40%">{!! $audit->approved_at !!}</td>
                                             </tr>
                                             <tr>
@@ -153,12 +153,12 @@
                                                                 <a target="_blank" href="{{ route('auditForm.show', $header) }}" data-bs-toggle="tooltip" data-placement="top" title="" class="me-50" data-bs-original-title="Show" aria-label="Show"><i data-feather="eye"></i></a>
                                                                 @if($auditForm->isMultiple)
                                                                     {!! App\Models\Utilities::actionButtons([
-                                                                        ['route' => route('auditForm.edit', ['auditFormHeader' => $header, 'template' => $auditForm->template->slug, 'assigned_name' => $header->name]), 'name' => 'Edit', 'type' => 'href'],
+                                                                        ['route' => route('auditForm.edit', ['auditFormHeader' => $header, 'template' => $auditForm->template->slug, 'assigned_name' => $header->name, 'type' => $auditForm->template->type]), 'name' => 'Edit', 'type' => 'href'],
                                                                         ['route' => route('auditForm.destroy', $header), 'name' => 'Delete', 'type' => 'confirmDelete', 'title' => 'Are you sure to delete this audit form answer?', 'text' => 'Delete']
                                                                     ]); !!}
                                                                 @else
                                                                     {!! App\Models\Utilities::actionButtons([
-                                                                        ['route' => route('auditForm.edit', ['auditFormHeader' => $header, 'template' => $auditForm->template->slug, 'assigned_name' => $header->name]), 'name' => 'Edit', 'type' => 'href']
+                                                                        ['route' => route('auditForm.edit', ['auditFormHeader' => $header, 'template' => $auditForm->template->slug, 'assigned_name' => $header->name, 'type' => $auditForm->template->type]), 'name' => 'Edit', 'type' => 'href']
                                                                     ]); !!}
                                                                 @endif
                                                             @else
@@ -185,14 +185,17 @@
                         <div class="card-body">
                             <div class="row">
                             <div class="col-12 align-items-center justify-content-center text-center">
-                              @if(in_array($audit->status, ['pending', 'additional', 'answered']) && (request()->user()->hasRole('Supplier') || request()->user()->hasRole('Client')))
-                                <a href="{{ route('audit.edit', $audit) }}" class="btn btn-outline-secondary">Edit <i data-feather="arrow-right"></i></a>
-                              @endif
                               @if(request()->user()->can('audit.approve') && in_array($audit->status, ['pending']))
                                 <!-- <a data-action="{{ route('audit.approve', ['audit' => $audit, 'approve' => false]) }}" data-confirmbutton="Disapprove" data-title="Are you sure to DISAPPROVE this Audit?" class="btn btn-danger confirmWithNotes" data-text="You can add notes on the input below"><i data-feather="x-circle"></i> Disapprove</a> -->
-                                <a data-action="{{ route('audit.approve', ['audit' => $audit, 'approve' => true]) }}" data-confirmbutton="Approve" data-title="Are you sure to APPROVE this Audit?" class="btn btn-success confirmWithNotes" data-text="You can add notes on the input below"><i data-feather="check-circle"></i> Approve</a>
+                                <a data-action="{{ route('audit.approve', ['audit' => $audit, 'approve' => true]) }}" data-confirmbutton="Complete Audit" data-title="Are you sure to COMPLETE this Audit?" class="btn btn-success confirmWithNotes" data-text="You can add notes on the input below"><i data-feather="check-circle"></i> Complete Audit</a>
+                              @elseif(request()->user()->can('audit.approve') && in_array($audit->status, ['completed']))
+                                <a data-action="{{ route('audit.approve', ['audit' => $audit, 'approve' => false]) }}" data-confirmbutton="Revert to Pending" data-title="Are you sure to revert this audit to pending?" class="btn btn-warning confirm"><i data-feather="x-circle"></i> Revert to Pending</a>
                               @endif
                               <button type="button" class="btn btn-primary no-print btn_print"><i data-feather="printer"></i> Print </button>
+                              @if($request->user()->can('audit.manage') && in_array($audit->status, ['pending']))
+                                <a href="{{ route('audit.createForm', ['audit' => $audit]) }}" class="btn btn-info"><i data-feather="plus-circle"></i> Add Forms</a>
+                              @endif
+
                             </div>
                           </div>
                         </div>

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Standard;
 
 class Question extends Model
 {
@@ -11,7 +12,9 @@ class Question extends Model
 
     protected $table = 'question';
 
-    protected $fillable = ['group_id', 'text', 'type' ,'next_line' ,'sort', 'for_checkbox', 'required', 'standards'];
+    protected $fillable = ['group_id', 'text', 'type' ,'next_line' ,'sort', 'for_checkbox', 'required', 'standards', 'flags'];
+
+    public static $flag_list = ['Red Flag', 'Zero Tolerance'];
 
     public function group(){
         return $this->belongsTo(Group::class, 'group_id');
@@ -174,6 +177,20 @@ class Question extends Model
        return $html;
     }
 
-
+    public function getHoverText($updated_at){
+        $text = '';
+        if($updated_at){
+            $text = 'Updated At: ' . $updated_at->diffForHumans() . '<br>';
+        }
+        $text .= 'Type: ' . ucfirst($this->type) . '<br>';
+        if($this->standards){
+            $standards = Standard::whereIn('id', explode(',', $this->standards))->pluck('name');
+            if($standards->count()){
+                $standards = $standards->implode('', '<br>');
+                $text .= 'Standards: ' . $standards;
+            }
+        }
+        return $text;
+    }
 
 }

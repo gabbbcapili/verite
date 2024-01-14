@@ -32,6 +32,114 @@
           <div class="accordion-item">
             <h2 class="accordion-header" id="headingAuditStandard">
               <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordionAuditStandard" aria-expanded="false" aria-controls="accordionAuditStandard">
+                Flags
+              </button>
+            </h2>
+            <div id="accordionAuditStandard" class="accordion-collapse collapse" aria-labelledby="headingAuditStandard" data-bs-parent="#accordionVariables">
+              <div class="accordion-body">
+                @foreach($flags as $flag)
+                  <div class="row mb-2">
+                      <div class="col-lg-12 col-md-12 col-sm-12">
+                          <div class="card">
+                              <div class="card-header">
+                                <h6 class=" text-center">{{ $flag }}</h6>
+                                <div class="heading-elements">
+                                  <ul class="list-inline mb-0">
+                                    <li>
+                                      <a data-action="collapse"><i data-feather="chevron-down"></i></a>
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                              <div class="card-content collapse">
+                                <div class="card-body">
+                                    @foreach($audit->forms as $auditForm)
+                                      @if(! in_array($auditForm->id, $flagsFormsUsed))
+                                        @continue
+                                      @endif
+                                      @if($auditForm->isMultiple)
+                                        <div class="row mb-2">
+                                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                      <h6 class=" text-center">SUMMARY - {{ $auditForm->template->name }}</h6>
+                                                      <div class="heading-elements">
+                                                        <ul class="list-inline mb-0">
+                                                          <li>
+                                                            <a data-action="collapse"><i data-feather="chevron-down"></i></a>
+                                                          </li>
+                                                        </ul>
+                                                      </div>
+                                                    </div>
+                                                    <div class="card-content collapse">
+                                                      <div class="card-body">
+                                                          {!! $auditForm->summarizeAnswers(null, $flag) !!}
+                                                      </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                      @endif
+                                      <div class="row mb-2">
+                                          <div class="col-lg-12 col-md-12 col-sm-12">
+                                              <div class="card">
+                                                  <div class="card-header">
+                                                    <h6 class=" text-center">{{ $auditForm->template->name }}</h6>
+                                                    <div class="heading-elements">
+                                                      <ul class="list-inline mb-0">
+                                                        <li>
+                                                          <a data-action="collapse"><i data-feather="chevron-down"></i></a>
+                                                        </li>
+                                                      </ul>
+                                                    </div>
+                                                  </div>
+                                                  <div class="card-content collapse">
+                                                      @if(! $auditForm->isMultiple)
+                                                      <div class="card-body">
+                                                          <div class="row mb-2">
+                                                              @php
+                                                                  $answers = $auditForm->headers->count() > 0 ? $auditForm->headers->first()->answers : null;
+                                                              @endphp
+                                                              @if($answers)
+                                                                  <h6>{{ $auditForm->headers->first()->name }}</h6>
+                                                              @endif
+                                                              @include('app.template.spaf.preview', ['template' => $auditForm->template, 'answers' => $answers, 'appliedFlag' => $flag])
+                                                          </div>
+                                                      </div>
+                                                      @else
+                                                          <div class="card-body">
+                                                            @foreach($auditForm->headers as $header)
+                                                              <div class="row mb-2">
+                                                                @php
+                                                                    $answers = $header->answers
+                                                                @endphp
+                                                                @if($answers)
+                                                                    <h6>{{ $header->name }}</h6>
+                                                                @endif
+                                                                @include('app.template.spaf.preview', ['template' => $auditForm->template, 'answers' => $answers, 'appliedFlag' => $flag])
+                                                            </div>
+                                                            @endforeach
+                                                          </div>
+                                                      @endif
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  @endforeach
+                                </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                @endforeach
+              </div>
+            </div>
+          </div>
+          @endif
+          @if(isset($audit))
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingAuditStandard">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordionAuditStandard" aria-expanded="false" aria-controls="accordionAuditStandard">
                 Audit Standard
               </button>
             </h2>

@@ -66,9 +66,14 @@ $(function() {
               });
             }
             $('.error').remove();
+            var errorCounter = 1;
               $.each(result.error, function(index, val){
                 var elem = $('[name="'+ index +'"]');
                 var type = elem.attr('type');
+                if(errorCounter == 1){
+                  window.scrollTo({top: $(elem).offset() - 100, behavior: 'smooth'});
+                }
+                errorCounter += 1;
                 if(type == 'radio'){
                   elem.after('<label class="text-danger error">' + val + '</label>');
                 }else if(type == 'hidden'){

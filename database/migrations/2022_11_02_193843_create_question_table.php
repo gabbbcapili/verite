@@ -23,6 +23,7 @@ class CreateQuestionTable extends Migration
             $table->unsignedInteger('sort');
             $table->boolean('required')->default(0);
             $table->string('standards')->nullable();
+            $table->string('flags')->nullable();
             $table->foreign('group_id')->references('id')->on('group')->onDelete('cascade');
             $table->timestamps();
         });

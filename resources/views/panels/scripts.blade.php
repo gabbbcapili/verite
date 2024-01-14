@@ -144,6 +144,11 @@
                   },
                 });
                 $(".view_modal").trigger("hidden.bs.modal");
+                if(result.redirect){
+                  setTimeout(function(){
+                        window.location.replace(result.redirect);
+                    }, 1500);
+                }
               }
           });
         }

@@ -37,12 +37,13 @@
                       <thead>
                         <tr>
                           <th style="width: 25%;">Question</th>
-                          <th style="width: 20%;">Type</th>
+                          <th style="width: 15%;">Type</th>
                           <th style="width: 10%;">Required <i data-feather="info" data-bs-toggle-modal="tooltip" data-bs-placement="top" title="Check / Uncheck this field whether this field is required to fill up or not."></i></th>
                           <th style="width: 10%;">Next Line <i data-feather="info" data-bs-toggle-modal="tooltip" data-bs-placement="top" title="Uncheck if multiple questions in one line."></i></th>
-                          <th style="width: 25%;">For Checkbox/Radio/Table <i data-feather="info" data-bs-toggle-modal="tooltip" data-bs-placement="top" title="If the field is checkbox or radio or table, put all the options/columns in this field separated by vertical bar ( | ) e.g. 'Yes|No' 'Management|Direct|Outsource|Dispatch, Column1|Column2|Column3'."></i></th>
+                          <th style="width: 20%;">For Checkbox/Radio/Table <i data-feather="info" data-bs-toggle-modal="tooltip" data-bs-placement="top" title="If the field is checkbox or radio or table, put all the options/columns in this field separated by vertical bar ( | ) e.g. 'Yes|No' 'Management|Direct|Outsource|Dispatch, Column1|Column2|Column3'."></i></th>
                           @if(in_array($template->type, App\Models\Template::$forAudit))
                           <th style="width: 15%">Standards</th>
+                          <th style="width: 10%">Flags</th>
                           @endif
                           <th style="width: 10%;">Action</th>
                         </tr>
@@ -50,7 +51,7 @@
                       <tbody id="question_sortable">
                         <tr>
                           <td>
-                            <textarea name="question[1][text]" id="question.1.text" class="form-control"></textarea>
+                            <textarea name="question[1][text]" id="question.1.text" class="form-control">1.</textarea>
                           </td>
                           <td>
                             <select class="form-control selectType" name="question[1][type]" id="question.1.type">
@@ -93,11 +94,19 @@
                               @endforeach
                             </select>
                           </td>
+                          <td>
+                              <select class="form-control select2Modal" multiple="multiple" name="question[1][flags][]" id="question.1.flags">
+                                @foreach($flags as $flag)
+                                  <option value="{{ $flag }}">{{ $flag }}</option>
+                                @endforeach
+                              </select>
+                            </td>
                           @endif
                           <td>
                             <div class="d-flex justify-content-end">
                                 <div class="btn-group" role="group">
                                     <button type="button" class="btn btn-sm btn-outline-success delete_row" data-bs-toggle-modal="tooltip" title="Delete"><i data-feather="delete"></i></button>
+                                    <button type="button" class="btn btn-sm btn-outline-success add_row_question_bottom" data-bs-toggle-modal="tooltip" title="Add Question"><i data-feather="plus-circle"></i></button>
                                     <span role="button" class="btn btn-sm btn-outline-success cursor-move ui-icon" data-bs-toggle-modal="tooltip" title="Move"><i class="" data-feather="move"></i></span>
                                 </div>
                             </div>
@@ -131,6 +140,13 @@
       $.each(standards, function(k, u) {
         standardsSelection += '<option value="'+ u.id +'">'+ u.name +'</option>';
       });
+
+      var flags = @json($flags);
+      var flagsSelection = '';
+      $.each(flags, function(k, u) {
+        flagsSelection += '<option value="'+ u +'">'+ u +'</option>';
+      });
+
       function changeType(select){
         if(select.find('option:selected').val() == 'checkbox' || select.find('option:selected').val() == 'radio' || select.find('option:selected').val() == 'table'){
           select.closest('tr').find('.for_checkbox').removeAttr('disabled');
@@ -166,23 +182,36 @@
         items: "tr",
       });
 
-      $('.add_row_question').click(function(){
+      function addQuestion(target){
         var row = parseInt($('#question_row_count').val()) + 1;
         $('#question_row_count').val(row);
         var $tr = '';
+        var numbering = '';
+        var lastQuestion = target.find('textarea');
+
+        if(lastQuestion.length){
+          lastQuestion = lastQuestion.val().split('. ')[0];
+          numbering = parseInt(lastQuestion) + 1;
+          if(isNaN(numbering)){
+            numbering = '';
+          }else{
+            numbering = numbering + ".";
+          }
+        }
 
         $tr += '<tr>';
-        $tr += '<td><textarea name="question['+ row +'][text]" id="question.'+ row +'.text" class="form-control"></textarea></td>';
+        $tr += '<td><textarea name="question['+ row +'][text]" id="question.'+ row +'.text" class="form-control">'+ numbering +'</textarea></td>';
         $tr += '<td><select class="form-control selectType" name="question['+ row +'][type]" id="question.'+ row +'.type"><option value="input">Text</option><option value="checkbox">Check Box</option><option value="radio">Radio Button</option><option value="title">Title</option><option value="email">Email</option><option value="number">Number</option><option value="textarea">Long Text</option><option value="file">File</option><option value="file_multiple">Multiple File</option><option value="table">Table</option></select></td>';
         $tr += '<td><div class="form-check"><input class="form-check-input for_required" type="checkbox" value="1" name="question['+ row +'][required]" id="question.'+ row +'.required"><label class="form-check-label">Required</label></div></td>';
         $tr += '<td><div class="form-check"><input class="form-check-input for_next_line" type="checkbox" value="1" name="question['+ row +'][next_line]" id="question.'+ row +'.next_line" checked><label class="form-check-label">Next Line</label></div></td>';
         $tr += '<td><textarea name="question['+ row +'][for_checkbox]" id="question.'+ row +'.for_checkbox" class="form-control for_checkbox" placeholder="Management|Direct|Outsource|Dispatch" disabled></textarea></td>';
         @if(in_array($template->type, App\Models\Template::$forAudit))
         $tr += '<td><select class="form-control select2Modal" multiple="multiple" name="question['+ row +'][standards][]" id="question.'+ row +'.standards">'+ standardsSelection +'</select></td>';
+        $tr += '<td><select class="form-control select2Modal" multiple="multiple" name="question['+ row +'][flags][]" id="question.'+ row +'.flags">'+ flagsSelection +'</select></td>';
         @endif
         $tr += '<td><div class="d-flex justify-content-end"><div class="btn-group" role="group"><button type="button" class="btn btn-sm btn-outline-success delete_row" data-bs-toggle-modal="tooltip" title="Delete"><i data-feather="delete"></i></button><button type="button" class="btn btn-sm btn-outline-success add_row_question_bottom" data-bs-toggle-modal="tooltip" title="Add Question"><i data-feather="plus-circle"></i></button><span role="button" class="btn btn-sm btn-outline-success cursor-move ui-icon" data-bs-toggle-modal="tooltip" title="Move"><i class="" data-feather="move"></i></span></div></div></td>';
         $tr += '</tr>';
-        $('#question_table tr:last').after($tr);
+        target.after($tr);
         feather.replace({
           width: 14,height: 14
         });
@@ -192,6 +221,14 @@
             dropdownParent: $("#modal-body")
           });
         @endif
+      }
+
+      $('.add_row_question').click(function(){
+        addQuestion($('#question_table tr:last'));
+      });
+
+      $('.add_row_question_bottom').click(function(){
+        addQuestion($(this).closest('tr'));
       });
 
       $(document).on('click', '.delete_row', function(){

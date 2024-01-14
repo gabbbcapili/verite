@@ -74,7 +74,9 @@ class SpafTemplateController extends Controller
                 }
             })
             ->addColumn('approved_by', function (Template $template) {
-                return $template->approvedByName;
+                if($template->approved_at){
+                    return $template->approved_at->diffForHumans() . ' | ' . $template->approvedByName;
+                }
             })
 
             
@@ -240,7 +242,7 @@ class SpafTemplateController extends Controller
     public function approve(Template $template, Request $request){
         try {
             DB::beginTransaction();
-            $template->update(['is_approved' => true, 'approved_by' => $request->user()->id]);
+            $template->update(['is_approved' => true, 'approved_by' => $request->user()->id, 'approved_at' => Carbon::now()]);
             DB::commit();
             $output = ['success' => 1,
                         'msg' => 'Template successfully approved!'

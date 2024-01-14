@@ -43,6 +43,34 @@ class Audit extends Model
         return array_filter($standardsIds, fn($value) => !is_null($value) && $value !== '');
     }
 
+    public function flagsUsed(){
+        $flags = [];
+        foreach($this->forms as $form){
+            foreach($form->template->groups()->orderBy('sort')->get() as $group){
+                foreach($group->questions()->orderBy('sort')->get() as $q){
+                    foreach(explode(',', $q->flags) as $flag){
+                        $flags[$flag] = $flag;
+                    }
+                }
+            }
+        }
+        return array_filter($flags, fn($value) => !is_null($value) && $value !== '');
+    }
+
+    public function flagsFormsUsed(){
+        $flags = [];
+        foreach($this->forms as $form){
+            foreach($form->template->groups()->orderBy('sort')->get() as $group){
+                foreach($group->questions()->orderBy('sort')->get() as $q){
+                    if($q->flags){
+                        $flags[$form->id] = $form->id;
+                    }
+                }
+            }
+        }
+        return array_filter($flags, fn($value) => !is_null($value) && $value !== '');
+    }
+
     public function getStatusDisplayAttribute(){
         if($this->status == 'pending'){
             return '<span class="badge rounded-pill badge-light-danger  me-1">Pending</span>';

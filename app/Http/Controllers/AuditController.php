@@ -246,7 +246,7 @@ class AuditController extends Controller
             }
             if($request->has('approve')){
                 if(! $request->approve){
-                    $data['status'] = 'additional';
+                    $data['status'] = 'pending';
                 }else{
                     $data['status'] = 'completed';
                     $data['approved_at'] = Carbon::now()->format('Y-m-d H:i:s');
@@ -257,6 +257,60 @@ class AuditController extends Controller
             $output = ['success' => 1,
                         'msg' => 'Audit successfully updated!',
                         'redirect' => route('audit.show', $audit)
+                    ];
+        } catch (\Exception $e) {
+            \Log::emergency("File:" . $e->getFile(). " Line:" . $e->getLine(). " Message:" . $e->getMessage());
+            $output = ['success' => 0,
+                        'msg' => env('APP_DEBUG') ? $e->getMessage() : 'Sorry something went wrong, please try again later.'
+                    ];
+             DB::rollBack();
+        }
+        return response()->json($output);
+    }
+
+    public function createForm(Audit $audit)
+    {
+        $breadcrumbs = [
+            ['link'=>"/",'name'=>"Home"],['link'=> route('audit.index'), 'name'=>"Audits"], ['name'=>"Add Forms to Audit"], ['name'=> $audit->schedule->title]
+        ];
+        $templates = Template::where('is_deleted', false)->where('is_approved', true)->where('status', true)->whereIn('type', Template::$forAudit)->get();
+        $auditFormsSingle = $audit->forms->where('isMultiple', 0)->pluck('template_id')->toArray();
+        $auditFormsMultiple = $audit->forms->where('isMultiple', 1)->pluck('template_id')->toArray();
+        return view('app.audit.createForm', compact('breadcrumbs', 'audit', 'templates', 'auditFormsSingle', 'auditFormsMultiple'));
+    }
+
+    public function storeForm(Request $request, Audit $audit){
+        $validator = Validator::make($request->all(),[
+            'singleTemplates' => 'required_without_all:multipleTemplates',
+            'multipleTemplates' => 'required_without_all:singleTemplates',
+        ],[
+            '*.required' => 'This field is required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()]);
+        }
+        try {
+            DB::beginTransaction();
+            if($request->has('singleTemplates')){
+                foreach($request->singleTemplates as $st){
+                    $audit->forms()->create([
+                        'template_id' => $st,
+                        'isMultiple' => false
+                    ]);
+                }
+            }
+            if($request->has('multipleTemplates')){
+                foreach($request->multipleTemplates as $mt){
+                    $audit->forms()->create([
+                        'template_id' => $mt,
+                        'isMultiple' => true
+                    ]);
+                }
+            }
+            DB::commit();
+            $output = ['success' => 1,
+                        'msg' => 'Added Forms to Audit successfully!',
+                        'redirect' => route('audit.show', ['audit' => $audit])
                     ];
         } catch (\Exception $e) {
             \Log::emergency("File:" . $e->getFile(). " Line:" . $e->getLine(). " Message:" . $e->getMessage());

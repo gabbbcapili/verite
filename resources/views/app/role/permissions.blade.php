@@ -262,7 +262,6 @@
           </td>
           <td></td>
         </tr>
-
         <tr>
           <td></td>
           <td>
@@ -283,7 +282,27 @@
               <span class="">Worker Interviewer Forms</span>
             </div></fieldset>
           </td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="audit.mif" name="permissions[]" {{ isset($roleList) ? in_array('audit.mif', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="circle" class="vs-icon"></i></span>
+              </span>
+              <span class="">Management Interview Forms</span>
+            </div></fieldset>
+          </td>
+        </tr>
+        <tr>
           <td></td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="audit.drf" name="permissions[]" {{ isset($roleList) ? in_array('audit.drf', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="circle" class="vs-icon"></i></span>
+              </span>
+              <span class="">Documents Review Forms</span>
+            </div></fieldset>
+          </td>
         </tr>
       </tbody>
       <thead>

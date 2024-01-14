@@ -14,13 +14,15 @@ class Template extends Model
 
     protected $table = 'template';
 
-    protected $fillable = ['name', 'type', 'is_deleted', 'is_approved', 'status', 'audit_type', 'approved_by'];
+    protected $fillable = ['name', 'type', 'is_deleted', 'is_approved', 'status', 'audit_type', 'approved_by', 'approved_at'];
+
+    protected $dates = ['approved_at'];
 
     public static $typeList = ['spaf', 'spaf_extension', 'risk_management', 'audit', 'report'];
 
     public static $forAudit = ['audit'];
 
-    public static $auditTypes = ['Audit Form' => 'audit.auditform', 'Worker Interviewer Form' => 'audit.wif'];
+    public static $auditTypes = ['Audit Form' => 'audit.auditform', 'Worker Interviewer Form' => 'audit.wif', 'Management Interview Form' => 'audit.mif', 'Documents Review Form' => 'audit.drf'];
 
     public static $forSpaf = ['spaf', 'spaf_extension', 'risk_management'];
 

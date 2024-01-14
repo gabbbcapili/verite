@@ -10,6 +10,11 @@
                     @continue
                 @endif
             @endif
+            @if(isset($appliedFlag))
+                @if(! in_array($appliedFlag, explode(',', $q->flags)))
+                    @continue
+                @endif
+            @endif
             @if($q->next_line || $loop->iteration == 1)
                 <tr >
                     <td style="width: 30%; white-space:pre-wrap;">{{ $q->text }} {{ $q->required ? '* ' : '' }}</td>

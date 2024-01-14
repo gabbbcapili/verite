@@ -74,7 +74,7 @@
                   <label></label>
                   <select class="form-control select2 eventFilter" id="companyFilter">
                     <option value="all" selected>Show All Client / Supplier</option>
-                    <option value="null">Hide All Leave, Holiday, Unavailable</option>
+                    <option value="null">Hide All Non-Audit Events</option>
                     @foreach($companies as $company)
                       <option value="{{ $company->id }}">{{ $company->displayName }}</option>
                     @endforeach
@@ -86,7 +86,7 @@
                   <label></label>
                   <select class="form-control select2 eventFilter" id="auditorFilter">
                     <option value="all" selected>Show All Resources</option>
-                    <option value="null">Hide All Leave, Holiday, Unavailable</option>
+                    <option value="null">Hide All Non-Audit Events</option>
                     @foreach($auditors as $auditor)
                       <option value="{{ $auditor->id }}">{{ $auditor->fullName }}</option>
                     @endforeach
@@ -198,7 +198,7 @@
     });
 
     $('#resetValuesButton').click(function(){
-        $("#companyFilter").val("null").trigger('change');
+        $("#companyFilter").val("null");
         $("#auditorFilter").val("null").trigger('change');
       });
 </script>

@@ -169,9 +169,11 @@ class ReportController extends Controller
         $spafs = $company->loadSpafForReport();
         $settings = Setting::first();
         $standards = Standard::whereIn('id', $audit->standardsIdsUsed())->get();
-
+        $flags = $audit->flagsUsed();
+        $flagsFormsUsed = $audit->flagsFormsUsed();
+        // dd($flagsFormsUsed);
         $pageConfigs = ['layoutWidth' => 'full'];
-        return view('app.report.edit', compact('breadcrumbs', 'report', 'schedule', 'company', 'spafs', 'settings', 'audit', 'standards', 'pageConfigs'));
+        return view('app.report.edit', compact('breadcrumbs', 'report', 'schedule', 'company', 'spafs', 'settings', 'audit', 'standards', 'pageConfigs', 'flags', 'flagsFormsUsed'));
     }
 
     /**

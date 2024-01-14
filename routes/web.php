@@ -64,6 +64,8 @@ Route::group(['middleware' => ['auth']], function()
     Route::resource('spaf', SpafController::class)->only(['update', 'edit']);
 
     Route::post('audit/approve/{audit}/', [AuditController::class, 'approve'])->name('audit.approve')->middleware('permission:audit.approve');
+    Route::get('audit/createForm/{audit}/', [AuditController::class, 'createForm'])->name('audit.createForm')->middleware('permission:audit.manage');
+    Route::post('audit/storeForm/{audit}/', [AuditController::class, 'storeForm'])->name('audit.storeForm')->middleware('permission:audit.manage');
     Route::resource('audit', AuditController::class)->middleware('permission:audit.manage,schedule.selectableAuditor');
 
 

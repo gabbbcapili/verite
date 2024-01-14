@@ -101,7 +101,12 @@
        for(var i = 0; i < Items.length; i++){
         var requestUrl = new URL(Items[i]);
             if (requestUrl.pathname.startsWith(urlStartsWith)) {
-                table.row.add(['Audit Form', '<a target="_blank" href="'+ Items[i] +'">'+ Items[i] +'</a>']).draw(false);
+                var urlParams = new URLSearchParams(Items[i]);
+                var type = urlParams.get('type');
+                if(type){
+                    type = type.charAt(0).toUpperCase() + type.slice(1);
+                }
+                table.row.add([type, '<a target="_blank" href="'+ Items[i] +'">'+ Items[i] +'</a>']).draw(false);
             }
         }
     }

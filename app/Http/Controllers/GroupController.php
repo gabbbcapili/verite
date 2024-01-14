@@ -32,7 +32,8 @@ class GroupController extends Controller
     public function create(Template $template)
     {
         $standards = Standard::all();
-        return view('app.template.group.create', compact('template', 'standards'));
+        $flags = Question::$flag_list;
+        return view('app.template.group.create', compact('template', 'standards', 'flags'));
     }
 
     /**
@@ -72,6 +73,9 @@ class GroupController extends Controller
                 if(isset($q['standards'])){
                     $q['standards'] = implode(',', $q['standards']);
                 }
+                if(isset($q['flags'])){
+                    $q['flags'] = implode(',', $q['flags']);
+                }
                 $question = $group->questions()->create($q);
             }
             DB::commit();
@@ -108,7 +112,8 @@ class GroupController extends Controller
     public function edit(Group $group)
     {
         $standards = Standard::all();
-        return view('app.template.group.edit', compact('group', 'standards'));
+        $flags = Question::$flag_list;
+        return view('app.template.group.edit', compact('group', 'standards', 'flags'));
     }
 
     /**
@@ -136,6 +141,9 @@ class GroupController extends Controller
                 if(isset($q['standards'])){
                     $q['standards'] = implode(',', $q['standards']);
                 }
+                if(isset($q['flags'])){
+                    $q['flags'] = implode(',', $q['flags']);
+                }
                 $count+= 1;
                 $question = $group->questions()->create($q);
             }
@@ -152,6 +160,9 @@ class GroupController extends Controller
                 }
                 if(isset($q['standards'])){
                     $q['standards'] = implode(',', $q['standards']);
+                }
+                if(isset($q['flags'])){
+                    $q['flags'] = implode(',', $q['flags']);
                 }
                 if(isset($q['question_id'])){
                     $updateQuestion = Question::findOrFail($q['question_id']);
