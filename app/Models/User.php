@@ -167,8 +167,9 @@ class User extends Authenticatable
         return $this->morphMany(EventUser::class, 'modelable');
     }
 
-    public function company(){
-        return $this->belongsTo(Company::class, 'company_id');
+    public function companies(){
+        return $this->belongsToMany(Company::class, 'user_company', 'user_id', 'company_id');
+        // return $this->belongsTo(Company::class, 'company_id');
     }
 
     public function spafSupplier(){

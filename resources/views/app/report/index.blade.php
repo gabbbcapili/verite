@@ -117,6 +117,7 @@
                     columns: ':not(.noexport)'
                 }
             },
+            @can('report.manage')
             {
                 text: '<i data-feather="plus"></i> Create New',
                 className: 'btn btn-primary',
@@ -124,6 +125,7 @@
                     window.location.href = '{{ route("report.create") }}';
                 }
             },
+            @endif
         ];
       var drawCallback = function( settings ) {
         $('[data-bs-toggle="tooltip"]').tooltip();

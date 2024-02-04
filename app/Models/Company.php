@@ -38,7 +38,8 @@ class Company extends Model
     }
 
     public function users(){
-        return $this->hasMany(User::class);
+        // return $this->hasMany(User::class);
+        return $this->belongsToMany(User::class, 'user_company', 'company_id', 'user_id');
     }
 
     public function suppliers(){
@@ -47,6 +48,14 @@ class Company extends Model
 
     public function clients(){
         return $this->belongsToMany(Company::class, 'client_suppliers', 'supplier_id', 'client_id');
+    }
+
+    public function client_spafs(){
+        return $this->hasMany(Spaf::class, 'client_company_id', 'id');
+    }
+
+    public function supplier_spafs(){
+        return $this->hasMany(Spaf::class, 'supplier_company_id', 'id');
     }
 
     public function getAvailableSuppliers($date){
@@ -133,25 +142,20 @@ class Company extends Model
     }
 
     public function loadSpafForSchedule(){
-        $type = $this->type == 'client' ? 'client_id' : 'supplier_id';
-        $spafs = Spaf::where('status', 'completed')
-        ->whereHas($this->type, function ($q){
-            $q->where('company_id', $this->id);
-        })
-        ->whereHas('template', function ($q1){
-            $q1->whereHas('groups', function ($q2){
-                $q2->where('displayed_on_schedule', true);
-            });
-        })->get();
+        $type = $this->type == 'client' ? 'client_spafs' : 'supplier_spafs';
+
+        $spafs = $this->{$type}()->where('status', 'completed')
+                ->whereHas('template', function ($q1){
+                    $q1->whereHas('groups', function ($q2){
+                        $q2->where('displayed_on_schedule', true);
+                    });
+                })->get();
         return $spafs;
     }
 
     public function loadSpafForReport(){
-        $type = $this->type == 'client' ? 'client_id' : 'supplier_id';
-        $spafs = Spaf::where('status', 'completed')
-        ->whereHas($this->type, function ($q){
-            $q->where('company_id', $this->id);
-        })->get();
+        $type = $this->type == 'client' ? 'client_spafs' : 'supplier_spafs';
+        $spafs = $this->{$type}()->where('status', 'completed')->get();
         return $spafs;
     }
 }

@@ -41,19 +41,21 @@ class ReportController extends Controller
                         $s->whereHas('event', function($e) use($request){
                             $e->whereHas('users', function($eu) use($request){
                                 $eu->where('modelable_type', 'App\Models\Company');
-                                $eu->where('modelable_id', $request->user()->id);
+                                $eu->whereIn('modelable_id', $request->user()->companies->pluck('id')->toArray());
                             });
                         });
                     });
                 });
             }
             return Datatables::eloquent($report)
-            ->addColumn('action', function(Report $report) {
-                return Utilities::actionButtons([
-                                                // ['route' => route('report.show', $report->id), 'name' => 'Show', 'type' => 'href'],
-                                                ['route' => route('report.edit', $report->id), 'name' => 'Edit', 'type' => 'href'],
-                                             // ['route' => route('report.destroy', $report->id), 'name' => 'Delete', 'type' => 'confirmDelete', 'title' => 'Are you sure to delete this report?', 'text' => 'Delete']
-                                            ]);
+            ->addColumn('action', function(Report $report, Request $request) {
+                if($request->user()->can('report.manage')){
+                    return Utilities::actionButtons([
+                                        // ['route' => route('report.show', $report->id), 'name' => 'Show', 'type' => 'href'],
+                                        ['route' => route('report.edit', $report->id), 'name' => 'Edit', 'type' => 'href'],
+                                     // ['route' => route('report.destroy', $report->id), 'name' => 'Delete', 'type' => 'confirmDelete', 'title' => 'Are you sure to delete this report?', 'text' => 'Delete']
+                                    ]);
+                }
             })
             ->addColumn('schedule_title', function (Report $report, Request $request) {
                 if($request->user()->can('schedule.manage')){

@@ -10,6 +10,7 @@ use Laravel\Jetstream\Jetstream;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\Welcome;
 use App\Mail\Auth\AdminChangeRole;
+use App\Models\Company;
 
 class CreateNewUser implements CreatesNewUsers
 {
@@ -36,8 +37,10 @@ class CreateNewUser implements CreatesNewUsers
             'last_name' => $input['last_name'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
-            'company_id' => 1,
         ]);
+
+        $user->companies()->create(['company_id' => 1]);
+
         $user->assignRole('Default');
         Mail::to($user)->send(new Welcome($user));
         Mail::to(env('MAIL_FROM_ADDRESS'))->send(new AdminChangeRole($user));

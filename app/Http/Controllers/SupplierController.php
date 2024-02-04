@@ -40,6 +40,11 @@ class SupplierController extends Controller
             if($request->state){
                 $company = $company->where('state_id', $request->state)->whereNotNull('state_id');
             }
+            if($request->user){
+                $company = $company->whereHas("users", function($q) use($request) {
+                    $q->where('user_id', $request->user);
+                });
+            }
             return Datatables::eloquent($company)
             ->addColumn('action', function(Company $company) {
                             return Utilities::actionButtons([['route' => route('supplier.addContact', $company->id), 'name' => 'Add', 'title' => 'Add Contact Person'],['route' => route('supplier.edit', $company->id), 'name' => 'Edit']]);
@@ -108,9 +113,13 @@ class SupplierController extends Controller
             ->make(true);
         }
         $countries = Country::all();
+        $users = User::whereHas("roles", function($q) {
+                $q->whereIn('id', [3,4]);
+            })->get();
         return view('app.supplier.index', [
             'breadcrumbs' => $breadcrumbs,
             'countries' => $countries,
+            'users' => $users
         ]);
     }
 
@@ -215,11 +224,6 @@ class SupplierController extends Controller
         return view('app.supplier.edit', compact('company', 'clients', 'suppliers', 'countries', 'states'));
     }
 
-    public function addContact(Company $company)
-    {
-        return view('app.supplier.addContact', compact('company'));
-    }
-
     /**
      * Update the specified resource in storage.
      *
@@ -281,30 +285,50 @@ class SupplierController extends Controller
         return response()->json($output);
     }
 
+    public function addContact(Company $company)
+    {
+        $users = User::whereHas("roles", function($q) {
+                $q->whereIn('id', [3,4]);
+            })->where('status', 1)->get();
+        return view('app.supplier.addContact', compact('company', 'users'));
+    }
+
     public function storeContact(Request $request, Company $company)
     {
-        $validator = Validator::make($request->all(),[
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-        ]);
+        $type = $request->type;
+        if($type == 'Create New'){
+            $validation = [
+                'first_name' => ['required', 'string', 'max:255'],
+                'last_name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            ];  
+        }else{
+            $validation = [
+                'users' =>  ['required', 'array', 'min:1']
+            ];
+        }
+        
+        $validator = Validator::make($request->all(), $validation);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()]);
         }
         try {
             DB::beginTransaction();
             $data = $request->all();
-            $data['password'] = Hash::make(Str::random(10));
-            $data['company_id'] = $company->id;
-            $data['country_id'] = $company->country_id;
-            $data['state_id'] = $company->state_id;
-            $user = $company->users()->create($data);
-            if($company->type == 'client'){
-                $user->assignRole('Client');
-            }elseif($company->type == 'supplier'){
-                $user->assignRole('Supplier');
+            if($type == 'Create New'){
+                $data['password'] = Hash::make(Str::random(10));
+                $data['country_id'] = $company->country_id;
+                $data['state_id'] = $company->state_id;
+                $user = $company->users()->create($data);
+                if($company->type == 'client'){
+                    $user->assignRole('Client');
+                }elseif($company->type == 'supplier'){
+                    $user->assignRole('Supplier');
+                }
+                $token = $user->generatePassworResetToken();
+            }else{
+                $company->users()->attach($request->users);
             }
-            $token = $user->generatePassworResetToken();
             // Mail::to($user)->send(new ResetPassword($user, $token));
             DB::commit();
             $output = ['success' => 1,

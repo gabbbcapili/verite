@@ -41,6 +41,11 @@ class ClientController extends Controller
             if($request->state){
                 $company = $company->where('state_id', $request->state)->whereNotNull('state_id');
             }
+            if($request->user){
+                $company = $company->whereHas("users", function($q) use($request) {
+                    $q->where('user_id', $request->user);
+                });
+            }
             return Datatables::eloquent($company)
             ->addColumn('action', function(Company $company) {
                             return Utilities::actionButtons([['route' => route('supplier.addContact', $company->id), 'name' => 'Add', 'title' => 'Add Contact Person'],['route' => route('supplier.edit', $company->id), 'name' => 'Edit']]);
@@ -109,9 +114,13 @@ class ClientController extends Controller
             ->make(true);
         }
         $countries = Country::all();
+        $users = User::whereHas("roles", function($q) {
+                $q->whereIn('id', [3,4]);
+            })->get();
         return view('app.client.index', [
             'breadcrumbs' => $breadcrumbs,
             'countries' => $countries,
+            'users' => $users
         ]);
     }
 

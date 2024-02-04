@@ -139,8 +139,8 @@ class UserController extends Controller
                 'state_id' => $data['state_id'],
                 'email' => $data['email'],
                 'password' => Hash::make(Str::random(10)),
-                'company_id' => 1,
             ]);
+            $user->companies()->save(Company::find(1));
             $user->assignRole($request->role);
             $token = $user->generatePassworResetToken();
             Mail::to($user)->send(new ResetPassword($user, $token));
@@ -214,6 +214,8 @@ class UserController extends Controller
         if(! $user->hasRole('Supplier') && ! $user->hasRole('Client')){
             $validation['state_id'] = ['required'];
             $validation['country_id'] = ['required'];
+        }else{
+             $validation['companies'] = ['required', 'array', 'min:1'];
         }
         // dd($validation);
         $validator = Validator::make($request->all(), $validation);
@@ -254,6 +256,11 @@ class UserController extends Controller
                     Mail::to($user)->send(new ChangedRole($user));
                 }
 
+            }
+            if($user->hasRole('Supplier') || $user->hasRole('Client')){
+                if($request->has('companies')){
+                    $user->companies()->sync($request->companies);
+                }
             }
             DB::commit();
             $output = ['success' => 1,

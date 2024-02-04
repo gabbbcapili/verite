@@ -67,6 +67,18 @@
                             </select>
                         </div>
                       </div>
+                      
+                      <div class="col-lg-6 col-xs-12">
+                        <div class="form-group">
+                          <label for="name">Companies:</label>
+                          <select class="form-control select2Modal" name="companies[]" multiple id="companies">
+                            @foreach($companies as $company)
+                              <option value="{{ $company->id }}" {{ in_array($company->id, $user->companies->pluck('id')->toArray()) ? 'selected' : '' }}>{{ $company->company_name }}</option>
+                            @endforeach
+                          </select>
+                      </div>
+                      </div>
+                    
                   </div>
                   <div class="row mb-2">
                     <div class="col-lg-12 col-xs-12">

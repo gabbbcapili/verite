@@ -1,0 +1,5 @@
+Steps to implement many to many user and company previously one company to many user.
+php artisan migrate --path=/database/migrations/2024_02_03_123433_create_user_company_table.php
+php artisan db:seed --class=UserCompanyManyToManyMigration
+php artisan migrate --path=/database/migrations/2024_02_03_124905_alter_user_table.php
+php artisan migrate --path=/database/migrations/2024_02_04_040218_alter_spaf_table.php

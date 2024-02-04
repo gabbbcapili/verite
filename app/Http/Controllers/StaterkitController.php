@@ -35,7 +35,7 @@ class StaterkitController extends Controller
                             $q1->where('modelable_type', 'App\Models\User');
                         });
                         $q->orWhere(function($q2) use($request){
-                            $q2->where('modelable_id', $request->user()->company_id);
+                            $q2->whereIn('modelable_id', $request->user()->companies()->pluck('company_id')->toArray());
                             $q2->where('modelable_type', 'App\Models\Company');
                         });
                     });

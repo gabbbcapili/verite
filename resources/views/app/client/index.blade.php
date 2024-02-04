@@ -17,6 +17,17 @@
       <div class="card">
         <div class="card-body">
           <div class="row">
+            <div class="col-lg-4 col-xs-12">
+              <div class="form-group">
+                  <label for="name">User:</label>
+                  <select class="form-control select2 selectFilter" id="user">
+                    <option disabled selected></option>
+                    @foreach($users as $user)
+                      <option value="{{ $user->id }}">{{ $user->full_name }}</option>
+                    @endforeach
+                  </select>
+              </div>
+            </div>
             @include('app.setting.country.entry')
           </div>
         </div>
@@ -73,6 +84,7 @@
           data: function (data) {
                 data.country = $("#country").val();
                 data.state = $("#state").val();
+                data.user = $("#user").val();
             }
         };
       var columnns = [

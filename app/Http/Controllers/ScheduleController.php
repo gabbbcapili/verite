@@ -255,7 +255,10 @@ class ScheduleController extends Controller
             DB::beginTransaction();
             $data = $request->all();
             if($type == 'Holiday Country'){
-                $verite_users = User::where('country_id', $request->country_id)->where('company_id', 1);
+                $verite_users = User::where('country_id', $request->country_id)
+                                    ->whereHas('companies', function ($q){
+                                            $q->where('company_id', 1);
+                                    });
                 if($request->state_id){
                     $verite_users = $verite_users->where('state_id', $request->state_id);
                 }
@@ -538,7 +541,10 @@ class ScheduleController extends Controller
             }else if($type == 'Holiday Country'){
                 $event->update(['title' => $request->event_title]);
                 $event->users()->delete();
-                $verite_users = User::where('country_id', $request->country_id)->where('company_id', 1);
+                $verite_users = User::where('country_id', $request->country_id)
+                                    ->whereHas('companies', function ($q){
+                                            $q->where('company_id', 1);
+                                    });
                 if($request->state_id){
                     $verite_users = $verite_users->where('state_id', $request->state_id);
                 }

@@ -20,24 +20,21 @@
                             <div class="row mb-2">
                                 <div class="col-6">
                                     <table class="table table-bordered">
+                                        @if($spaf->client_company)
                                         <tr>
                                             <th class="text-end" style="width: 20%">Client Name:</th>
+                                            <td style="width: 40%">{!! $spaf->client_company->CompanyDetails !!}</td>
+                                        </tr>
+                                        @endif
+                                        <tr>
+                                            <th class="text-end" style="width: 20%">Client Contact Person:</th>
                                             <td style="width: 40%">{!! $spaf->client->CompanyDetails !!}</td>
                                         </tr>
                                         <tr>
                                             <th class="text-end" style="width: 20%">Client Email:</th>
                                             <td style="width: 40%">{!! $spaf->client->email !!}</td>
                                         </tr>
-                                        @if($spaf->supplier)
-                                            <tr>
-                                                <th class="text-end" style="width: 20%">Supplier Name:</th>
-                                                <td style="width: 40%">{!! $spaf->supplier->CompanyDetails !!}</td>
-                                            </tr>
-                                            <tr>
-                                                <th class="text-end" style="width: 20%">Supplier Email:</th>
-                                                <td style="width: 40%">{!! $spaf->supplier->email !!}</td>
-                                            </tr>
-                                        @endif
+                                        
                                         <tr>
                                             <th class="text-end" style="width: 20%">Status:</th>
                                             <td style="width: 40%">{!! $spaf->statusDisplay !!}</td>
@@ -58,6 +55,22 @@
                                 </div>
                                 <div class="col-6">
                                     <table class="table table-bordered">
+                                        @if($spaf->supplier_company)
+                                            <tr>
+                                                <th class="text-end" style="width: 20%">Supplier Name:</th>
+                                                <td style="width: 40%">{!! $spaf->supplier_company->CompanyDetails !!}</td>
+                                            </tr>
+                                        @endif
+                                        @if($spaf->supplier)
+                                            <tr>
+                                                <th class="text-end" style="width: 20%">Supplier Contact Person:</th>
+                                                <td style="width: 40%">{!! $spaf->supplier->CompanyDetails !!}</td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-end" style="width: 20%">Supplier Email:</th>
+                                                <td style="width: 40%">{!! $spaf->supplier->email !!}</td>
+                                            </tr>
+                                        @endif
                                         <tr>
                                             <th class="text-end" style="width: 20%">Form:</th>
                                             <td style="width: 40%">{{ $spaf->template->name }}</td>

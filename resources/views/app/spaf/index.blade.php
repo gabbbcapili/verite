@@ -37,7 +37,9 @@
             <tr>
               <th>Id</th>
               <th>Client</th>
+              <th>Client CP</th>
               <th>Supplier</th>
+              <th>Supplier CP</th>
               <th>Template</th>
               <th>Type</th>
               <th>Status</th>
@@ -89,7 +91,9 @@
         };
       var columnns = [
             { data: 'id', name: 'id'},
+            { data: 'clientCompanyName', name: 'clientCompanyName'},
             { data: 'clientName', name: 'clientName'},
+            { data: 'supplierCompanyName', name: 'supplierCompanyName'},
             { data: 'supplierName', name: 'supplierName'},
             { data: 'templateName', name: 'templateName'},
             { data: 'type', name: 'type'},

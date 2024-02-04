@@ -16,7 +16,7 @@ class Spaf extends Model
 
     protected $table = 'spaf';
 
-    protected $fillable = ['client_id', 'supplier_id', 'template_id', 'status','completed_at','approved_at', 'notes'];
+    protected $fillable = ['client_id', 'supplier_id', 'template_id', 'status','completed_at','approved_at', 'notes', 'client_company_id', 'supplier_company_id'];
 
     public function created_by_user(){
         return $this->belongsTo(User::class, 'created_by');
@@ -41,6 +41,14 @@ class Spaf extends Model
 
     public function supplier(){
         return $this->belongsTo(User::class, 'supplier_id');
+    }
+
+    public function client_company(){
+        return $this->belongsTo(Company::class, 'client_company_id');
+    }
+
+    public function supplier_company(){
+        return $this->belongsTo(Company::class, 'supplier_company_id');
     }
 
     public function template(){
@@ -90,6 +98,16 @@ class Spaf extends Model
                                 return $spaf->supplier->CompanyDetails;
                             }
                         })
+            ->addColumn('clientCompanyName', function(Spaf $spaf) {
+                            if($spaf->client_company){
+                                return $spaf->client_company->CompanyDetails;
+                            }
+                        })
+            ->addColumn('supplierCompanyName', function(Spaf $spaf) {
+                            if($spaf->supplier_company){
+                                return $spaf->supplier_company->CompanyDetails;
+                            }
+                        })
             ->addColumn('templateName', function(Spaf $spaf) {
                             return $spaf->template->name;
                         })
@@ -115,6 +133,20 @@ class Spaf extends Model
                             $q->whereRaw('CONCAT(first_name," ",last_name)  like ?', ["%{$keyword}%"]);
                         });
                 })
+            ->filterColumn('clientCompanyName', function($query, $keyword) {
+                    $query->whereHas("client_company", function($q) use($keyword) {
+                            $q->whereRaw('company_name  like ?', ["%{$keyword}%"]);
+                        });
+                })
+            ->filterColumn('supplierCompanyName', function($query, $keyword) {
+                    $query->whereHas("supplier_company", function($q) use($keyword) {
+                            $q->whereRaw('company_name  like ?', ["%{$keyword}%"]);
+                        });
+                })
+
+
+            
+
             ->filterColumn('templateName', function($query, $keyword) {
                     $query->whereHas("template", function($q) use($keyword) {
                             $q->whereRaw('name  like ?', ["%{$keyword}%"]);
