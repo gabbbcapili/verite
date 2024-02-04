@@ -39,7 +39,7 @@ class CreateNewUser implements CreatesNewUsers
             'password' => Hash::make($input['password']),
         ]);
 
-        $user->companies()->create(['company_id' => 1]);
+        $user->companies()->sync(['company_id' => 1]);
 
         $user->assignRole('Default');
         Mail::to($user)->send(new Welcome($user));

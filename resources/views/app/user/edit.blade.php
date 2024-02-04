@@ -67,7 +67,7 @@
                             </select>
                         </div>
                       </div>
-                      
+                      @if($user->hasRole('Supplier') || $user->hasRole('Client'))
                       <div class="col-lg-6 col-xs-12">
                         <div class="form-group">
                           <label for="name">Companies:</label>
@@ -76,8 +76,9 @@
                               <option value="{{ $company->id }}" {{ in_array($company->id, $user->companies->pluck('id')->toArray()) ? 'selected' : '' }}>{{ $company->company_name }}</option>
                             @endforeach
                           </select>
+                        </div>
                       </div>
-                      </div>
+                      @endif
                     
                   </div>
                   <div class="row mb-2">
