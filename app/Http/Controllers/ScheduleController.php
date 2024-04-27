@@ -17,6 +17,7 @@ use Validator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Models\Proficiency;
+use App\Rules\NoAuditResourceOverlap;
 
 class ScheduleController extends Controller
 {
@@ -139,7 +140,7 @@ class ScheduleController extends Controller
         return view('app.schedule.edit', compact('auditmodels','schedulestatuses','countries', 'event', 'schedule', 'client', 'supplier', 'companies', 'scheduleStatus', 'next_stop', 'proficiencies', 'auditors', 'countries', 'states'));
     }
 
-    public function editNew(Event $event){
+    public function editNew(Event $event, Request $request){
         $breadcrumbs = [
             ['link'=>"/",'name'=>"Home"],['link'=> route('schedule.index'), 'name'=>"Schedules"], ['name'=>"Edit Schedule"]
         ];
@@ -156,7 +157,10 @@ class ScheduleController extends Controller
         $auditors = User::auditors();
         $countries = Country::all();
         $states = State::where('country_id', $event->country_id)->get();
-        return view('app.schedule.editNew', compact('auditmodels','schedulestatuses','countries', 'event', 'schedule', 'client', 'supplier', 'companies', 'scheduleStatus', 'next_stop', 'proficiencies', 'auditors', 'breadcrumbs', 'countries', 'states'));
+        $userEvents = $request->user()->events()->where('status', 0)->where('event_id', $event->id)->first();
+        $rejectedSchedules = $event->users()->withTrashed()->where('status', 2)->get();
+
+        return view('app.schedule.editNew', compact('auditmodels','schedulestatuses','countries', 'event', 'schedule', 'client', 'supplier', 'companies', 'scheduleStatus', 'next_stop', 'proficiencies', 'auditors', 'breadcrumbs', 'countries', 'states', 'userEvents', 'rejectedSchedules'));
     }
 
 
@@ -173,9 +177,10 @@ class ScheduleController extends Controller
                 'audit_model_type' => 'required',
                 'country' => 'required',
                 'status' => 'required',
-                'turnaround_days' => ['required', 'integer', 'min:1', 'max:100'],
-                'users' => ['required', 'min:1'],
-                'users.*.id' => ['required']
+                'turnaround_days' => ['required', 'integer', 'min:0', 'max:100'],
+                'users' => ['required', 'min:1', new NoAuditResourceOverlap],
+                'users.*.id' => ['required'],
+                'users.*.start_end_date' => ['required']
             ];
         }else{
             if($request->user()->can('schedule.manage')){
@@ -197,6 +202,8 @@ class ScheduleController extends Controller
         }
 
         $validator = Validator::make($request->all(),$validation, [
+            'users.required' => 'The resource field is required.',
+            'users.min' => 'Please add at least one resource.',
             '*.required' => 'This field is required',
             'users.*.*.required' => 'This field is required',
         ]);
@@ -212,12 +219,15 @@ class ScheduleController extends Controller
             }
         }else{
             if($type == 'Audit Schedule'){
-
             }else if($type == 'Holiday Country'){
                 $start_end = explode('to', $request->start_end_date);
-                $holidayCountryEvent = Event::where('country_id', $request->country_id)
-                                                ->whereDate('start_date', '>=', $start_end[0])
-                                                ->whereDate('end_date', '<=', array_key_exists(1, $start_end) ? $start_end[1] : $start_end[0]);
+                $end_date = array_key_exists(1, $start_end) ? $start_end[1] : $start_end[0];
+                $holidayCountryEvent = Event::where('country_id', $request->country_id)->where(function ($q) use ($start_end, $end_date) {
+                                            $q->where('start_date', '<=', $start_end[0])
+                                              ->where('end_date', '>=', $start_end[0])
+                                              ->orWhere('start_date', '>=', $start_end[0])
+                                              ->where('start_date', '<=', $end_date);
+                                        });
                 if($request->state_id){
                     $holidayCountryEvent = $holidayCountryEvent->where('state_id', $request->state_id);
                 }else{
@@ -249,7 +259,6 @@ class ScheduleController extends Controller
                     }
                 }
             }
-
         }
         try {
             DB::beginTransaction();
@@ -302,15 +311,6 @@ class ScheduleController extends Controller
                     $scheduleStatus = ScheduleStatus::where('name', $schedule['status'])->first();
                     $schedule['status_color'] = $scheduleStatus ? $scheduleStatus->color : 'primary';
                     $blockable = $scheduleStatus ? $scheduleStatus->blockable : 1;
-                    foreach($request->users as $user){
-                        EventUser::firstOrCreate([
-                            'role' => $user['role'],
-                            'event_id' => $event->id,
-                            'modelable_id' => $user['id'],
-                            'modelable_type' => 'App\Models\User',
-                            'blockable' => $blockable,
-                        ]);
-                    }
                     $client = EventUser::create([
                             'role' => 'Client',
                             'event_id' => $event->id,
@@ -337,6 +337,20 @@ class ScheduleController extends Controller
                     $schedule['due_date'] = Carbon::now()->addDays($schedule['turnaround_days'])->format('Y-m-d');
                     $schedule = Schedule::create($schedule);
                     $schedule->scheduleStatusLogs()->create(['schedule_status_id' => $scheduleStatus->id]);
+
+                    foreach($request->users as $user){
+                        $eventUserStartEnd = EventUser::getStartEndDate($user['start_end_date']);
+                        EventUser::firstOrCreate([
+                            'role' => $user['role'],
+                            'event_id' => $event->id,
+                            'modelable_id' => $user['id'],
+                            'modelable_type' => 'App\Models\User',
+                            'start_date' => $eventUserStartEnd['eventUserStart'],
+                            'end_date' => $eventUserStartEnd['eventUserEnd'],
+                            'blockable' => $blockable,
+                        ]);
+                    }
+                    
                 }
                 else{
                     if($request->user()->hasRole('Client') || $request->user()->hasRole('Supplier')){
@@ -345,6 +359,8 @@ class ScheduleController extends Controller
                             'event_id' => $event->id,
                             'modelable_id' => $request->user()->company_id,
                             'modelable_type' => 'App\Models\Company',
+                            'start_date' => $event['start_date'],
+                            'end_date' => $event['end_date'],
                         ]);
                     }else{
                         if($request->user()->can('schedule.manage')){
@@ -354,6 +370,8 @@ class ScheduleController extends Controller
                                     'event_id' => $event->id,
                                     'modelable_id' => $request->company_id,
                                     'modelable_type' => 'App\Models\Company',
+                                    'start_date' => $event['start_date'],
+                                    'end_date' => $event['end_date'],
                                 ]);
                             }else{
                                 $eventuser = EventUser::create([
@@ -361,6 +379,8 @@ class ScheduleController extends Controller
                                     'event_id' => $event->id,
                                     'modelable_id' => $request->user_id,
                                     'modelable_type' => 'App\Models\User',
+                                    'start_date' => $event['start_date'],
+                                    'end_date' => $event['end_date'],
                                 ]);
                             }
 
@@ -370,6 +390,8 @@ class ScheduleController extends Controller
                                 'event_id' => $event->id,
                                 'modelable_id' => $request->user()->id,
                                 'modelable_type' => 'App\Models\User',
+                                'start_date' => $event['start_date'],
+                                'end_date' => $event['end_date'],
                             ]);
                         }
                     }
@@ -402,8 +424,9 @@ class ScheduleController extends Controller
                 'audit_model_type' => 'required',
                 'country' => 'required',
                 'status' => 'required',
-                'users' => ['required', 'min:1'],
-                'users.*.id' => ['required']
+                'users' => ['required', 'min:1', new NoAuditResourceOverlap($event)],
+                'users.*.id' => ['required'],
+                'users.*.start_end_date' => ['required']
             ];
         }else{
             $validation = [
@@ -417,16 +440,22 @@ class ScheduleController extends Controller
             ];
         }
         $validator = Validator::make($request->all(),$validation, [
+            'users.required' => 'The resource field is required.',
+            'users.min' => 'Please add at least one resource.',
             '*.required' => 'This field is required',
             'users.*.*.required' => 'This field is required',
         ]);
         if($request->user()->can('schedule.manage')){
             if($type == 'Holiday Country'){
                 $start_end = explode('to', $request->start_end_date);
-                $holidayCountryEvent = Event::where('country_id', $request->country_id)
-                                                ->whereNotIn('id', [$event->id])
-                                                ->whereDate('start_date', '>=', $start_end[0])
-                                                ->whereDate('end_date', '<=', array_key_exists(1, $start_end) ? $start_end[1] : $start_end[0]);
+                $end_date = array_key_exists(1, $start_end) ? $start_end[1] : $start_end[0];
+                $holidayCountryEvent = Event::where('id', '!=', $event->id)->where('country_id', $request->country_id)
+                                        ->where(function ($q) use ($start_end, $end_date) {
+                                            $q->where('start_date', '<=', $start_end[0])
+                                                  ->where('end_date', '>=', $start_end[0])
+                                                  ->orWhere('start_date', '>=', $start_end[0])
+                                                  ->where('start_date', '<=', $end_date);
+                                        });
                 if($request->state_id){
                     $holidayCountryEvent = $holidayCountryEvent->where('state_id', $request->state_id);
                 }else{
@@ -478,13 +507,16 @@ class ScheduleController extends Controller
                 if($request->has('users')){
                     $updatedEventUsers = [];
                     foreach($request->users as $user){
+                        $eventUserStartEnd = EventUser::getStartEndDate($user['start_end_date']);
                         if(isset($user['event_user_id'])){
                             $updateEventUser = EventUser::findOrFail($user['event_user_id']);
                             $updatedEventUsers[] = $updateEventUser->id;
                             $updateEventUser->update([
                                 'modelable_id' => $user['id'],
                                 'role' => $user['role'],
-                                'blockable' => $blockable
+                                'blockable' => $blockable,
+                                'start_date' => $eventUserStartEnd['eventUserStart'],
+                                'end_date' => $eventUserStartEnd['eventUserEnd'],
                             ]);
                         }else{
                             $eventUser = EventUser::firstOrCreate([
@@ -493,6 +525,8 @@ class ScheduleController extends Controller
                                 'modelable_id' => $user['id'],
                                 'modelable_type' => 'App\Models\User',
                                 'blockable' => $blockable,
+                                'start_date' => $eventUserStartEnd['eventUserStart'],
+                                'end_date' => $eventUserStartEnd['eventUserEnd'],
                             ]);
                             $updatedEventUsers[] = $eventUser->id;
                         }
@@ -511,6 +545,8 @@ class ScheduleController extends Controller
                         'modelable_id' => $request->client_company_id,
                         'modelable_type' => 'App\Models\Company',
                         'blockable' => $request->has('supplier_company_id') ? 0 : $blockable,
+                        'start_date' => $data['start_date'],
+                        'end_date' => $data['end_date'],
                     ]);
                 if($request->has('supplier_company_id')){
                     $supplier = EventUser::updateOrCreate([
@@ -518,6 +554,8 @@ class ScheduleController extends Controller
                         'event_id' => $event->id,
                         'modelable_id' => $request->supplier_company_id,
                         'modelable_type' => 'App\Models\Company',
+                        'start_date' => $data['start_date'],
+                        'end_date' => $data['end_date'],
                     ],[
                         'modelable_id' => $request->supplier_company_id,
                         'blockable' => $blockable
@@ -558,6 +596,8 @@ class ScheduleController extends Controller
                                 'event_id' => $event->id,
                                 'modelable_id' => $user->id,
                                 'modelable_type' => 'App\Models\User',
+                                'start_date' => $data['start_date'],
+                                'end_date' => $data['end_date'],
                             ]);
                 }
                 foreach($companies->get() as $company_id){
@@ -566,6 +606,8 @@ class ScheduleController extends Controller
                                 'event_id' => $event->id,
                                 'modelable_id' => $company_id->id,
                                 'modelable_type' => 'App\Models\Company',
+                                'start_date' => $data['start_date'],
+                                'end_date' => $data['end_date'],
                             ]);
                 }
             }else{
@@ -575,6 +617,8 @@ class ScheduleController extends Controller
                         'event_id' => $event->id,
                         'modelable_id' => $request->user()->company_id,
                         'modelable_type' => 'App\Models\Company',
+                        'start_date' => $data['start_date'],
+                        'end_date' => $data['end_date'],
                     ]);
                 }else{
                     if($request->user()->can('schedule.manage')){
@@ -584,6 +628,8 @@ class ScheduleController extends Controller
                                 'event_id' => $event->id,
                                 'modelable_id' => $request->company_id,
                                 'modelable_type' => 'App\Models\Company',
+                                'start_date' => $data['start_date'],
+                                'end_date' => $data['end_date'],
                             ]);
                         }else{
                             $eventuser = $event->users()->first()->update([
@@ -591,6 +637,8 @@ class ScheduleController extends Controller
                                 'event_id' => $event->id,
                                 'modelable_id' => $request->user_id,
                                 'modelable_type' => 'App\Models\User',
+                                'start_date' => $data['start_date'],
+                                'end_date' => $data['end_date'],
                             ]);
                         }
                     }else{
@@ -599,6 +647,8 @@ class ScheduleController extends Controller
                             'event_id' => $event->id,
                             'modelable_id' => $request->user()->id,
                             'modelable_type' => 'App\Models\User',
+                            'start_date' => $data['start_date'],
+                        'end_date' => $data['end_date'],
                         ]);
                     }
                 }
@@ -745,6 +795,35 @@ class ScheduleController extends Controller
         }
         if($output['success'] == false){
             $output['msg'] .= 'is not available on selected date are you sure to proceed?';
+        }
+        return response()->json($output);
+    }
+
+    public function eventUserStatusChange(EventUser $eventUser, $type, Request $request){
+        try {
+            DB::beginTransaction();
+            $data = $request->all();
+            $payload = ['status' => $type];
+            if($request->has('notes')){
+                $payload['notes'] = $request->notes;
+            }
+            $eventUser->update($payload);
+            $msg = 'Successfully accepted the schedule';
+            if($type == 2){
+                $eventUser->delete();
+                $msg = 'Successfully rejected the schedule';
+            }
+            DB::commit();
+            $output = ['success' => 1,
+                        'msg' => $msg,
+                        'redirect' => route('schedule.editNew', $eventUser->event)
+                    ];
+        } catch (\Exception $e) {
+            \Log::emergency("File:" . $e->getFile(). " Line:" . $e->getLine(). " Message:" . $e->getMessage());
+            $output = ['success' => 0,
+                        'msg' => env('APP_DEBUG') ? $e->getMessage() : 'Sorry something went wrong, please try again later.'
+                    ];
+             DB::rollBack();
         }
         return response()->json($output);
     }

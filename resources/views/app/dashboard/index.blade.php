@@ -35,6 +35,7 @@
   @can('dashboard.default')
   <div class="row match-height">
     <!-- Statistics Card -->
+    @if(! $request->user()->hasRole('Default'))
     <div class="col-xl-8 col-md-6 col-12">
       <div class="card card-statistics">
         <div class="card-header">
@@ -101,6 +102,7 @@
         </div>
       </div>
     </div>
+    @endif
     <!--/ Statistics Card -->
   </div>
 

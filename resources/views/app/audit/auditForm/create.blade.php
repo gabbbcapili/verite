@@ -19,9 +19,13 @@
                             <div class="col-12 align-items-center justify-content-center text-center">
                                 <input type="checkbox" name="save_finish_later" id="save_finish_later" hidden>
                                 <input type="checkbox" name="approveForm" id="approveForm" hidden>
+                                @if($request->user()->can('auditForm.saveandcontinue'))
                                 <button type="button" class="btn btn-warning save_finish_later"><i data-feather="pocket"></i> Save & Continue Later</button>
+                                @endif
+                                @if($request->user()->can('auditForm.saveandsubmit'))
                                 <button type="submit" class="btn btn-primary btn_save"><i data-feather="save"></i> Save & Submit</button>
-                                @if(request()->user()->can('audit.approve'))
+                                @endif
+                                @if(request()->user()->can('auditForm.saveandapprove'))
                                 <button type="button" class="btn btn-success approve" data-title="Are you sure to approve this form?"><i data-feather="check-circle"></i> Save & Approve</button>
                                 @endif
                             </div>
@@ -111,7 +115,7 @@
 
     function timerIncrement() {
         idleTime = idleTime + 1;
-        if (idleTime > 30) { // 20 minutes
+        if (idleTime > 5) { // 20 minutes
             idleTime = 0;
             Swal.fire({
                 icon: 'danger',

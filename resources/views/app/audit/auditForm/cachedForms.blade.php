@@ -41,6 +41,10 @@
                                     <thead>
                                         <tr>
                                             <th>Type</th>
+                                            <th>Action</th>
+                                            <th>Single / Multiple</th>
+                                            <th>Template</th>
+                                            <th>Assigned Name</th>
                                             <th>Url</th>
                                         </tr>
                                     </thead>
@@ -101,14 +105,34 @@
        for(var i = 0; i < Items.length; i++){
         var requestUrl = new URL(Items[i]);
             if (requestUrl.pathname.startsWith(urlStartsWith)) {
-                var urlParams = new URLSearchParams(Items[i]);
-                var type = urlParams.get('type');
+                const urlParams = new URLSearchParams(Items[i]);
+                const urlString = Items[i];
+                var action = getStringAfterNthSlashExcludingQuery(urlString, 4);
+                var template = getStringAfterNthSlashExcludingQuery(urlString, 6);
+
+                var type = urlParams.get('type'),
+                    assigned_name = urlParams.get('assigned_name'),
+                    single_multiple = urlParams.get('single_multiple');
                 if(type){
                     type = type.charAt(0).toUpperCase() + type.slice(1);
                 }
-                table.row.add([type, '<a target="_blank" href="'+ Items[i] +'">'+ Items[i] +'</a>']).draw(false);
+                if(action){
+                    action = action.charAt(0).toUpperCase() + action.slice(1);
+                }
+                table.row.add([type, action, single_multiple, template, assigned_name, '<a target="_blank" href="'+ Items[i] +'">'+ Items[i] +'</a>']).draw(false);
             }
         }
+    }
+
+    function getStringAfterNthSlashExcludingQuery(url, n) {
+        // Remove the query parameters if they exist
+        const queryStringIndex = url.indexOf('?');
+        if (queryStringIndex !== -1) {
+            url = url.substring(0, queryStringIndex);
+        }
+
+        let parts = url.split('/');
+        return parts[n];
     }
     $(document).ready(function() {
         queryCache();

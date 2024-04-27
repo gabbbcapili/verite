@@ -280,14 +280,17 @@
                                     <button class="btn btn-primary" type="button" id="add_user"><i data-feather="plus-circle"></i> Add Resource</button>
                                     @endif
                                   </div>
+                                  <span id="users"></span>
                                   <div class="table-responsive" style="max-height:320px;" id="userTableResponsive">
                                     <input type="hidden" id="user_row_count" value="1">
                                     <table class="table table-striped" id="user_table">
                                       <thead>
                                         <tr>
-                                          <th style="width: 40%;">Role</th>
-                                          <th style="width: 40%;">Resource</th>
-                                          <th style="width: 20%;">Action</th>
+                                          <th style="width: 20%;">Role</th>
+                                          <th style="width: 35%;">Resource</th>
+                                          <th style="width: 25%;">Start & End Date</th>
+                                          <th style="width: 10%;">Status</th>
+                                          <th style="width: 10%;">Action</th>
                                         </tr>
                                       </thead>
                                       <tbody>
@@ -296,6 +299,31 @@
                                   </div>
                                 <!-- </div> -->
                               </div>
+                              @if($rejectedSchedules->count())
+                              <div class="row mb-2">
+                                <h4>Resource - Rejected Schedules</h4>
+                                <div class="table-responsive">
+                                  <table class="table table-striped">
+                                    <thead>
+                                      <tr>
+                                        <th style="width: 20%;">Role</th>
+                                        <th style="width: 35%;">Resource</th>
+                                        <th style="width: 25%;">Start & End Date</th>
+                                        <th style="width: 10%;">Notes</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      @foreach($rejectedSchedules as $rs)
+                                        <td>{{ $rs->role }}</td>
+                                        <td>{{ $rs->modelable->full_name }}</td>
+                                        <td>{{ $rs->start_date }} to {{ $rs->end_date }}</td>
+                                        <td>{{ $rs->notes }}</td>
+                                      @endforeach
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                              @endif
                               <div class="row mb-2 align-items-center justify-content-center">
                                 <div class="col-6" id="rowSpaf">
 
@@ -326,6 +354,10 @@
                         @endif
                         <button type="submit" class="btn btn-primary no-print btn_save"><i data-feather="save"></i> Save
                         </button>
+                        @endif
+                        @if($userEvents)
+                        <a href="#" data-action="{{ route('schedule.eventUserStatusChange', ['eventUser' => $userEvents, 2]) }}" class="btn btn-danger confirmWithNotes" data-confirmbutton="Ok" data-text="You can add notes on the input below" data-title="Are you sure to reject the schedule?" ><i data-feather="x-circle"></i> Reject Schedule</a>
+                        <a href="#" data-action="{{ route('schedule.eventUserStatusChange', ['eventUser' => $userEvents, 1]) }}" class="btn btn-success confirm" data-title="Are you sure to accept the schedule?" ><i data-feather="check-circle"></i> Accept Schedule</a>
                         @endif
                     </div>
                   </div>
@@ -442,6 +474,17 @@
       function changedDate(current_company, current_supplier, current_users){
         loadData(false);
         // rangePicker.close();
+        var allowedDates = scheduleGetAllowedDates();
+        $('.tableRangePicker').flatpickr({
+          mode: 'range',
+          altFormat: 'Y-m-d',
+          defaultDate: [allowedDates.startDate, allowedDates.endDate],
+          enable: [{
+            from: allowedDates.startDate,
+            to: allowedDates.endDate,
+          }],
+        });
+
         setTimeout(function(){
           $('#client_company').val(current_company).trigger('change');
         }, 2500)
@@ -455,10 +498,16 @@
       }
 
       $(document).on('change', '#client_company', function(){
+          if($(this).val() == null){
+            return 0;
+          }
           loadAvailableSuppliers();
         });
 
       $(document).on('change', '#supplier_company', function(){
+        if($(this).val() == null){
+          return 0;
+        }
         loadSpaf();
       });
 
@@ -511,10 +560,23 @@
 
         $tr += '<tr>';
         $tr += '<td><select class="form-control select2Table" name="users['+ row +'][role]" id="users.'+ row +'.role">'+ roleTypesSelection +'</select></td>';
+        
         $tr += '<td><select class="form-control select2Table userSelection" name="users['+ row +'][id]" id="users.'+ row +'.id">'+ userSelection +'</select></td>';
+        $tr += '<td><input type="text" class="form-control tableRangePicker" name="users['+ row +'][start_end_date]" id="users.'+ row +'.start_end_date"></td>';
+        $tr += '<td>Pending</td>';
         $tr += '<td><div class="d-flex justify-content-end"><div class="btn-group" role="group"><button type="button" class="btn btn-sm btn-outline-success delete_row" data-bs-toggle-modal="tooltip" title="Delete"><i data-feather="delete"></i></button></div></div></td>';
         $tr += '</tr>';
         $('#user_table tr:last').after($tr);
+        var allowedDates = scheduleGetAllowedDates();
+        $('input[id="users.'+ row +'.start_end_date"]').flatpickr({
+          mode: 'range',
+          altFormat: 'Y-m-d',
+          defaultDate: [allowedDates.startDate, allowedDates.endDate],
+          enable: [{
+            from: allowedDates.startDate,
+            to: allowedDates.endDate,
+          }],
+        });
         feather.replace({
           width: 14,height: 14
         });
@@ -526,16 +588,28 @@
 
       function loadCurrentUser(){
         var currentSelection = '';
+        var allowedDates = scheduleGetAllowedDates();
         @foreach($event->users->where('role', '!=', 'Client')->where('role', '!=', 'Supplier') as $user)
         currentSelection = '<option value="{{ $user->modelable->id }}" selected>{{ $user->modelable->displayName }}</option>';
         var $tr = '';
           $tr += '<tr><input type="hidden" name="users[100{{ $loop->iteration }}][event_user_id]" value="{{ $user->id }}">';
           $tr += '<td><select class="form-control select2Table" name="users[100{{ $loop->iteration }}][role]" id="users.100{{ $loop->iteration }}.role">'+ roleTypesSelection +'</select></td>';
           $tr += '<td><select class="form-control select2Table userSelection" name="users[100{{ $loop->iteration }}][id]" id="users.100{{ $loop->iteration }}.id">'+ userSelection + currentSelection +'</select></td>';
+          $tr += '<td><input type="text" class="form-control tableRangePicker" name="users[100{{ $loop->iteration }}][start_end_date]" id="users.100{{ $loop->iteration }}.start_end_date"></td>';
+          $tr += '<td>{{ $user->status_formatted }}</td>;'
           $tr += '<td><div class="d-flex justify-content-end"><div class="btn-group" role="group"><button type="button" class="btn btn-sm btn-outline-success delete_row" data-bs-toggle-modal="tooltip" title="Delete"><i data-feather="delete"></i></button></div></div></td>';
           $tr += '</tr>';
           $('#user_table tr:last').after($tr);
           $('select[name="users[100{{ $loop->iteration }}][role]"').val("{{ $user->role }}");
+          $('input[id="users.100{{ $loop->iteration }}.start_end_date"]').flatpickr({
+            mode: 'range',
+            altFormat: 'Y-m-d',
+            defaultDate: ['{{ $user->start_date }}', '{{ $user->end_date }}'],
+            enable: [{
+              from: allowedDates.startDate,
+              to: allowedDates.endDate,
+            }],
+          });
         @endforeach
         $('.select2Table').select2({
           dropdownParent: $("#userTableResponsive")

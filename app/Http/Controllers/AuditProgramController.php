@@ -40,7 +40,7 @@ class AuditProgramController extends Controller
                 }
             })
             ->addColumn('copy_from', function (AuditProgram $auditProgram) {
-                return '<a href="#" class="modal_button" data-action="'.route('schedule.edit', $auditProgram->schedule->event->id).'">'. $auditProgram->schedule->title .'</a>';
+                return '<a href="#" data-action="'.route('schedule.editNew', $auditProgram->schedule->event->id).'" class="modal_button">'. $auditProgram->schedule->title .'</a>';
             })
             ->editColumn('updated_at', function (AuditProgram $auditProgram) {
                 return $auditProgram->updated_at->diffForHumans() . ' | ' . $auditProgram->updatedByName;

@@ -251,14 +251,17 @@
                         <div class="d-flex justify-content-end mb-1">
                           <button class="btn btn-primary" type="button" id="add_user"><i data-feather="plus-circle"></i> Add Resource</button>
                         </div>
+                        <span id="users"></span>
                         <div class="table-responsive" style="max-height:320px;" id="userTableResponsive">
                           <input type="hidden" id="user_row_count" value="0">
                           <table class="table table-striped" id="user_table">
                             <thead>
                               <tr>
-                                <th style="width: 40%;">Role</th>
-                                <th style="width: 40%;">Resource</th>
-                                <th style="width: 20%;">Action</th>
+                                <th style="width: 20%;">Role</th>
+                                <th style="width: 35%;">Resource</th>
+                                <th style="width: 25%;">Start & End Date</th>
+                                <th style="width: 10%;">Status</th>
+                                <th style="width: 10%;">Action</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -365,6 +368,18 @@
             var current_supplier = $('#supplier_company').find(":selected").val();
             var current_users = $('.userSelection').find(":selected");
             loadData();
+
+            
+            var allowedDates = scheduleGetAllowedDates();
+            $('.tableRangePicker').flatpickr({
+              mode: 'range',
+              altFormat: 'Y-m-d',
+              defaultDate: [allowedDates.startDate, allowedDates.endDate],
+              enable: [{
+                from: allowedDates.startDate,
+                to: allowedDates.endDate,
+              }],
+            });
             setTimeout(function(){
               $('#client_company').val(current_company).trigger('change');
             }, 1000)
@@ -426,6 +441,9 @@
       });
 
       $(document).on('change', '#client_company', function(){
+        if($(this).val() == null){
+          return 0;
+        }
           var url = '{{ route("schedule.loadAvailableSuppliers", ":id") }}';
                       url = url.replace(':id', $(this).val());
           $.ajax({
@@ -445,6 +463,9 @@
           });
         });
       $(document).on('change', '#supplier_company', function(){
+        if($(this).val() == null){
+          return 0;
+        }
         loadSpaf();
       });
 
@@ -470,13 +491,26 @@
         var row = parseInt($('#user_row_count').val()) + 1;
         $('#user_row_count').val(row);
         var $tr = '';
-
+        
+        
         $tr += '<tr>';
         $tr += '<td><select class="form-control select2Table roleSelection" name="users['+ row +'][role]" id="users.'+ row +'.role">'+ roleTypesSelection +'</select></td>';
         $tr += '<td><select class="form-control select2Table userSelection" name="users['+ row +'][id]" id="users.'+ row +'.id">'+ userSelection +'</select></td>';
+        $tr += '<td><input type="text" class="form-control tableRangePicker" name="users['+ row +'][start_end_date]" id="users.'+ row +'.start_end_date"></td>';
+        $tr += '<td>Pending</td>';
         $tr += '<td><div class="d-flex justify-content-end"><div class="btn-group" role="group"><button type="button" class="btn btn-sm btn-outline-success delete_row" data-bs-toggle-modal="tooltip" title="Delete"><i data-feather="delete"></i></button></div></div></td>';
         $tr += '</tr>';
         $('#user_table tr:last').after($tr);
+        var allowedDates = scheduleGetAllowedDates();
+        $('input[id="users.'+ row +'.start_end_date"]').flatpickr({
+          mode: 'range',
+          altFormat: 'Y-m-d',
+          defaultDate: [allowedDates.startDate, allowedDates.endDate],
+          enable: [{
+            from: allowedDates.startDate,
+            to: allowedDates.endDate,
+          }],
+        });
         feather.replace({
           width: 14,height: 14
         });

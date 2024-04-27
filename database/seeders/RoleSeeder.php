@@ -60,16 +60,29 @@ class RoleSeeder extends Seeder
             ['name' => 'audit.wif', 'display' => 'Auditor Acess to workder interviewer forms'],
             ['name' => 'audit.drf', 'display' => 'Auditor Access to document review forms'],
             ['name' => 'audit.mif', 'display' => 'Auditor Access to management interview forms'],
+            ['name' => 'audit.all_records', 'display' => 'Audit access to all records'],
+
+            ['name' => 'auditForm.saveandcontinue', 'display' => 'Audit Form Access to Save And Continue Button'],
+            ['name' => 'auditForm.saveandsubmit', 'display' => 'Audit Form Access to Save And Submit Button'],
+            ['name' => 'auditForm.saveandapprove', 'display' => 'Audit Form Access to Save And Approve Button'],
+            ['name' => 'auditForm.view', 'display' => 'Audit Form access to view records'],
+            ['name' => 'auditForm.edit', 'display' => 'Audit Form access to edit records'],
+            ['name' => 'auditForm.delete', 'display' => 'Audit Form access to delete records'],
+            ['name' => 'auditForm.review', 'display' => 'Audit Form access as reviewer'],
         ];
         foreach($permissions as $p){
             Permission::create($p);
         }
 
         $sa_permission = Permission::all();
-        $sa->syncPermissions(['user.manage', 'spaf.manage','template.manage', 'supplier.manage', 'client.manage', 'spaf.approve', 'role.manage', 'template.approve', 'dashboard.default', 'settings.email.manage', 'settings.country.manage', 'settings.scheduleStatus.manage', 'settings.auditModel.manage', 'schedule.manage', 'settings.schedule.manage', 'schedule.selectableAuditor', 'audit.manage', 'audit.approve', 'settings.audit.manage', 'report.manage', 'settings.standard.manage', 'audit.auditform', 'audit.wif', 'audit.drf', 'audit.mif']);
+        $sa->syncPermissions(['user.manage', 'spaf.manage','template.manage', 'supplier.manage', 'client.manage', 'spaf.approve', 'role.manage', 'template.approve', 'dashboard.default', 'settings.email.manage', 'settings.country.manage', 'settings.scheduleStatus.manage', 'settings.auditModel.manage', 'schedule.manage', 'settings.schedule.manage', 'schedule.selectableAuditor', 'audit.manage', 'audit.approve', 'settings.audit.manage', 'report.manage', 'settings.standard.manage', 'audit.auditform', 'audit.wif', 'audit.drf', 'audit.mif', 'audit.all_records', 'auditForm.saveandcontinue', 'auditForm.saveandsubmit', 'auditForm.saveandapprove', 'auditForm.view', 'auditForm.edit', 'auditForm.delete', 'auditForm.review']);
         $default->syncPermissions(['dashboard.default']);
         $supplier->syncPermissions(['dashboard.supplier']);
         $client->syncPermissions(['dashboard.client']);
+
+
+
+
         User::find(1)->assignRole('Super Admin');
     }
 }

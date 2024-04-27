@@ -6,6 +6,7 @@ use App\Models\Audit;
 use App\Models\Schedule;
 use App\Models\Template;
 use App\Models\Company;
+use App\Models\AuditForm;
 use Illuminate\Http\Request;
 use App\Models\Utilities;
 use Illuminate\Support\Facades\DB;
@@ -101,7 +102,9 @@ class AuditController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'schedule_id' => 'required',
-            'singleTemplates' => 'required',
+            // 'multipleTemplates' => 'required',
+            'singleTemplates' => 'required_without:multipleTemplates',
+            'multipleTemplates' => 'required_without:singleTemplates',
         ],[
             '*.required' => 'This field is required'
         ]);
@@ -268,6 +271,61 @@ class AuditController extends Controller
         return response()->json($output);
     }
 
+    public function forms(Audit $audit){
+        $breadcrumbs = [
+            ['link'=>"/",'name'=>"Home"],['link'=> route('audit.show', $audit->id), 'name'=>"Audit Details"], ['name'=>"list of Audit Forms"]
+        ];
+        if (request()->ajax()) {
+            $auditForms = AuditForm::where('audit_id', $audit->id);
+            return Datatables::eloquent($auditForms)
+             ->addColumn('action', function(AuditForm $auditForm) {
+                return Utilities::actionButtons([
+                                                 ['route' => route('audit.destroyAuditForm', $auditForm->id), 'name' => 'Delete', 'type' => 'confirmDelete', 'title' => 'Are you sure to delete this Audit Form?', 'text' => 'Delete']
+                                                ]);
+            })  
+            ->addColumn('multipleForm', function(AuditForm $auditForm) {
+                return $auditForm->getTypeDisplay();
+            })
+            ->addColumn('template_name', function(AuditForm $auditForm) {
+                return $auditForm->template ? $auditForm->template->name : '';
+            })
+            ->addColumn('no_of_questionnaire', function(AuditForm $auditForm) {
+                return $auditForm->headers->count();
+            })
+            ->editColumn('updated_at', function (AuditForm $auditForm) {
+                return $auditForm->updated_at->diffForHumans() . ' | ' . $auditForm->updatedByName;
+            })
+            ->editColumn('created_at', function (AuditForm $auditForm) {
+                return $auditForm->created_at->format('M d, Y') . ' | ' . $auditForm->createdByName;
+            })
+            ->rawColumns(['action', 'multipleForm', 'no_of_questionnaire'])
+            ->make(true);
+        }
+        return view('app.audit.auditForm.index', [
+            'breadcrumbs' => $breadcrumbs,
+            'audit' => $audit,
+            'schedule' => $audit->schedule
+        ]);
+    }
+
+    public function destroyAuditForm(AuditForm $auditForm){
+        try {
+            DB::beginTransaction();
+            $auditForm = $auditForm->delete();
+            DB::commit();
+            $output = ['success' => 1,
+                        'msg' => 'Audit Form deleted successfully!',
+                    ];
+        } catch (\Exception $e) {
+            \Log::emergency("File:" . $e->getFile(). " Line:" . $e->getLine(). " Message:" . $e->getMessage());
+            $output = ['success' => 0,
+                        'msg' => env('APP_DEBUG') ? $e->getMessage() : 'Sorry something went wrong, please try again later.'
+                    ];
+             DB::rollBack();
+        }
+        return response()->json($output);
+    }
+
     public function createForm(Audit $audit)
     {
         $breadcrumbs = [
@@ -310,7 +368,7 @@ class AuditController extends Controller
             DB::commit();
             $output = ['success' => 1,
                         'msg' => 'Added Forms to Audit successfully!',
-                        'redirect' => route('audit.show', ['audit' => $audit])
+                        'redirect' => route('audit.forms', ['audit' => $audit])
                     ];
         } catch (\Exception $e) {
             \Log::emergency("File:" . $e->getFile(). " Line:" . $e->getLine(). " Message:" . $e->getMessage());

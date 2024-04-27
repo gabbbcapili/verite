@@ -260,6 +260,15 @@
               <span class="">Approve Audits</span>
             </div></fieldset>
           </td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="audit.all_records" name="permissions[]" {{ isset($roleList) ? in_array('audit.all_records', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="circle" class="vs-icon"></i></span>
+              </span>
+              <span class="">See All Records</span>
+            </div></fieldset>
+          </td>
           <td></td>
         </tr>
         <tr>
@@ -305,6 +314,94 @@
           </td>
         </tr>
       </tbody>
+
+      <thead>
+        <tr>
+          <th>Audit Forms</th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td></td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="auditForm.saveandcontinue" name="permissions[]" {{ isset($roleList) ? in_array('auditForm.saveandcontinue', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="pocket" class="vs-icon"></i></span>
+              </span>
+              <span class="">Save And Continue Button</span>
+            </div></fieldset>
+          </td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="auditForm.saveandsubmit" name="permissions[]" {{ isset($roleList) ? in_array('auditForm.saveandsubmit', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="save" class="vs-icon"></i></span>
+              </span>
+              <span class="">Save And Submit Button</span>
+            </div></fieldset>
+          </td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="auditForm.saveandapprove" name="permissions[]" {{ isset($roleList) ? in_array('auditForm.saveandapprove', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="check-circle" class="vs-icon"></i></span>
+              </span>
+              <span class="">Save and Approve Button</span>
+            </div></fieldset>
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="auditForm.view" name="permissions[]" {{ isset($roleList) ? in_array('auditForm.view', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="eye" class="vs-icon"></i></span>
+              </span>
+              <span class="">Can View</span>
+            </div></fieldset>
+          </td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="auditForm.edit" name="permissions[]" {{ isset($roleList) ? in_array('auditForm.edit', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="edit" class="vs-icon"></i></span>
+              </span>
+              <span class="">Can Edit</span>
+            </div></fieldset>
+          </td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="auditForm.delete" name="permissions[]" {{ isset($roleList) ? in_array('auditForm.delete', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="trash" class="vs-icon"></i></span>
+              </span>
+              <span class="">Can Delete</span>
+            </div></fieldset>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="auditForm.review" name="permissions[]" {{ isset($roleList) ? in_array('auditForm.review', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="book-open" class="vs-icon"></i></span>
+              </span>
+              <span class="">Can Review</span>
+            </div></fieldset>
+          </td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
+
+
       <thead>
         <tr>
           <th>Reports</th>

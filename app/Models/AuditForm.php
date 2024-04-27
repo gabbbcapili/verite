@@ -29,6 +29,12 @@ class AuditForm extends Model
         return $this->belongsTo(Template::class, 'template_id');
     }
 
+    public function getTypeDisplay(){
+        $text = $this->isMultiple ? 'Multiple' : 'One Time';
+        $class = $this->isMultiple ? 'danger' : 'info';
+        return '<span class="text-'. $class .'">'. $text .'</span>';
+    }
+
     public function summarizeAnswers($standard = null, $flag = null){
         $headers = $this->headers;
         $summarized = [];

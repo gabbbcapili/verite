@@ -212,20 +212,30 @@ class User extends Authenticatable
         $to = array_key_exists(1, $date) ? $date[1] : $date[0];
         $users = User::auditors();
         foreach($users as $key => $user){
-            $hasEvents = $user->events()->whereHas('event', function ($q) use($from,$to){
-                $q->where('start_date', '>=', $from);
-                $q->where('end_date', '<=', $to);
-                $q->where('blockable', true);
-            })->count();
+            $hasEvents = $user->events()->where(function ($q) use ($from, $to) {
+                                            $q->where('start_date', '<=', $from)
+                                              ->where('end_date', '>=', $from)
+                                              ->orWhere('start_date', '>=', $from)
+                                              ->where('start_date', '<=', $to);
+                                            $q->where('blockable', true);
+                                        })->whereHas('event', function($q) use ($from, $to){
+                                            $q->where('type', '!=', 'Audit Schedule');
+                                        })->count();
             if($hasEvents > 0){
                 $users->forget($key);
             }
+            // opening to all auditors we will have to rely on error messages as we don't hold the EventUser start_date and end_date for audit schedules
 
-            $hasEvents = Event::where('start_date', '>=', $from)->where('end_date', '<=', $to)
-            ->whereHas('users', function ($q){
-                $q->where('modelable_id', 1);
-                $q->where('modelable_type', 'App\Models\Company');
-            })->count();
+            $hasEvents = Event::where(function ($q) use ($from, $to) {
+                                    $q->where('start_date', '<=', $from)
+                                      ->where('end_date', '>=', $from)
+                                      ->orWhere('start_date', '>=', $from)
+                                      ->where('start_date', '<=', $to);
+                                    })
+                                ->whereHas('users', function ($q){
+                                    $q->where('modelable_id', 1);
+                                    $q->where('modelable_type', 'App\Models\Company');
+                                })->count();
             if($hasEvents > 0){
                 $users->forget($key);
             }
@@ -237,18 +247,26 @@ class User extends Authenticatable
         $date = explode(' to ', $date);
         $from = $date[0];
         $to = array_key_exists(1, $date) ? $date[1] : $date[0];
-        $event = $this->events()->whereHas('event', function ($q) use($from,$to){
-            $q->where('start_date', '>=', $from);
-            $q->where('end_date', '<=', $to);
-        })->first();
+        $event = $this->events()->where(function ($q) use ($from, $to) {
+                                $q->where('start_date', '<=', $from)
+                                  ->where('end_date', '>=', $from)
+                                  ->orWhere('start_date', '>=', $from)
+                                  ->where('start_date', '<=', $to);
+                                $q->where('blockable', true);
+                            })->whereHas('event')->first();
         if($event){
             return $event;
         }
-        $hasEvents = Event::where('start_date', '>=', $from)->where('end_date', '<=', $to)
-            ->whereHas('users', function ($q){
-                $q->where('modelable_id', 1);
-                $q->where('modelable_type', 'App\Models\Company');
-            })->first();
+        $hasEvents = Event::where(function ($q) use ($from, $to) {
+                                $q->where('start_date', '<=', $from)
+                                  ->where('end_date', '>=', $from)
+                                  ->orWhere('start_date', '>=', $from)
+                                  ->where('start_date', '<=', $to);
+                                })
+                            ->whereHas('users', function ($q){
+                                $q->where('modelable_id', 1);
+                                $q->where('modelable_type', 'App\Models\Company');
+                            })->first();
         if($hasEvents){
             return $hasEvents;
         }

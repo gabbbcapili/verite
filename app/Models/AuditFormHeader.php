@@ -25,6 +25,10 @@ class AuditFormHeader extends Model
         return $this->hasMany(AuditFormAnswer::class, 'audit_form_header_id');
     }
 
+    public function reviews(){
+        return $this->hasMany(AuditReview::class, 'audit_form_header_id');
+    }
+
     public function template(){
         return $this->form->template;
     }

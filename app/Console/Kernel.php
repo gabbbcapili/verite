@@ -27,6 +27,10 @@ class Kernel extends ConsoleKernel
         $schedule->command('auditProgram:plot')
                  ->dailyAt('00:00')
                  ->appendOutputTo('storage/logs/cron_audit_program_plot.log');
+
+        $schedule->command('auditForm:remind')
+                 ->dailyAt('05:00')
+                 ->appendOutputTo('storage/logs/cron_audit_program_plot.log');
     }
 
     /**

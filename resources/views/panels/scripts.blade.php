@@ -61,6 +61,34 @@
       });
   });
 
+  function separateDates(dateString) {
+      // Split the string by " to " to separate the two dates
+      var dates = dateString.split(" to ");
+      
+      // If only one date is provided, set it as both start and end dates
+      if (dates.length === 1) {
+          return {
+              startDate: dates[0].trim(),
+              endDate: dates[0].trim()
+          };
+      }
+      
+      // Trim any leading or trailing spaces from the dates
+      var startDate = dates[0].trim();
+      var endDate = dates[1].trim();
+      
+      return {
+          startDate: startDate,
+          endDate: endDate
+      };
+  }
+
+  function scheduleGetAllowedDates(){
+    var allowed = $('#dateRange').val();
+    var allowedDates = separateDates(allowed);
+    return allowedDates;
+  }
+
   $(document).on('click', '.hrefButton', function() {
     // window.open($(this).data('action'), '_blank');
     window.location.href = $(this).data('action');

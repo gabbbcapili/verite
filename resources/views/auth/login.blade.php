@@ -78,8 +78,8 @@
           </form>
 
           <p class="text-center mt-2">
-            <span>New on our platform?</span>
             @if (Route::has('register'))
+            <span>New on our platform?</span>
               <a href="{{ route('register') }}">
                 <span>Create an account</span>
               </a>

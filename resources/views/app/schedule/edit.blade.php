@@ -264,14 +264,17 @@
                           <button class="btn btn-primary" type="button" id="add_user"><i data-feather="plus-circle"></i> Add Resource</button>
                           @endif
                         </div>
+                        <span id="users"></span>
                         <div class="table-responsive" style="max-height:320px;" id="userTableResponsive">
                           <input type="hidden" id="user_row_count" value="1">
                           <table class="table table-striped" id="user_table">
                             <thead>
                               <tr>
-                                <th style="width: 40%;">Role</th>
-                                <th style="width: 40%;">Resource</th>
-                                <th style="width: 20%;">Action</th>
+                                <th style="width: 20%;">Role</th>
+                                <th style="width: 35%;">Resource</th>
+                                <th style="width: 25%;">Start & End Date</th>
+                                <th style="width: 10%;">Status</th>
+                                <th style="width: 10%;">Action</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -318,7 +321,7 @@
 <script src="{{ asset(mix('js/scripts/forms-validation/form-modal.js')) }}"></script>
 <script type="text/javascript">
     $(document).ready(function(){
-      $('#formRow').css('overflow-y', 'scroll');
+      // $('#formRow').css('overflow-y', 'scroll');
       var date = '';
       var clientSelection = '';
       var userSelection = '';
@@ -348,7 +351,8 @@
         }
       });
 
-      $('.rangePicker').flatpickr({
+      var currentDate = ["{{ $event->start_date }}", "{{ $event->end_date }}"];
+      var rangePicker = $('.rangePicker').flatpickr({
         mode: 'range',
         altFormat: 'Y-m-d',
         defaultDate: ["{{ $event->start_date }}", "{{ $event->end_date }}"],
@@ -357,30 +361,92 @@
             $(instance.mobileInput).attr('step', null);
           }
         },
-        onClose: function(selectedDates, dateStr, instance) {
-            var current_company = $('#client_company').find(":selected").val();
-            var current_supplier = $('#supplier_company').find(":selected").val();
-            var current_supplier_text = $('#supplier_company').find(":selected").text();
-            var current_users = $('.userSelection').find(":selected");
-            loadData(false);
-            setTimeout(function(){
-              $('#client_company').val(current_company).trigger('change');
-            }, 2500)
-            setTimeout(function(){
-              $('#supplier_company').val(current_supplier).trigger('change');
-              $.each($('.userSelection'), function(index, item){
-                var current_user = $(current_users[index]).val();
-                $(item).val(current_user).trigger('change');
-              });
-            }, 3500)
+        onChange: function(selectedDates, dateStr, instance) {
+          if (selectedDates.length === 1) {
+            return false;
+          }
+          if($('#SelectType').find(":selected").val() != 'Audit Schedule'){
+            return;
+          }
+          var current_company = $('#client_company').find(":selected").val();
+          var current_supplier = $('#supplier_company').find(":selected").val();
+          var current_users = $('.userSelection').find(":selected");
+          var selected_users = $.map(current_users, function(option){ return $(option).val()});
+          $.ajax({
+              // url: "{{ route('schedule.checkAvailability') }}}",
+              url: "{{ route('schedule.checkAvailability') }}",
+              method: "POST",
+              data:{
+                client : current_company,
+                supplier: current_supplier,
+                users: selected_users,
+                date: dateStr
+              },
+              success:function(result)
+              {
+                if(result.success == true){
+                  currentDate = selectedDates;
+                  changedDate(current_company, current_supplier, current_users);
+                }else{
+                  Swal.fire({
+                    title: 'Confirmation',
+                    text: result.msg,
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes',
+                    }).then((result) => {
+                    if (result.isConfirmed) {
+                      currentDate = selectedDates;
+                      changedDate(current_company, current_supplier, current_users);
+                    }else{
+                      instance.setDate(currentDate);
+                      // instance.close();
+                    }
+                  })
+                }
+              }
+          });
         },
       });
 
+      function changedDate(current_company, current_supplier, current_users){
+        loadData(false);
+        // rangePicker.close();
+        var allowedDates = scheduleGetAllowedDates();
+        $('.tableRangePicker').flatpickr({
+          mode: 'range',
+          altFormat: 'Y-m-d',
+          defaultDate: [allowedDates.startDate, allowedDates.endDate],
+          enable: [{
+            from: allowedDates.startDate,
+            to: allowedDates.endDate,
+          }],
+        });
+
+        setTimeout(function(){
+          $('#client_company').val(current_company).trigger('change');
+        }, 2500)
+        setTimeout(function(){
+          $('#supplier_company').val(current_supplier).trigger('change');
+          $.each($('.userSelection'), function(index, item){
+            var current_user = $(current_users[index]).val();
+            $(item).val(current_user).trigger('change');
+          });
+        }, 3500)
+      }
+
       $(document).on('change', '#client_company', function(){
+          if($(this).val() == null){
+            return 0;
+          }
           loadAvailableSuppliers();
         });
 
       $(document).on('change', '#supplier_company', function(){
+        if($(this).val() == null){
+          return 0;
+        }
         loadSpaf();
       });
 
@@ -433,10 +499,23 @@
 
         $tr += '<tr>';
         $tr += '<td><select class="form-control select2Table" name="users['+ row +'][role]" id="users.'+ row +'.role">'+ roleTypesSelection +'</select></td>';
+        
         $tr += '<td><select class="form-control select2Table userSelection" name="users['+ row +'][id]" id="users.'+ row +'.id">'+ userSelection +'</select></td>';
+        $tr += '<td><input type="text" class="form-control tableRangePicker" name="users['+ row +'][start_end_date]" id="users.'+ row +'.start_end_date"></td>';
+        $tr += '<td>Pending</td>';
         $tr += '<td><div class="d-flex justify-content-end"><div class="btn-group" role="group"><button type="button" class="btn btn-sm btn-outline-success delete_row" data-bs-toggle-modal="tooltip" title="Delete"><i data-feather="delete"></i></button></div></div></td>';
         $tr += '</tr>';
         $('#user_table tr:last').after($tr);
+        var allowedDates = scheduleGetAllowedDates();
+        $('input[id="users.'+ row +'.start_end_date"]').flatpickr({
+          mode: 'range',
+          altFormat: 'Y-m-d',
+          defaultDate: [allowedDates.startDate, allowedDates.endDate],
+          enable: [{
+            from: allowedDates.startDate,
+            to: allowedDates.endDate,
+          }],
+        });
         feather.replace({
           width: 14,height: 14
         });
@@ -448,16 +527,28 @@
 
       function loadCurrentUser(){
         var currentSelection = '';
+        var allowedDates = scheduleGetAllowedDates();
         @foreach($event->users->where('role', '!=', 'Client')->where('role', '!=', 'Supplier') as $user)
         currentSelection = '<option value="{{ $user->modelable->id }}" selected>{{ $user->modelable->displayName }}</option>';
         var $tr = '';
           $tr += '<tr><input type="hidden" name="users[100{{ $loop->iteration }}][event_user_id]" value="{{ $user->id }}">';
           $tr += '<td><select class="form-control select2Table" name="users[100{{ $loop->iteration }}][role]" id="users.100{{ $loop->iteration }}.role">'+ roleTypesSelection +'</select></td>';
           $tr += '<td><select class="form-control select2Table userSelection" name="users[100{{ $loop->iteration }}][id]" id="users.100{{ $loop->iteration }}.id">'+ userSelection + currentSelection +'</select></td>';
+          $tr += '<td><input type="text" class="form-control tableRangePicker" name="users[100{{ $loop->iteration }}][start_end_date]" id="users.100{{ $loop->iteration }}.start_end_date"></td>';
+          $tr += '<td>{{ $user->status_formatted }}</td>;'
           $tr += '<td><div class="d-flex justify-content-end"><div class="btn-group" role="group"><button type="button" class="btn btn-sm btn-outline-success delete_row" data-bs-toggle-modal="tooltip" title="Delete"><i data-feather="delete"></i></button></div></div></td>';
           $tr += '</tr>';
           $('#user_table tr:last').after($tr);
           $('select[name="users[100{{ $loop->iteration }}][role]"').val("{{ $user->role }}");
+          $('input[id="users.100{{ $loop->iteration }}.start_end_date"]').flatpickr({
+            mode: 'range',
+            altFormat: 'Y-m-d',
+            defaultDate: ['{{ $user->start_date }}', '{{ $user->end_date }}'],
+            enable: [{
+              from: allowedDates.startDate,
+              to: allowedDates.endDate,
+            }],
+          });
         @endforeach
         $('.select2Table').select2({
           dropdownParent: $("#userTableResponsive")
@@ -570,8 +661,14 @@
                 $('.userSelection').find('option').remove().end().append(userSelection).val('');
                 $('#supplier_company').find('option').remove().end().val('');
                 if(firstTime){
-                  loadPreData();
-                  loadCurrentUser();
+                //   loadPreData();
+                //   loadCurrentUser();
+                  setTimeout(function(){
+                      loadPreData();
+                  }, 2000)
+                  setTimeout(function(){
+                      loadCurrentUser();
+                  }, 2000)
                   loadSpaf();
                 }
               }
@@ -584,7 +681,7 @@
         @if($client->blockable)
         $('#client_company').append('<option value="{{ $client->modelable_id }}" selected>{{ $client->modelable->company_name }}</option>').val('{{ $client->modelable_id }}');
         @else
-          $('#client_company').val('{{ $client->modelable_id }}')
+          $('#client_company').val('{{ $client->modelable_id }}').select2();
         @endif
           @if($supplier)
             $('#supplier_company').append('<option value="{{ $supplier->modelable_id }}" selected>{{ $supplier->modelable->company_name }}</option>').val('{{ $supplier->modelable_id }}');
@@ -613,7 +710,7 @@
             }
         });
       });
-      
+
       @if(! $request->user()->can('schedule.manage'))
         setTimeout(function(){
           $('#formRow input').attr('disabled', 'disabled');

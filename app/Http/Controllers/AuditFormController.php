@@ -12,6 +12,10 @@ use Carbon\Carbon;
 use App\Models\Utilities;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
+use App\Models\AuditReview;
+use App\Mail\Audit\ReviewNotification;
+use App\Mail\Audit\ReviewResolved;
+use Illuminate\Support\Facades\Mail;
 
 class AuditFormController extends Controller
 {
@@ -215,6 +219,101 @@ class AuditFormController extends Controller
                         'msg' => 'Audit Form successfully updated!',
                         'redirect' => route('audit.show', $auditFormHeader->form->audit)
                     ];
+        } catch (\Exception $e) {
+            \Log::emergency("File:" . $e->getFile(). " Line:" . $e->getLine(). " Message:" . $e->getMessage());
+            $output = ['success' => 0,
+                        'msg' => env('APP_DEBUG') ? $e->getMessage() : 'Sorry something went wrong, please try again later.'
+                    ];
+             DB::rollBack();
+        }
+        return response()->json($output);
+    }
+
+    public function createReview(AuditFormHeader $auditFormHeader){
+        $form = $auditFormHeader->form;
+
+        $targets = $form->template->groups;
+        return view('app.audit.auditForm.review.create', compact('auditFormHeader', 'targets'));
+    }
+
+    public function storeReview(AuditFormHeader $auditFormHeader, Request $request){
+        $validator = Validator::make($request->all(),
+            [
+                'group_id' => 'required',
+                'message' => 'required',
+            ]);
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors(), 'msg' => 'Please check all errors']);
+        }
+        try {
+            DB::beginTransaction();
+            $review = $auditFormHeader->reviews()->create([
+                'status' => 'Pending',
+                'group_id' => $request->group_id,
+                'message' => $request->message
+            ]);
+
+            Mail::to($auditFormHeader->created_by_user)->send(new ReviewNotification($review));
+            
+            DB::commit();
+            $output = ['success' => 1,
+                        'msg' => 'Audit Review created successfully!',
+                        'table_id' => 'audit_form_reviews',
+                    ];
+        } catch (\Exception $e) {
+            \Log::emergency("File:" . $e->getFile(). " Line:" . $e->getLine(). " Message:" . $e->getMessage());
+            $output = ['success' => 0,
+                        'msg' => env('APP_DEBUG') ? $e->getMessage() : 'Sorry something went wrong, please try again later.'
+                    ];
+             DB::rollBack();
+        }
+        return response()->json($output);
+    }
+
+    public function indexReview(Request $request, AuditFormHeader $auditFormHeader){
+        if (request()->ajax()) {
+            $reviews = AuditReview::where('audit_form_header_id', $auditFormHeader->id);
+            return Datatables::eloquent($reviews)
+            ->addColumn('action', function(AuditReview $review) use ($request, $auditFormHeader) {
+                if($request->user()->can('auditForm.review')){
+
+                }else{
+
+                }
+                if($review->status == 'Pending'){
+                    return Utilities::actionButtons([['route' => route('auditForm.review.resolve', $review), 'name' => 'Approve', 'type' => 'confirm', 'title' => 'Are you sure to mark this as resolved?', 'text' => 'Mark as Resolved']]);
+                }
+            })
+            ->addColumn('groupDisplay', function(AuditReview $review) {
+                return $review->group ? $review->group->header : '';
+            })
+            ->addColumn('statusDisplay', function(AuditReview $review){
+                return '<span class="text-'. $review->getStatusClass() .'">'. $review->status .'</span>';
+            })
+            ->editColumn('updated_at', function (AuditReview $review) {
+                return $review->updated_at->diffForHumans() . ' | ' . $review->updatedByName;
+            })
+            ->editColumn('created_at', function (AuditReview $review) {
+                return $review->created_at->format('M d, Y') . ' | ' . $review->createdByName;
+            })
+            ->rawColumns(['action', 'statusDisplay'])
+            ->make(true);
+        }
+    }
+
+    public function resolveReview(AuditReview $auditReview, Request $request){
+        try {
+            DB::beginTransaction();
+            $auditReview->update(['status' => 'Resolved']);
+            DB::commit();
+            $output = ['success' => 1,
+                        'msg' => 'Audit Review marked as resolved successfully!',
+                        'table_id' => 'audit_form_reviews',
+                    ];
+
+            if($auditReview->created_by_user->id != $request->user()->id){
+                Mail::to($auditReview->created_by_user)->send(new ReviewResolved($auditReview));
+            }
         } catch (\Exception $e) {
             \Log::emergency("File:" . $e->getFile(). " Line:" . $e->getLine(). " Message:" . $e->getMessage());
             $output = ['success' => 0,

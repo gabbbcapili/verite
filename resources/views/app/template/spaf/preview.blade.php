@@ -1,7 +1,7 @@
 @if(! in_array($template->type, App\Models\Template::$forReport))
 @foreach($template->groups()->orderBy('sort')->get() as $group)
-<div class="row mb-2 {{ isset($displayed_on_schedule) ? $group->displayed_on_schedule == false ? 'd-none' : '' : '' }}">
-    <h4>{{ $group->header }}</h4>
+<div class="row mb-2 {{ isset($displayed_on_schedule) ? $group->displayed_on_schedule == false ? 'd-none' : '' : '' }} template-group-{{ $group->id }}">
+    <h4 class="group-header">{{ $group->header }}</h4>
     <div class="table-responsive">
         <table class="table table-bordered">
             @foreach($group->questions()->orderBy('sort')->get() as $q)

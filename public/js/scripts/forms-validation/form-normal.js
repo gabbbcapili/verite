@@ -69,9 +69,20 @@ $(function() {
             var errorCounter = 1;
               $.each(result.error, function(index, val){
                 var elem = $('[name="'+ index +'"]');
+                // console.log(elem.attr('name'));
                 var type = elem.attr('type');
                 if(errorCounter == 1){
-                  window.scrollTo({top: $(elem).offset() - 100, behavior: 'smooth'});
+                  if(type == undefined){
+                    scrollElem = $('[id="'+ index +'"]');
+                    if(scrollElem.attr('type') == 'hidden'){
+                      scrollElem = scrollElem.parent();
+                    }
+                  }else{
+                    scrollElem = elem;
+                  }
+                  if(scrollElem){
+                    window.scrollTo({top: $(scrollElem).offset().top - 100, behavior: 'smooth'});
+                  }
                 }
                 errorCounter += 1;
                 if(type == 'radio'){

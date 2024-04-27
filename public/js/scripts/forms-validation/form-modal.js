@@ -26,8 +26,13 @@ $(".modal .form").submit(function(e) {
           }
           if (result.select_id) {
             $('#'+result.select_id).append('<option value="'+result.option_id+'">'+result.option_name+'</option>').val(result.option_id).trigger('change');
-          }
-          else if(result.reload) {
+          }else if(result.table_id){
+            $('#' + result.table_id).ajax.reload();
+          }else if(result.reload) {
+            if (typeof promptConfirmationBeforeUnload === 'function') {
+              console.log('beforeUnload Function Exists');
+              window.removeEventListener('beforeunload', promptConfirmationBeforeUnload);
+            }
             location.reload();
           }
         }else{

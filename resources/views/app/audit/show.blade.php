@@ -6,7 +6,6 @@
   <link rel="stylesheet" href="{{ asset('vendors/css/pickers/flatpickr/flatpickr.min.css') }}">
 @endsection
 @section('page-style')
-  <!-- Page css files -->
   <link rel="stylesheet" href="{{ asset(mix('css/base/plugins/forms/pickers/form-flat-pickr.css')) }}">
 @endsection
 
@@ -14,91 +13,7 @@
 
 <section id="basic-vertical-layouts">
     <div id="printThis">
-        <div class="row">
-            <div class="col-lg-12 col-md-12 col-sm-12">
-                <div class="card">
-                    <div class="card-header">
-                      <h4 class="card-title text-center">Audit Details</h4>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="row mb-2">
-                                <div class="col-lg-6 col-sm-12">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered">
-                                            <tr>
-                                                <th class="text-end" style="width: 20%">Schedule:</th>
-                                                <td style="width: 40%">
-                                                    @if($request->user()->can('schedule.manage'))
-                                                        <a href="#" class="modal_button" data-action="{{route('schedule.edit', $audit->schedule->event_id)}}">{{$audit->schedule->title}}</a>
-                                                    @else
-                                                        {{$audit->schedule->title}}
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th class="text-end" style="width: 20%">Auditee:</th>
-                                                <td style="width: 40%">{!! $schedule->client->CompanyDetails !!}</td>
-                                            </tr>
-                                            <tr>
-                                                <th class="text-end" style="width: 20%">Audit Model:</th>
-                                                <td style="width: 40%">{{$schedule->audit_model }}</td>
-                                            </tr>
-                                            <tr>
-                                                <th class="text-end" style="width: 20%">Audit Model Type:</th>
-                                                <td style="width: 40%">{{ $schedule->audit_model_type }}</td>
-                                            </tr>
-                                            <tr>
-                                                <th class="text-end" style="width: 20%">Country:</th>
-                                                <td style="width: 40%">{{ $schedule->country }} - {{ $schedule->city }}</td>
-                                            </tr>
-                                            <tr>
-                                                <th class="text-end" style="width: 20%">Timezone:</th>
-                                                <td style="width: 40%">{{ $schedule->timezone }}</td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-sm-12">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered">
-                                            <tr>
-                                                <th class="text-end" style="width: 20%">Due Date:</th>
-                                                <td style="width: 40%">{{ $schedule->due_date }}</td>
-                                            </tr>
-                                            <tr>
-                                                <th class="text-end" style="width: 20%">Status:</th>
-                                                <td style="width: 40%">{!! $audit->statusDisplay !!}</td>
-                                            </tr>
-                                            <tr>
-                                                <th class="text-end" style="width: 20%">Completed At:</th>
-                                                <td style="width: 40%">{!! $audit->approved_at !!}</td>
-                                            </tr>
-                                            <tr>
-                                                <th class="text-end" style="width: 20%">Notes:</th>
-                                                <td style="width: 40%">{!! $audit->notes !!}</td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mb-2">
-                                <div class="col-12">
-                                    <table class="table table-bordered">
-                                        @foreach($schedule->event->users as $u)
-                                            <tr>
-                                                <th class="text-end" style="width: 20%">{{ $u->role }}:</th>
-                                                <td style="width: 40%">{{ $u->modelable->fullName }}</td>
-                                            </tr>
-                                        @endforeach
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @include('app.audit.details');
         @foreach($audit->forms as $auditForm)
             @if($auditForm->template->audit_type)
                 @if(! $request->user()->can(App\Models\Template::$auditTypes[$auditForm->template->audit_type]))
@@ -109,7 +24,7 @@
                 <div class="col-lg-12 col-md-12 col-sm-12">
                     <div class="card">
                         <div class="card-header">
-                          <h4 class="card-title text-center">{{ $auditForm->template->name }} {{ $auditForm->template->audit_type }} - <span class="text-{{$auditForm->isMultiple ? 'danger' : 'info'}}">[{{$auditForm->isMultiple ? 'Multiple' : 'One Time'}}]</span></h4>
+                          <h4 class="card-title text-center">{{ $auditForm->template->name }} {{ $auditForm->template->audit_type }} - {!! $auditForm->getTypeDisplay() !!}</h4>
                           <div class="heading-elements">
                             <ul class="list-inline mb-0">
                               <li>
@@ -125,12 +40,13 @@
                                         @if($audit->status != 'completed')
                                             @if($auditForm->isMultiple)
                                               <div class="d-flex justify-content-end mb-1 no-print">
-                                                <a class="btn btn-primary" href="{{ route('auditForm.create', ['auditForm' => $auditForm, 'template' => $auditForm->template->slug]) }}"><i data-feather="plus-circle"></i> Add Answer</a>
+                                                <a class="btn btn-primary" href="{{ route('auditForm.create', ['auditForm' => $auditForm, 'template' => $auditForm->template->slug, 'q' => 'p', 'single_multiple' => $auditForm->isMultiple ? 'Multiple' : 'Single' ,'type' => $auditForm->template->audit_type, 'assigned_name' => 'null']) }}"><i data-feather="plus-circle"></i> Add Answer</a>
                                               </div>
                                             @else
+                                            
                                                 @if(! $auditForm->headers->count() > 0)
                                                     <div class="d-flex justify-content-end mb-1 no-print">
-                                                        <a class="btn btn-primary" href="{{ route('auditForm.create', ['auditForm' => $auditForm, 'template' => $auditForm->template->slug]) }}"><i data-feather="plus-circle"></i> Add Answer</a>
+                                                        <a class="btn btn-primary" href="{{ route('auditForm.create', ['auditForm' => $auditForm, 'template' => $auditForm->template->slug, 'q' => 'p', 'single_multiple' => $auditForm->isMultiple ? 'Multiple' : 'Single' ,'type' => $auditForm->template->audit_type, 'assigned_name' => 'null']) }}"><i data-feather="plus-circle"></i> Add Answer</a>
                                                       </div>
                                                 @endif
                                             @endif
@@ -141,28 +57,50 @@
                                                 <th>Assigned Name</th>
                                                 <th>Status</th>
                                                 <th>Completion</th>
+                                                <th>Created</th>
+                                                <th>Updated</th>
                                                 <th>Action</th>
                                             </thead>
                                             <tbody>
                                                 @foreach($auditForm->headers as $header)
+                                                    @if(! $request->user()->can('audit.all_records'))
+                                                        @if($request->user()->id != $header->created_by)
+                                                            @continue
+                                                        @endif
+                                                    @endif
                                                     <tr id="header{{ $header->id }}">
                                                         <td>{{ $header->name }}</td>
                                                         <td>{!! $header->statusDisplay !!}</td>
                                                         <td>{{ $header->groupCompleted }} / {{$auditForm->template->groups->count()}} groups</td>
-                                                        <td>@if($audit->status != 'completed' && $header->status != 'approved')
-                                                                <a target="_blank" href="{{ route('auditForm.show', $header) }}" data-bs-toggle="tooltip" data-placement="top" title="" class="me-50" data-bs-original-title="Show" aria-label="Show"><i data-feather="eye"></i></a>
+                                                        <td>{{ $header->created_at->format('M d, Y') . ' | ' . $header->createdByName }}</td>
+                                                        <td>{{ $header->updated_at->diffForHumans() . ' | ' . $header->updatedByName }}</td>
+                                                        <td>
+                                                            @if($audit->status != 'completed' && $header->status != 'approved')
+                                                                @if($request->user()->can('auditForm.view'))
+                                                                    <a target="_blank" href="{{ route('auditForm.show', $header) }}" data-bs-toggle="tooltip" data-placement="top" title="" class="me-50" data-bs-original-title="Show" aria-label="Show"><i data-feather="eye"></i></a>
+                                                                @endif
                                                                 @if($auditForm->isMultiple)
-                                                                    {!! App\Models\Utilities::actionButtons([
-                                                                        ['route' => route('auditForm.edit', ['auditFormHeader' => $header, 'template' => $auditForm->template->slug, 'assigned_name' => $header->name, 'type' => $auditForm->template->type]), 'name' => 'Edit', 'type' => 'href'],
-                                                                        ['route' => route('auditForm.destroy', $header), 'name' => 'Delete', 'type' => 'confirmDelete', 'title' => 'Are you sure to delete this audit form answer?', 'text' => 'Delete']
-                                                                    ]); !!}
+                                                                    @if($request->user()->can('auditForm.edit'))
+                                                                        {!! App\Models\Utilities::actionButtons([
+                                                                            ['route' => route('auditForm.edit', ['auditFormHeader' => $header, 'template' => $auditForm->template->slug, 'q' => 'p', 'assigned_name' => $header->name, 'single_multiple' => $auditForm->isMultiple ? 'Multiple' : 'Single' ,'type' => $auditForm->template->audit_type]), 'name' => 'Edit', 'type' => 'href'],
+                                                                        ]); !!}
+                                                                    @endif
+                                                                    @if($request->user()->can('auditForm.delete'))
+                                                                        {!! App\Models\Utilities::actionButtons([
+                                                                            ['route' => route('auditForm.destroy', $header), 'name' => 'Delete', 'type' => 'confirmDelete', 'title' => 'Are you sure to delete this audit form answer?', 'text' => 'Delete']
+                                                                        ]); !!}
+                                                                    @endif
                                                                 @else
-                                                                    {!! App\Models\Utilities::actionButtons([
-                                                                        ['route' => route('auditForm.edit', ['auditFormHeader' => $header, 'template' => $auditForm->template->slug, 'assigned_name' => $header->name, 'type' => $auditForm->template->type]), 'name' => 'Edit', 'type' => 'href']
-                                                                    ]); !!}
+                                                                    @if($request->user()->can('auditForm.edit'))
+                                                                        {!! App\Models\Utilities::actionButtons([
+                                                                            ['route' => route('auditForm.edit', ['auditFormHeader' => $header, 'template' => $auditForm->template->slug, 'q' => 'p', 'assigned_name' => $header->name, 'single_multiple' => $auditForm->isMultiple ? 'Multiple' : 'Single' ,'type' => $auditForm->template->audit_type]), 'name' => 'Edit', 'type' => 'href']
+                                                                        ]); !!}
+                                                                    @endif
                                                                 @endif
                                                             @else
-                                                                <a target="_blank" href="{{ route('auditForm.show', $header) }}" data-bs-toggle="tooltip" data-placement="top" title="" class="me-50" data-bs-original-title="Show" aria-label="Show"><i data-feather="eye"></i></a>
+                                                                @if($request->user()->can('auditForm.view'))
+                                                                    <a target="_blank" href="{{ route('auditForm.show', $header) }}" data-bs-toggle="tooltip" data-placement="top" title="" class="me-50" data-bs-original-title="Show" aria-label="Show"><i data-feather="eye"></i></a>
+                                                                @endif
                                                             @endif
                                                         </td>
                                                     </tr>
@@ -193,7 +131,7 @@
                               @endif
                               <button type="button" class="btn btn-primary no-print btn_print"><i data-feather="printer"></i> Print </button>
                               @if($request->user()->can('audit.manage') && in_array($audit->status, ['pending']))
-                                <a href="{{ route('audit.createForm', ['audit' => $audit]) }}" class="btn btn-info"><i data-feather="plus-circle"></i> Add Forms</a>
+                                <a href="{{ route('audit.forms', ['audit' => $audit]) }}" class="btn btn-info"><i data-feather="edit"></i> Modify Forms</a>
                               @endif
 
                             </div>

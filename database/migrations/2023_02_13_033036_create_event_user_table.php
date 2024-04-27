@@ -20,6 +20,7 @@ class CreateEventUserTable extends Migration
             $table->unsignedInteger('modelable_id');
             $table->string('modelable_type');
             $table->boolean('blockable')->default(1);
+            $table->text('notes');
             $table->softDeletes();
             $table->timestamps();
         });
