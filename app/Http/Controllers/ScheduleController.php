@@ -157,7 +157,9 @@ class ScheduleController extends Controller
         $auditors = User::auditors();
         $countries = Country::all();
         $states = State::where('country_id', $event->country_id)->get();
-        $userEvents = $request->user()->events()->where('status', 0)->where('event_id', $event->id)->first();
+        $userEvents = $request->user()->events()->whereHas('event', function($q){
+                                            $q->where('type', 'Audit Schedule');
+                                        })->where('status', 0)->where('event_id', $event->id)->first();
         $rejectedSchedules = $event->users()->withTrashed()->where('status', 2)->get();
 
         return view('app.schedule.editNew', compact('auditmodels','schedulestatuses','countries', 'event', 'schedule', 'client', 'supplier', 'companies', 'scheduleStatus', 'next_stop', 'proficiencies', 'auditors', 'breadcrumbs', 'countries', 'states', 'userEvents', 'rejectedSchedules'));

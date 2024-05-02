@@ -177,10 +177,13 @@ class Question extends Model
        return $html;
     }
 
-    public function getHoverText($updated_at){
+    public function getHoverText($updated, $created){
         $text = '';
-        if($updated_at){
-            $text = 'Updated At: ' . $updated_at->diffForHumans() . '<br>';
+        if($updated){
+            $text .= $updated;
+        }
+        if($created){
+            $text .= $created;
         }
         $text .= 'Type: ' . ucfirst($this->type) . '<br>';
         if($this->standards){

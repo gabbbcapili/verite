@@ -1,25 +1,28 @@
 @php
     $answer = null;
-    $updated_at = null;
+    $updated = null;
+    $created = null;
     if($answers){
         if($answers->where('question_id', $q->id)->first()){
             $answer = $answers->where('question_id', $q->id)->first()->value;
-            $updated_at = $answers->where('question_id', $q->id)->first()->updated_at;
+            $answer_updated = $answers->where('question_id', $q->id)->first();
+            $updated = 'Updated At:' . $answer_updated->updated_at->diffForHumans() . ' | ' . $answer_updated->updatedByName . '<br>';
+            $created = 'Created At:' . $answer_updated->created_at->format('M d, Y') . ' | ' . $answer_updated->createdByName . '<br>';
         }
     }
 @endphp
 
 @if($q->type == 'input' || $q->type == 'email' || $q->type == 'number')
-    <input type="text" name="question[{{ $q->id  }}]" id="question.{{ $q->id }}" class="form-control forInsertion withDataInsertion" data-forinsertion="{template-{{ $t->id }}_{{$q->id}}_{{$t->name}}_{{$g->header}}_{{$q->text}}}" placeholder="{{ $q->text }}{{ $q->required ? '* ' : '' }}" value="{{ $answer ? $answer : '' }}" title="{{ $q->getHoverText($updated_at) }}" data-bs-html="true" data-bs-toggle="tooltip" {{ isset($disabled) ? 'disabled' : '' }}>
+    <input type="text" name="question[{{ $q->id  }}]" id="question.{{ $q->id }}" class="form-control forInsertion withDataInsertion" data-forinsertion="{template-{{ $t->id }}_{{$q->id}}_{{$t->name}}_{{$g->header}}_{{$q->text}}}" placeholder="{{ $q->text }}{{ $q->required ? '* ' : '' }}" value="{{ $answer ? $answer : '' }}" title="{{ $q->getHoverText($updated, $created) }}" data-bs-html="true" data-bs-toggle="tooltip" {{ isset($disabled) ? 'disabled' : '' }}>
 @elseif($q->type == 'textarea')
-    <textarea name="question[{{ $q->id  }}]" id="question.{{ $q->id }}" title="{{ $q->getHoverText($updated_at) }}" data-bs-html="true" data-bs-toggle="tooltip" class="form-control forInsertion withDataInsertion" data-forinsertion="{template-{{ $t->id }}_{{$q->id}}_{{$t->name}}_{{$g->header}}_{{$q->text}}}" placeholder="{{ $q->text }}{{ $q->required ? '* ' : '' }}" {{ isset($disabled) ? 'disabled' : '' }}>{{ $answer ? $answer : '' }}</textarea>
+    <textarea name="question[{{ $q->id  }}]" id="question.{{ $q->id }}" title="{{ $q->getHoverText($updated, $created) }}" data-bs-html="true" data-bs-toggle="tooltip" class="form-control forInsertion withDataInsertion" data-forinsertion="{template-{{ $t->id }}_{{$q->id}}_{{$t->name}}_{{$g->header}}_{{$q->text}}}" placeholder="{{ $q->text }}{{ $q->required ? '* ' : '' }}" {{ isset($disabled) ? 'disabled' : '' }}>{{ $answer ? $answer : '' }}</textarea>
 @elseif($q->type == 'file')
     @if(!$q->next_line)<label>{{ $q->text }}{{ $q->required ? '* ' : '' }}</label>@endif
-    <input type="file" name="file[{{ $q->id  }}]" id="file.{{ $q->id }}" class="form-control forInsertion withDataInsertion" data-forinsertion="{template-{{ $t->id }}_{{$q->id}}_{{$t->name}}_{{$g->header}}_{{$q->text}}}" placeholder="{{ $q->text }}{{ $q->required ? '* ' : '' }}" title="{{ $q->getHoverText($updated_at) }}" data-bs-html="true" data-bs-toggle="tooltip" {{ isset($disabled) ? 'disabled' : '' }}>
+    <input type="file" name="file[{{ $q->id  }}]" id="file.{{ $q->id }}" class="form-control forInsertion withDataInsertion" data-forinsertion="{template-{{ $t->id }}_{{$q->id}}_{{$t->name}}_{{$g->header}}_{{$q->text}}}" placeholder="{{ $q->text }}{{ $q->required ? '* ' : '' }}" title="{{ $q->getHoverText($updated, $created) }}" data-bs-html="true" data-bs-toggle="tooltip" {{ isset($disabled) ? 'disabled' : '' }}>
     @if($answer)<div><a target="_blank" href="{{ asset('uploads/spaf/'. $answer)  }}">{{ $answer }}</a></div>@endif
 @elseif($q->type == 'file_multiple')
     @if(!$q->next_line)<label>{{ $q->text }}{{ $q->required ? '* ' : '' }}</label>@endif
-    <input type="file" multiple="multiple" name="file_multiple[{{ $q->id  }}][]" id="file_multiple.{{ $q->id }}" class="form-control forInsertion withDataInsertion" data-forinsertion="{template-{{ $t->id }}_{{$q->id}}_{{$t->name}}_{{$g->header}}_{{$q->text}}}" placeholder="{{ $q->text }}{{ $q->required ? '* ' : '' }}" title="{{ $q->getHoverText($updated_at) }}" data-bs-html="true" data-bs-toggle="tooltip" {{ isset($disabled) ? 'disabled' : '' }}>
+    <input type="file" multiple="multiple" name="file_multiple[{{ $q->id  }}][]" id="file_multiple.{{ $q->id }}" class="form-control forInsertion withDataInsertion" data-forinsertion="{template-{{ $t->id }}_{{$q->id}}_{{$t->name}}_{{$g->header}}_{{$q->text}}}" placeholder="{{ $q->text }}{{ $q->required ? '* ' : '' }}" title="{{ $q->getHoverText($updated, $created) }}" data-bs-html="true" data-bs-toggle="tooltip" {{ isset($disabled) ? 'disabled' : '' }}>
     @if($answer)
         @foreach(explode(',', $answer) as $file)
             <div><a target="_blank" href="{{ asset('uploads/spaf/'. $file)  }}">{{ $file }}</a></div>
@@ -31,7 +34,7 @@
 @elseif($q->type == 'radio')
     <input type="hidden" id="question.{{ $q->id }}">
     @foreach(explode('|', $q->for_checkbox) as $option)
-    <div class="form-check form-check-inline" title="{{ $q->getHoverText($updated_at) }}" data-bs-html="true" data-bs-toggle="tooltip">
+    <div class="form-check form-check-inline" title="{{ $q->getHoverText($updated, $created) }}" data-bs-html="true" data-bs-toggle="tooltip">
           <input checkstate="{{ $option == $answer ? 'true' : '' }}" data-input="question[{{ $q->id  }}]" class="form-check-input forInsertion withDataInsertion" data-forinsertion="{template-{{ $t->id }}_{{$q->id}}_{{$t->name}}_{{$g->header}}_{{$q->text}}}"
            type="radio" name="question[{{ $q->id  }}]" id="question.{{ $q->id}}.{{ $option }}"
             value="{{ $option }}" {{ $option == $answer ? 'checked' : '' }} {{ isset($disabled) ? 'disabled' : '' }} />
@@ -42,7 +45,7 @@
 @elseif($q->type == 'checkbox')
     <input type="hidden" id="checkbox.{{ $q->id}}">
     @foreach(explode('|', $q->for_checkbox) as $option)
-        <div class="form-check form-check-inline" title="{{ $q->getHoverText($updated_at) }}" data-bs-html="true" data-bs-toggle="tooltip">
+        <div class="form-check form-check-inline" title="{{ $q->getHoverText($updated, $created) }}" data-bs-html="true" data-bs-toggle="tooltip">
           <input class="form-check-input forInsertion withDataInsertion" data-forinsertion="{template-{{ $t->id }}_{{$q->id}}_{{$t->name}}_{{$g->header}}_{{$q->text}}}" type="checkbox"
            name="checkbox[{{$q->id}}][]" id="checkbox.{{ $q->id}}.{{ $option }}"
            value="{{ $option }}" {{ $answer ? in_array($option, explode(',', $answer)) ? 'checked' : '' : '' }} {{ isset($disabled) ? 'disabled' : '' }} />
