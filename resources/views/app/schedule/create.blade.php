@@ -254,14 +254,14 @@
                         <span id="users"></span>
                         <div class="table-responsive" style="max-height:320px;" id="userTableResponsive">
                           <input type="hidden" id="user_row_count" value="0">
-                          <table class="table table-striped" id="user_table">
+                          <table class="table table-striped" id="user_table" style="table-layout: fixed">
                             <thead>
                               <tr>
-                                <th style="width: 20%;">Role</th>
-                                <th style="width: 35%;">Resource</th>
+                                <th style="width: 15%;">Role</th>
+                                <th style="width: 46%;">Resource</th>
                                 <th style="width: 25%;">Start & End Date</th>
-                                <th style="width: 10%;">Status</th>
-                                <th style="width: 10%;">Action</th>
+                                <th style="width: 7%;">Status</th>
+                                <th style="width: 7%;">Action</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -324,7 +324,7 @@
           </div>
         </div>
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer" style="position: sticky; bottom: 0; z-index: 1000;">
           <button type="submit" class="btn btn-primary no-print btn_save"><i data-feather="save"></i> Save
           </button>
       </div>

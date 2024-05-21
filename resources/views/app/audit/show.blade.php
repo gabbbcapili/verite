@@ -56,6 +56,7 @@
                                             <thead>
                                                 <th>Assigned Name</th>
                                                 <th>Status</th>
+                                                <th>Review Status</th>
                                                 <th>Completion</th>
                                                 <th>Created</th>
                                                 <th>Updated</th>
@@ -68,16 +69,24 @@
                                                             @continue
                                                         @endif
                                                     @endif
+                                                    @php $reviewCount = $header->reviews()->where('status', 'pending')->count(); @endphp
                                                     <tr id="header{{ $header->id }}">
                                                         <td>{{ $header->name }}</td>
                                                         <td>{!! $header->statusDisplay !!}</td>
+                                                        <td>
+                                                            @if($reviewCount)
+                                                                <span class="text-danger">With Pending Reviews ({{ $reviewCount }})</span>
+                                                            @else
+                                                                <span class="text-secondary">No Pending Review</span>
+                                                            @endif
+                                                        </td>
                                                         <td>{{ $header->groupCompleted }} / {{$auditForm->template->groups->count()}} groups</td>
                                                         <td>{{ $header->created_at->format('M d, Y') . ' | ' . $header->createdByName }}</td>
                                                         <td>{{ $header->updated_at->diffForHumans() . ' | ' . $header->updatedByName }}</td>
                                                         <td>
                                                             @if($audit->status != 'completed' && $header->status != 'approved')
                                                                 @if($request->user()->can('auditForm.view'))
-                                                                    <a target="_blank" href="{{ route('auditForm.show', $header) }}" data-bs-toggle="tooltip" data-placement="top" title="" class="me-50" data-bs-original-title="Show" aria-label="Show"><i data-feather="eye"></i></a>
+                                                                    <a href="{{ route('auditForm.show', $header) }}" data-bs-toggle="tooltip" data-placement="top" title="" class="me-50" data-bs-original-title="Show" aria-label="Show"><i data-feather="eye"></i></a>
                                                                 @endif
                                                                 @if($auditForm->isMultiple)
                                                                     @if($request->user()->can('auditForm.edit'))
@@ -130,10 +139,12 @@
                                 <a data-action="{{ route('audit.approve', ['audit' => $audit, 'approve' => false]) }}" data-confirmbutton="Revert to Pending" data-title="Are you sure to revert this audit to pending?" class="btn btn-warning confirm"><i data-feather="x-circle"></i> Revert to Pending</a>
                               @endif
                               <button type="button" class="btn btn-primary no-print btn_print"><i data-feather="printer"></i> Print </button>
-                              @if($request->user()->can('audit.manage') && in_array($audit->status, ['pending']))
-                                <a href="{{ route('audit.forms', ['audit' => $audit]) }}" class="btn btn-info"><i data-feather="edit"></i> Modify Forms</a>
+                              @if(request()->user()->can('auditForm.modifyForms'))
+                                  
+                                  @if($request->user()->can('audit.manage') && in_array($audit->status, ['pending']))
+                                    <a href="{{ route('audit.forms', ['audit' => $audit]) }}" class="btn btn-info"><i data-feather="edit"></i> Modify Forms</a>
+                                  @endif
                               @endif
-
                             </div>
                           </div>
                         </div>

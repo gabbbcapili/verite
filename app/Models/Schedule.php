@@ -82,5 +82,15 @@ class Schedule extends Model
         $title .=  Carbon::parse($this->event->start_date)->format('mdy');
         $this->update(['title' => $title]);
     }
+
+    public static function calcDueDate($endDate, $turnaroundDays) {
+        // Parse the end date
+        $end_date = Carbon::parse($endDate);
+        
+        // Add turnaround days while excluding weekends
+        $due_date = $end_date->addWeekdays($turnaroundDays)->format('Y-m-d');
+        
+        return $due_date;
+    }
 }
 

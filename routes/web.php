@@ -38,6 +38,8 @@ Route::group(['middleware' => ['auth']], function()
     Route::get('/', [StaterkitController::class, 'home'])->name('home');
     Route::get('/getBadges', [StaterkitController::class, 'getBadges'])->name('getBadges');
 
+    Route::get('/dashboard/resourceSchedules', [StaterkitController::class, 'resourcesSchedules'])->name('dashboard.resources_schedules')->middleware('permission:dashboard.scheduler');
+
     Route::post('/user/sendReset/{user}', [UserController::class, 'sendReset'])->name('user.sendReset');
     Route::get('user/delete/{user}', [UserController::class, 'delete'])->name('user.delete');
     Route::resource('user', UserController::class)->except('show')->middleware('permission:user.manage');

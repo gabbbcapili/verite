@@ -41,6 +41,14 @@ class EventUser extends Model
         }
     }
 
+    public function getStatusFormattedClassAttribute(){
+        switch($this->status){
+            case 0: return 'warning'; break;
+            case 1: return 'success'; break;
+            case 2: return 'danger'; break;
+        }
+    }
+
     public static function getStartEndDate($start_end){
         $eventUserStartEnd = explode('to', $start_end);
         $eventUserStart = $eventUserStartEnd[0];

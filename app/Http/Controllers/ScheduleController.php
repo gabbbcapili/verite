@@ -291,6 +291,8 @@ class ScheduleController extends Controller
                                 'event_id' => $event->id,
                                 'modelable_id' => $user->id,
                                 'modelable_type' => 'App\Models\User',
+                                'start_date' => $event['start_date'],
+                                'end_date' => $event['end_date'],
                             ]);
                 }
                 foreach($companies->get() as $company_id){
@@ -329,14 +331,13 @@ class ScheduleController extends Controller
                             'blockable' => $blockable,
                         ]);
                     }
-
                     $schedule['client_id'] = $request->has('supplier_company_id') ? $request->supplier_company_id : $request->client_company_id;
                     $country = Country::find($request->country);
                     $schedule['title'] = Schedule::computeTitle($client, $supplier, $country->acronym ,$event->start_date);
                     $schedule['country'] = $country->name;
                     $schedule['timezone'] = $country->timezone;
                     $schedule['event_id'] = $event->id;
-                    $schedule['due_date'] = Carbon::now()->addDays($schedule['turnaround_days'])->format('Y-m-d');
+                    $schedule['due_date'] = Schedule::calcDueDate($event['end_date'], $schedule['turnaround_days']);
                     $schedule = Schedule::create($schedule);
                     $schedule->scheduleStatusLogs()->create(['schedule_status_id' => $scheduleStatus->id]);
 

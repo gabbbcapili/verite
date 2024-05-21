@@ -28,7 +28,7 @@ class RoleController extends Controller
             $role = Role::where('is_deleted', 0)->orderBy('updated_at', 'desc');
             return Datatables::eloquent($role)
             ->addColumn('action', function(Role $role) {
-                            if(! in_array($role->id, [1,2,3,4])){
+                            if(! in_array($role->id, [1,3,4])){
                                 return Utilities::actionButtons([['route' => route('role.show', $role->id), 'name' => 'Show'],['route' => route('role.edit', $role->id), 'name' => 'Edit'], ['route' => route('role.delete', $role->id), 'name' => 'Delete']]);
                             }else{
                                 return Utilities::actionButtons([['route' => route('role.show', $role->id), 'name' => 'Show'],]);
@@ -38,10 +38,14 @@ class RoleController extends Controller
                 return implode(', ', $role->permissions->pluck('display')->toArray());
             })
             ->editColumn('created_at', function (Role $role) {
-                return $role->created_at->format('M d, Y');
+                $user = User::where('id', $role->created_by)->first();
+                $full_name = $user ? $user->full_name : '';
+                return $role->created_at->format('M d, Y') . ' | ' . $full_name;
             })
             ->editColumn('updated_at', function (Role $role) {
-                return $role->updated_at->diffForHumans();
+                $user = User::where('id', $role->updated_by)->first();
+                $full_name = $user ? $user->full_name : '';
+                return $role->updated_at->diffForHumans() . ' | ' . $full_name;;
             })
             ->rawColumns(['action'])
             ->make(true);
@@ -67,7 +71,7 @@ class RoleController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->all();
-            $role = Role::create(['name' => $data['name']]);
+            $role = Role::create(['name' => $data['name'], 'created_by' => $request->user()->id]);
             if($request->has('permissions')){
                 $permissions = Permission::whereIn('name', $data['permissions'])->get();
                 $role->syncPermissions($permissions);
@@ -129,7 +133,7 @@ class RoleController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->all();
-            $role->update(['name' => $data['name']]);
+            $role->update(['name' => $data['name'], 'updated_by' => $request->user()->id]);
             if($request->has('permissions')){
                 $permissions = Permission::whereIn('name', $data['permissions'])->get();
                 $role->syncPermissions($permissions);

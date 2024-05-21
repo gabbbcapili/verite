@@ -13,6 +13,7 @@ use App\Models\Utilities;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use Validator;
+use App\Models\EventUser;
 
 class StaterkitController extends Controller
 {
@@ -62,7 +63,7 @@ class StaterkitController extends Controller
             $scheduleStatus = $schedules->get()->groupBy('status');
             return Datatables::eloquent($schedules)
             ->addColumn('titleDisplay', function(Schedule $schedule) {
-                return '<a data-action="'. route('schedule.edit', $schedule->event_id) .'" class="modal_button" data-bs-toggle="tooltip" data-placement="top" title="'. $schedule->status .'"><span class="badge rounded-pill badge-light-'. $schedule->status_color .' me-1">'. $schedule->event->titleComputed .'</span></a>';
+                return '<a target="_blank" href="'. route('schedule.editNew', $schedule->event_id) .'" data-bs-toggle="tooltip" data-placement="top" title="'. $schedule->status .'"><span class="badge rounded-pill badge-light-'. $schedule->status_color .' me-1">'. $schedule->event->titleComputed .'</span></a>';
             })
             ->editColumn('updated_at', function (Schedule $schedule) {
                 return $schedule->updated_at->diffForHumans() . ' | ' . $schedule->updatedByName;
@@ -83,6 +84,42 @@ class StaterkitController extends Controller
             ->make(true);
         }
         return view('app.dashboard.index', compact('breadcrumbs', 'totals'));
+    }
+
+    public function resourcesSchedules(Request $request){
+        // if (request()->ajax()) {
+            $schedules = EventUser::where('modelable_type', 'App\Models\User')
+                    ->whereHas('event', function ($q) use($request){
+                        $q->where('type', 'Audit Schedule');
+                    });
+            if($request->resourceStatus != "all"){
+                $schedules = $schedules->where('status', $request->resourceStatus);
+            }
+            if($request->has('resourcesDateRange')){
+                $date = explode(' to ', $request->resourcesDateRange);
+                $from = $date[0];
+                $to = array_key_exists(1, $date) ? $date[1] : $date[0];
+                $schedules = $schedules->where('start_date', '>=', $from)->where('end_date', '<=', $to);
+            }
+            return Datatables::eloquent($schedules)
+       
+           ->addColumn('status_formatted', function (EventUser $eventUser) {
+                return '<span class="text-'. $eventUser->status_formatted_class .'">'.$eventUser->status_formatted.'</span>';
+            })
+           ->addColumn('schedule_link', function (EventUser $eventUser) {
+                if($eventUser->event){
+                    if($eventUser->event->schedule){
+                        $schedule = $eventUser->event->schedule;
+                        return '<a target="_blank" href="'. route('schedule.editNew', $schedule->event_id) .'" data-bs-toggle="tooltip" data-placement="top" title="'. $schedule->status .'"><span class="badge rounded-pill badge-light-'. $schedule->status_color .' me-1">'. $schedule->event->titleComputed .'</span></a>';
+                    }
+                }
+            })
+           ->addColumn('name', function (EventUser $eventUser) {
+                return $eventUser->modelable->full_name;
+            })
+            ->rawColumns(['status_formatted', 'schedule_link'])
+            ->make(true);
+        // }
     }
 
     public function getBadges(Request $request){

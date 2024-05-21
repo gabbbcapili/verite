@@ -69,13 +69,14 @@ class RoleSeeder extends Seeder
             ['name' => 'auditForm.edit', 'display' => 'Audit Form access to edit records'],
             ['name' => 'auditForm.delete', 'display' => 'Audit Form access to delete records'],
             ['name' => 'auditForm.review', 'display' => 'Audit Form access as reviewer'],
+            ['name' => 'auditForm.modifyForms', 'display' => 'Audit Form access to modify forms'],
         ];
         foreach($permissions as $p){
             Permission::create($p);
         }
 
         $sa_permission = Permission::all();
-        $sa->syncPermissions(['user.manage', 'spaf.manage','template.manage', 'supplier.manage', 'client.manage', 'spaf.approve', 'role.manage', 'template.approve', 'dashboard.default', 'settings.email.manage', 'settings.country.manage', 'settings.scheduleStatus.manage', 'settings.auditModel.manage', 'schedule.manage', 'settings.schedule.manage', 'schedule.selectableAuditor', 'audit.manage', 'audit.approve', 'settings.audit.manage', 'report.manage', 'settings.standard.manage', 'audit.auditform', 'audit.wif', 'audit.drf', 'audit.mif', 'audit.all_records', 'auditForm.saveandcontinue', 'auditForm.saveandsubmit', 'auditForm.saveandapprove', 'auditForm.view', 'auditForm.edit', 'auditForm.delete', 'auditForm.review']);
+        $sa->syncPermissions(['user.manage', 'spaf.manage','template.manage', 'supplier.manage', 'client.manage', 'spaf.approve', 'role.manage', 'template.approve', 'dashboard.default', 'settings.email.manage', 'settings.country.manage', 'settings.scheduleStatus.manage', 'settings.auditModel.manage', 'schedule.manage', 'settings.schedule.manage', 'schedule.selectableAuditor', 'audit.manage', 'audit.approve', 'settings.audit.manage', 'report.manage', 'settings.standard.manage', 'audit.auditform', 'audit.wif', 'audit.drf', 'audit.mif', 'audit.all_records', 'auditForm.saveandcontinue', 'auditForm.saveandsubmit', 'auditForm.saveandapprove', 'auditForm.view', 'auditForm.edit', 'auditForm.delete', 'auditForm.review', 'auditForm.modifyForms']);
         $default->syncPermissions(['dashboard.default']);
         $supplier->syncPermissions(['dashboard.supplier']);
         $client->syncPermissions(['dashboard.client']);

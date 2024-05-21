@@ -152,6 +152,19 @@
           </td>
           <td>
             <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="radio" value="dashboard.scheduler" name="permissions[]" {{ isset($roleList) ? in_array('dashboard.scheduler', $roleList) ? 'checked' : '' : 'checked' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="circle" class="vs-icon"></i></span>
+              </span>
+              <span class="">Scheduler</span>
+            </div></fieldset>
+          </td>
+          <td></td>
+          <td></td>
+        </tr><tr>
+          <td></td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
               <input type="radio" value="dashboard.supplier" name="permissions[]" {{ isset($roleList) ? in_array('dashboard.supplier', $roleList) ? 'checked' : '' : '' }}>
               <span class="vs-checkbox">
                 <span class="vs-checkbox--check"><i data-feather="circle" class="vs-icon"></i></span>
@@ -168,6 +181,8 @@
               <span class="">Client</span>
             </div></fieldset>
           </td>
+          <td></td>
+          <td></td>
         </tr>
       </tbody>
       <thead>
@@ -262,11 +277,11 @@
           </td>
           <td>
             <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
-              <input type="checkbox" value="audit.all_records" name="permissions[]" {{ isset($roleList) ? in_array('audit.all_records', $roleList) ? 'checked' : '' : '' }}>
+              <input type="checkbox" value="auditForm.modifyForms" name="permissions[]" {{ isset($roleList) ? in_array('auditForm.modifyForms', $roleList) ? 'checked' : '' : '' }}>
               <span class="vs-checkbox">
-                <span class="vs-checkbox--check"><i data-feather="circle" class="vs-icon"></i></span>
+                <span class="vs-checkbox--check"><i data-feather="edit" class="vs-icon"></i></span>
               </span>
-              <span class="">See All Records</span>
+              <span class="">Can Modify Forms</span>
             </div></fieldset>
           </td>
           <td></td>
@@ -396,7 +411,15 @@
               <span class="">Can Review</span>
             </div></fieldset>
           </td>
-          <td></td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="audit.all_records" name="permissions[]" {{ isset($roleList) ? in_array('audit.all_records', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="circle" class="vs-icon"></i></span>
+              </span>
+              <span class="">See All Records</span>
+            </div></fieldset>
+          </td>
           <td></td>
         </tr>
       </tbody>

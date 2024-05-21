@@ -1,0 +1,27 @@
+Display of certain items in Audit Forms (eg. Radio Button) is null. check as well updated created by
+Resource is displayed even if he has no Skills required for the Role
+1: Roles sa audit - nasa view dapat yugn mga buttons (save later, save submit, save approve, reviews)
+
+
+Dashboards
+  Scheduler - Pakita lahat ng ginawa nyang schedules tapos andun
+			  yung lahat ng nag decline at nag accept sa isang table lang ilabas dn name ng schedule + link papunta sa schedule na yon
+
+ make 2 dashboards - default, auditor, scheduler
+ 	scheduler - table of schedules title, role, resource, status, date, comments
+
+
+2: Reports change design based sa meeting
+   - Floating yung editor
+
+ check cron job daily reminder of answered forms that are pending
+
+
+ Reports Process:
+
+ new permissions: 
+  - manage report (kung kita mo reports or no )
+  - see all records (if no only as assigned resource)
+  - Provide screen latest upload sa header sa details transactions (file - nullable, comments required)
+  - can submit, can review, can approve
+  - Open, For Review, For Final Review [if rejected back to open], Approved
