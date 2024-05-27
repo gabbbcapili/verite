@@ -8,6 +8,9 @@ use App\Models\Schedule;
 use App\Models\Template;
 use App\Models\Company;
 use App\Models\Standard;
+use App\Models\AuditForm;
+use App\Models\Question;
+use App\Models\AuditFormAnswer;
 use Illuminate\Http\Request;
 use App\Models\Utilities;
 use Illuminate\Support\Facades\DB;
@@ -171,6 +174,7 @@ class ReportController extends Controller
         $spafs = $company->loadSpafForReport();
         $settings = Setting::first();
         $standards = Standard::whereIn('id', $audit->standardsIdsUsed())->get();
+
         $flags = $audit->flagsUsed();
         $flagsFormsUsed = $audit->flagsFormsUsed();
         // dd($flagsFormsUsed);
@@ -221,5 +225,32 @@ class ReportController extends Controller
     public function destroy(Report $report)
     {
         //
+    }
+
+    public function showQuestionSummary(AuditForm $auditForm, Question $question){
+        $breadcrumbs = [
+            ['link'=>"/",'name'=>"Home"], ['name'=>"Audit Question Summary"], ['name' => $question->text]
+        ];
+        $audit = $auditForm->audit;
+        $schedule = $audit->schedule;
+        if (request()->ajax()) {
+            $auditFormAnswers = AuditFormAnswer::whereIn('audit_form_header_id', $auditForm->headers->pluck('id'))->whereNotNull('value')
+                                ->whereHas('question', function($q) use($question){
+                                    $q->where('id', $question->id);
+                                });
+            return Datatables::eloquent($auditFormAnswers)
+            ->addColumn('form_name', function (AuditFormAnswer $auditFormAnswer) {
+                return $auditFormAnswer->header ? $auditFormAnswer->header->name : '';
+            })
+            ->editColumn('updated_at', function (AuditFormAnswer $auditFormAnswer) {
+                return $auditFormAnswer->updated_at->diffForHumans() . ' | ' . $auditFormAnswer->updatedByName;
+            })
+            ->editColumn('created_at', function (AuditFormAnswer $auditFormAnswer) {
+                return $auditFormAnswer->created_at->format('M d, Y') . ' | ' . $auditFormAnswer->createdByName;
+            })
+            ->rawColumns(['form_name'])
+            ->make(true);
+        }
+        return view('app.report.questionSummary', compact('audit', 'auditForm', 'question', 'schedule', 'breadcrumbs'));
     }
 }

@@ -85,29 +85,29 @@
                                                         <td>{{ $header->updated_at->diffForHumans() . ' | ' . $header->updatedByName }}</td>
                                                         <td>
                                                             @if($audit->status != 'completed' && $header->status != 'approved')
-                                                                @if($request->user()->can('auditForm.view'))
+                                                                @if($request->user()->can('auditForm.view') || $header->created_by == $request->user()->id)
                                                                     <a href="{{ route('auditForm.show', $header) }}" data-bs-toggle="tooltip" data-placement="top" title="" class="me-50" data-bs-original-title="Show" aria-label="Show"><i data-feather="eye"></i></a>
                                                                 @endif
                                                                 @if($auditForm->isMultiple)
-                                                                    @if($request->user()->can('auditForm.edit'))
+                                                                    @if($request->user()->can('auditForm.edit') || $header->created_by == $request->user()->id)
                                                                         {!! App\Models\Utilities::actionButtons([
                                                                             ['route' => route('auditForm.edit', ['auditFormHeader' => $header, 'template' => $auditForm->template->slug, 'q' => 'p', 'assigned_name' => $header->name, 'single_multiple' => $auditForm->isMultiple ? 'Multiple' : 'Single' ,'type' => $auditForm->template->audit_type]), 'name' => 'Edit', 'type' => 'href'],
                                                                         ]); !!}
                                                                     @endif
-                                                                    @if($request->user()->can('auditForm.delete'))
+                                                                    @if($request->user()->can('auditForm.delete') || $header->created_by == $request->user()->id)
                                                                         {!! App\Models\Utilities::actionButtons([
                                                                             ['route' => route('auditForm.destroy', $header), 'name' => 'Delete', 'type' => 'confirmDelete', 'title' => 'Are you sure to delete this audit form answer?', 'text' => 'Delete']
                                                                         ]); !!}
                                                                     @endif
                                                                 @else
-                                                                    @if($request->user()->can('auditForm.edit'))
+                                                                    @if($request->user()->can('auditForm.edit') || $header->created_by == $request->user()->id)
                                                                         {!! App\Models\Utilities::actionButtons([
                                                                             ['route' => route('auditForm.edit', ['auditFormHeader' => $header, 'template' => $auditForm->template->slug, 'q' => 'p', 'assigned_name' => $header->name, 'single_multiple' => $auditForm->isMultiple ? 'Multiple' : 'Single' ,'type' => $auditForm->template->audit_type]), 'name' => 'Edit', 'type' => 'href']
                                                                         ]); !!}
                                                                     @endif
                                                                 @endif
                                                             @else
-                                                                @if($request->user()->can('auditForm.view'))
+                                                                @if($request->user()->can('auditForm.view') || $header->created_by == $request->user()->id)
                                                                     <a target="_blank" href="{{ route('auditForm.show', $header) }}" data-bs-toggle="tooltip" data-placement="top" title="" class="me-50" data-bs-original-title="Show" aria-label="Show"><i data-feather="eye"></i></a>
                                                                 @endif
                                                             @endif
@@ -139,11 +139,8 @@
                                 <a data-action="{{ route('audit.approve', ['audit' => $audit, 'approve' => false]) }}" data-confirmbutton="Revert to Pending" data-title="Are you sure to revert this audit to pending?" class="btn btn-warning confirm"><i data-feather="x-circle"></i> Revert to Pending</a>
                               @endif
                               <button type="button" class="btn btn-primary no-print btn_print"><i data-feather="printer"></i> Print </button>
-                              @if(request()->user()->can('auditForm.modifyForms'))
-                                  
-                                  @if($request->user()->can('audit.manage') && in_array($audit->status, ['pending']))
+                              @if(request()->user()->can('auditForm.modifyForms') && in_array($audit->status, ['pending']))
                                     <a href="{{ route('audit.forms', ['audit' => $audit]) }}" class="btn btn-info"><i data-feather="edit"></i> Modify Forms</a>
-                                  @endif
                               @endif
                             </div>
                           </div>

@@ -17,6 +17,12 @@
       cursor: pointer !important;
       border: 1px solid #7367f0 !important;
     }
+    .sticky-column {
+      background-color: #f8f9fa;
+      height: 100%;
+      padding: 15px;
+      border: 1px solid #dee2e6;
+    }
   </style>
 @endsection
 
@@ -24,13 +30,19 @@
 <section id="basic-vertical-layouts">
     <div class="card">
         <div class="card-body">
-            <div class="row mb-2">
-                <div class="col-lg-4">
-                    <a target="_blank" href="{{ route('audit.show', $report->audit->id) }}" class="btn btn-success"><i data-feather="eye"></i> View Audit</a>
+
+            <div class="d-flex bd-highlight mb-1">
+              <div class="bd-highlight"><a target="_blank" href="{{ route('audit.show', $report->audit->id) }}" class="btn btn-success me-1"><i data-feather="eye"></i> View Audit</a></div>
+              <div class="ms-auto bd-highlight w-25">
+                    <select class="form-control select2-multiple" id="filterStandards" multiple>
+                        @foreach($standards as $standard)
+                            <option value="{{ $standard->id }}">{{ $standard->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-7">
+                <div class="col-lg-7 sticky-top sticky-column">
                     <form action="{{ route('report.update', $report) }}" method="POST" class="form form-vertical" enctype="multipart/form-data">
                     @csrf
                     @method('put')
@@ -84,6 +96,9 @@
                 var text = '';
                 if (self.is("input")) {
                     text = self.val();
+                }else if (self.hasClass("forInsertionWithTarget")) {
+
+                    text = $('#' + self.data('target')).html();
                 } else if (self.is("radio")) {
                      // text = self.val();
                 } else if (self.is("textarea")) {
@@ -107,7 +122,28 @@
             $('input,textarea').attr('readonly', 'readonly');
             $('#forInsertion input:not([checkstate="true"])').attr('disabled', true);
 
+            $('.select2-multiple').select2({
+                placeholder: "Select Standards to Filter",
+            });
 
+            $('#filterStandards').change(function(){
+                
+                // Get selected values
+                var selectedStandards = $(this).val();
+                
+                // Hide all rows initially
+                $('.rowStandard').addClass('d-none');
+                
+                // If no standards are selected, show all rows
+                if(selectedStandards.length === 0) {
+                    $('.rowStandard').removeClass('d-none');
+                } else {
+                    // Show rows corresponding to selected standards
+                    selectedStandards.forEach(function(standardId) {
+                        $('#row-standard-' + standardId).removeClass('d-none');
+                    });
+                }
+            });
           });
     </script>
 @endsection

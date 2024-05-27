@@ -48,7 +48,7 @@ class AuditForm extends Model
                     if($flag != null && ! in_array($flag, explode(',', $q->flags))){
                         continue;
                     }
-                    $summarized[$group->id]['questions'][$q->id] = ['text' => $q->text, 'answers' => []];
+                    $summarized[$group->id]['questions'][$q->id] = ['text' => $q->text, 'audit_form' => $this->id, 'answers' => [],];
                     foreach($headers as $header){
                         $answers = $header->answers;
                         $qAnswer = $answers->where('question_id', $q->id)->first();
@@ -61,7 +61,7 @@ class AuditForm extends Model
                                 }
                             }
                             if(! $found){
-                                $summarized[$group->id]['questions'][$q->id]['answers'][$qAnswer->id] = ['value' => $qAnswer->value, 'times' => 1];
+                                $summarized[$group->id]['questions'][$q->id]['answers'][$qAnswer->id] = ['value' => $qAnswer->value, 'times' => 1,];
                             }
                         }
                     }
@@ -69,18 +69,18 @@ class AuditForm extends Model
             }
         }
         $html = '';
-        foreach($summarized as $group){
-            $html .= '<div class="row mb-5 forInsertion">';
+        foreach($summarized as $key => $group){
+            $html .= '<div class="row mb-5 " id="for-insertion-'. $key .'">';
             $html .= '<table style="border-collapse: collapse; width: 99.9989%;" border="1"><tbody>';
-            $html .= '<tr><th colspan="2">'. $group['name'] .'</th></tr>';
-            foreach($group['questions'] as $questions){
+            $html .= '<tr><th style="text-align:left;" colspan="2" class="forInsertion forInsertionWithTarget" data-target="for-insertion-'. $key .'">'. $group['name'] .'</th></tr>';
+            foreach($group['questions'] as $keyy => $questions){
                 $html .= '<tr>';
                 $html .= '<th align="left" width="50%">'. $questions['text'] .'</th>';
-                $html .= '<td align="left">';
+                $html .= '<td align="left"><a target="_blank" href="'. route('report.showQuestionSummary', ['auditForm' => $questions['audit_form'], 'question' => $keyy]) .'">';
                 foreach($questions['answers'] as $answer){
                     $html.= $answer['value'] . ' - <b>' . $answer['times'] . '</b><br>';
                 }
-                $html .= '</td>';
+                $html .= '</a></td>';
                 $html .= '</tr>';
             }
             $html .= '<tr><th align="left">Total Submission</th><td align="left"><b>'. $headers->count() .'</b></td></tr>';

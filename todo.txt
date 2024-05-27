@@ -1,0 +1,71 @@
+Release 2024-05-20
+1 Roles and priv Fix Created and updated by ok
+
+
+
+2 Audit - Created and Updated by - D gumagalaw pag offline to save online (Updated) - for investigation
+
+3 Audit - how to have status na may remarks (pag may remarks sa loob siguro gawa ka isang field dito na With remarks? or status na lang) - add remarks status if may pending pa na remarks ok
+
+4 Modify and revert Complete audit- Dapat may sariling access #40 - new permission "modify forms" - yung sa complete/revert nasa audit.approve retesting ok
+
+
+
+5 -Hndi nag  eerror pag aassign sa audit yung resource na holiday
+Resource is displayed and assigned even if Holiday for Country/State exists (see 20231031 Release - Resource Checking with Holiday Country/State) - modified validation for retesting
+
+6 offline - No warning displayed after 30 minutes while offline - check offline mode - working fine suggestion leave the tab maybe nagagalaw which would reset the idle time checking
+
+
+
+8 Fix Cron Provide Daily Reminder to Resource on completion of created Audit Form 1 day after its creation - ok
+
+Minors:
+9 On Add Resource, resize columns for Resource and Resource Start and End Dates; Dates are truncated. - bawasan resource dadagdagan width start end - ok fixed
+
+10 FLOAT button -> Need to scroll further down to Save the Audit Schedule (since SPAF is displayed)  ok
+
+11 Pag lead auditor or any access na hndi admin nawawala yung quick links sa main page (Delete mo na lang siguro to) - apply permission sa quick links - already applied permissions please retest
+
+12 Schedule Incorrect Due Date computed (should be based on Audit End Date  + Turn Around Business Days), Report Submitted should be NULL - based on end date minus sat sun ok
+
+
+1: Roles sa audit - nasa view dapat yugn mga buttons (Submit, save, review, etc) ok
+   
+Dashboards - ok
+  Scheduler - Pakita lahat ng ginawa nyang schedules tapos andun
+			  yung lahat ng nag decline at nag accept sa isang table lang ilabas dn name ng schedule + link papunta sa schedule na yon
+			  -add new permission scheduler dashboard 
+				  
+				 
+
+
+MAJOR: implement by 27th of May
+
+1: Report Approval Process
+2: Report creation remodel (Importante yung multiple answer malaman kung ilan sinagot and sino sumagot and anong form name)
+7 Display of certain items in Audit Forms (eg. Radio Button) is null. - report check values of radio/checkbox
+
+allow access to view/edit/delete own forms even if no button permission in current user role - ok
+#2 Updated offline, then saved online; discrepancy in Update Times
+#4 Modify button missing - fixed
+#10 Quick Links in non- Admin roles - fixed
+
+freeze yung mismong editor (sticky) ok
+report standards filter ok
+report multiple summary add a link for each questions showing a table with assigned name, created by ok
+
+apporval process:
+	sa labas:
+		manage audit - See All regardless of assignment
+		manage audit assigned as resource - Manage All Reports Assigned as Resource
+	sa loob:
+		can view, can edit, can review, can approve
+
+		editable google drive link
+		google_drive_link
+		final_pdf file upload
+
+		Review: same with audit, diff is resolve with notes, target based sa 5 permissions na iccreate
+		create 5 permission, Group 1 - 5
+		Statuses - Pending, For Review, Approved - Waiting for PDF, Closed

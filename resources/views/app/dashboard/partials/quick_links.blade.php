@@ -6,16 +6,16 @@
   </div>
   <div class="card-body">
     <div class="row g-1">
-      @if($request->user()->can('tempalte.manage') || $request->user()->can('user.manage') || $request->user()->can('supplier.manage') || $request->user()->can('client.manage'))
+      @if( $request->user()->can('user.manage') || $request->user()->can('role.manage') || $request->user()->can('client.manage') || $request->user()->can('supplier.manage') || $request->user()->can('template.manage') || $request->user()->can('template.approve') || $request->user()->can('spaf.manage') || $request->user()->can('spaf.approve') || $request->user()->can('audit.manage') || $request->user()->can('schedule.selectableAuditor')  || $request->user()->can('report.manage'))
 
-        @can('user.manage')
+        @if( $request->user()->can('user.manage') || $request->user()->can('role.manage'))
         <div class="col-lg-1 col-md-2 col-xs-6">
             <a class="bmGreen cwhite quick-button small" href="{{ route('user.index') }}">
                 <i data-feather="users" class="feather-20 mb-50"></i>
                 <h5 class="cwhite">Users</h5>
             </a>
         </div>
-        @endcan
+        @endif
         @can('client.manage')
         <div class="col-lg-1 col-md-2 col-xs-6">
             <a class="bred cwhite quick-button small" href="{{ route('client.index') }}">
@@ -32,23 +32,50 @@
             </a>
         </div>
         @endcan
-        @can('template.manage')
+        @if( $request->user()->can('template.manage') || $request->user()->can('template.approve'))
         <div class="col-lg-1 col-md-2 col-xs-6">
             <a class="bblue cwhite quick-button small" href="{{ route('template.spaf.index', ['type' => 'spaf']) }}">
                 <i data-feather="file" class="feather-20 mb-50"></i>
                 <h5 class="cwhite">Templates</h5>
             </a>
         </div>
-        @endcan
-        @can('spaf.manage')
+        @endif
+        @if( $request->user()->can('spaf.manage') || $request->user()->can('spaf.approve'))
         <div class="col-lg-1 col-md-2 col-xs-6">
             <a class="byellow cwhite quick-button small" href="{{ route('spaf.index') }}">
                 <i data-feather="package" class="feather-20 mb-50"></i>
                 <h5 class="cwhite">Assessments</h5>
             </a>
         </div>
+        @endif
+
+        <div class="col-lg-1 col-md-2 col-xs-6">
+            <a class="bpink cwhite quick-button small" href="{{ route('schedule.index') }}">
+                <i data-feather="calendar" class="feather-20 mb-50"></i>
+                <h5 class="cwhite">Schedules</h5>
+            </a>
+        </div>
+
+        @if($request->user()->can('audit.manage') || $request->user()->can('schedule.selectableAuditor'))
+        <div class="col-lg-1 col-md-2 col-xs-6">
+            <a class="blightBlue cwhite quick-button small" href="{{ route('audit.index') }}">
+                <i data-feather="folder" class="feather-20 mb-50"></i>
+                <h5 class="cwhite">Audits</h5>
+            </a>
+        </div>
+        @endif
+
+        @can('report.manage')
+        <div class="col-lg-1 col-md-2 col-xs-6">
+            <a class="bgreen cwhite quick-button small" href="{{ route('report.index') }}">
+                <i data-feather="file-text" class="feather-20 mb-50"></i>
+                <h5 class="cwhite">Reports</h5>
+            </a>
+        </div>
         @endcan
       @endif
+
+
         @if($request->user()->hasRole('Client'))
           <div class="col-lg-1 col-md-2 col-xs-6">
             <a class="borange cwhite quick-button small" href="{{ route('spaf.clientIndex') }}">

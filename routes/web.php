@@ -72,7 +72,7 @@ Route::group(['middleware' => ['auth']], function()
     Route::post('audit/storeForm/{audit}/', [AuditController::class, 'storeForm'])->name('audit.storeForm')->middleware('permission:audit.manage');
     Route::resource('audit', AuditController::class)->middleware('permission:audit.manage,schedule.selectableAuditor');
 
-
+    Route::get('report/showQuestionSummary/{auditForm}/{question}', [ReportController::class, 'showQuestionSummary'])->name('report.showQuestionSummary');
     Route::resource('report', ReportController::class);
     Route::get('auditForm/create/{auditForm}/{template:slug?}', [AuditFormController::class, 'create'])->name('auditForm.create')->middleware('permission:audit.manage,schedule.selectableAuditor');
     Route::post('auditForm/{auditForm}', [AuditFormController::class, 'store'])->name('auditForm.store')->middleware('permission:audit.manage,schedule.selectableAuditor');

@@ -25,3 +25,10 @@ Dashboards
   - Provide screen latest upload sa header sa details transactions (file - nullable, comments required)
   - can submit, can review, can approve
   - Open, For Review, For Final Review [if rejected back to open], Approved
+
+
+  ALTER TABLE `aquiware_verite`.`roles` 
+  ADD COLUMN `created_by` BIGINT UNSIGNED NULL DEFAULT 1 AFTER `is_deleted`,
+  ADD COLUMN `updated_by` BIGINT UNSIGNED NULL DEFAULT NULL AFTER `created_by`;
+   INSERT INTO `aquiware_verite_stage`.`permissions` (`name`, `display`, `guard_name`, `created_at`, `updated_at`) VALUES ('dashboard.scheduler', 'Dashboard Scheduler', 'web', '2024-04-07 01:47:27', '2024-04-07 01:47:27');
+INSERT INTO `aquiware_verite_stage`.`permissions` (`name`, `display`, `guard_name`, `created_at`, `updated_at`) VALUES ('auditForm.modifyForms', 'Audit Form access to modify forms', 'web', '2024-04-07 01:47:27', '2024-04-07 01:47:27');

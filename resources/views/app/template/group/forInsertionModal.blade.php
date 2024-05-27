@@ -146,7 +146,7 @@
             <div id="accordionAuditStandard" class="accordion-collapse collapse" aria-labelledby="headingAuditStandard" data-bs-parent="#accordionVariables">
               <div class="accordion-body">
                 @foreach($standards as $standard)
-                  <div class="row mb-2">
+                  <div class="row mb-2 rowStandard" id="row-standard-{{ $standard->id }}">
                       <div class="col-lg-12 col-md-12 col-sm-12">
                           <div class="card">
                               <div class="card-header">
