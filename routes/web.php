@@ -73,7 +73,13 @@ Route::group(['middleware' => ['auth']], function()
     Route::resource('audit', AuditController::class)->middleware('permission:audit.manage,schedule.selectableAuditor');
 
     Route::get('report/showQuestionSummary/{auditForm}/{question}', [ReportController::class, 'showQuestionSummary'])->name('report.showQuestionSummary');
-    Route::resource('report', ReportController::class);
+    Route::get('report/review/{report}', [ReportController::class, 'reviewIndex'])->name('report.review.index');
+    Route::get('report/review/create/{report}', [ReportController::class, 'reviewCreate'])->name('report.review.create');
+    Route::post('report/review/create/{report}', [ReportController::class, 'reviewStore'])->name('report.review.store');
+    Route::post('report/review/resolve/{reportReview}', [ReportController::class, 'reviewResolve'])->name('report.review.resolve');
+    Route::get('report/editor/{report}', [ReportController::class, 'editor'])->name('report.editor');
+    Route::put('report/editorUpdate/{report}', [ReportController::class, 'editorUpdate'])->name('report.editorUpdate');
+    Route::resource('report', ReportController::class)->middleware('permission:report.manage,report.manage_assigned_resource');
     Route::get('auditForm/create/{auditForm}/{template:slug?}', [AuditFormController::class, 'create'])->name('auditForm.create')->middleware('permission:audit.manage,schedule.selectableAuditor');
     Route::post('auditForm/{auditForm}', [AuditFormController::class, 'store'])->name('auditForm.store')->middleware('permission:audit.manage,schedule.selectableAuditor');
 

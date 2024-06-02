@@ -44,16 +44,19 @@ MAJOR: implement by 27th of May
 
 1: Report Approval Process
 2: Report creation remodel (Importante yung multiple answer malaman kung ilan sinagot and sino sumagot and anong form name)
-7 Display of certain items in Audit Forms (eg. Radio Button) is null. - report check values of radio/checkbox
+
 
 allow access to view/edit/delete own forms even if no button permission in current user role - ok
-#2 Updated offline, then saved online; discrepancy in Update Times
 #4 Modify button missing - fixed
 #10 Quick Links in non- Admin roles - fixed
-
 freeze yung mismong editor (sticky) ok
 report standards filter ok
 report multiple summary add a link for each questions showing a table with assigned name, created by ok
+
+
+#2 Updated offline, then saved online; discrepancy in Update Times
+overlapping schedule css
+7 Display of certain items in Audit Forms (eg. Radio Button) is null. - report check values of radio/checkbox
 
 apporval process:
 	sa labas:
@@ -69,3 +72,40 @@ apporval process:
 		Review: same with audit, diff is resolve with notes, target based sa 5 permissions na iccreate
 		create 5 permission, Group 1 - 5
 		Statuses - Pending, For Review, Approved - Waiting for PDF, Closed
+
+
+php artisan migrate --path=/database/migrations/2024_06_01_053718_alter_report_table.php
+php artisan migrate --path=/database/migrations/2024_06_01_140513_create_report_review_table.php
+
+report.manage_assigned_resource
+INSERT INTO `aquiware_verite_stage`.`permissions` (`name`, `display`, `guard_name`, `created_at`, `updated_at`) VALUES ('report.manage_assigned_resource', 'Manage Reports only to Schedule entry assigned as resource', 'web', '2024-04-07 01:47:27', '2024-04-07 01:47:27');
+INSERT INTO `aquiware_verite_stage`.`permissions` (`name`, `display`, `guard_name`, `created_at`, `updated_at`) VALUES ('report.view', 'Report List View Button', 'web', '2024-04-07 01:47:27', '2024-04-07 01:47:27');
+INSERT INTO `aquiware_verite_stage`.`permissions` (`name`, `display`, `guard_name`, `created_at`, `updated_at`) VALUES ('report.edit', 'Report List Edit Button', 'web', '2024-04-07 01:47:27', '2024-04-07 01:47:27');
+INSERT INTO `aquiware_verite_stage`.`permissions` (`name`, `display`, `guard_name`, `created_at`, `updated_at`) VALUES ('report.editor', 'Report List Editor Button', 'web', '2024-04-07 01:47:27', '2024-04-07 01:47:27');
+INSERT INTO `aquiware_verite_stage`.`permissions` (`name`, `display`, `guard_name`, `created_at`, `updated_at`) VALUES ('report.saveandcontinue', 'Report Edit Save and Continue Button', 'web', '2024-04-07 01:47:27', '2024-04-07 01:47:27');
+INSERT INTO `aquiware_verite_stage`.`permissions` (`name`, `display`, `guard_name`, `created_at`, `updated_at`) VALUES ('report.saveandsubmit', 'Report Edit Save and Submit Button', 'web', '2024-04-07 01:47:27', '2024-04-07 01:47:27');
+INSERT INTO `aquiware_verite_stage`.`permissions` (`name`, `display`, `guard_name`, `created_at`, `updated_at`) VALUES ('report.saveandapprove', 'Report Edit Save and Approve Button', 'web', '2024-04-07 01:47:27', '2024-04-07 01:47:27');
+INSERT INTO `aquiware_verite_stage`.`permissions` (`name`, `display`, `guard_name`, `created_at`, `updated_at`) VALUES ('report.saveandclose', 'Report Edit Save and Close Button', 'web', '2024-04-07 01:47:27', '2024-04-07 01:47:27');
+INSERT INTO `aquiware_verite_stage`.`permissions` (`name`, `display`, `guard_name`, `created_at`, `updated_at`) VALUES ('report.review', 'Report Edit Review Function', 'web', '2024-04-07 01:47:27', '2024-04-07 01:47:27');
+INSERT INTO `aquiware_verite_stage`.`permissions` (`name`, `display`, `guard_name`, `created_at`, `updated_at`) VALUES ('report.group_1', 'Report Review target Group 1', 'web', '2024-04-07 01:47:27', '2024-04-07 01:47:27');
+INSERT INTO `aquiware_verite_stage`.`permissions` (`name`, `display`, `guard_name`, `created_at`, `updated_at`) VALUES ('report.group_2', 'Report Review target Group 2', 'web', '2024-04-07 01:47:27', '2024-04-07 01:47:27');
+INSERT INTO `aquiware_verite_stage`.`permissions` (`name`, `display`, `guard_name`, `created_at`, `updated_at`) VALUES ('report.group_3', 'Report Review target Group 3', 'web', '2024-04-07 01:47:27', '2024-04-07 01:47:27');
+INSERT INTO `aquiware_verite_stage`.`permissions` (`name`, `display`, `guard_name`, `created_at`, `updated_at`) VALUES ('report.group_4', 'Report Review target Group 4', 'web', '2024-04-07 01:47:27', '2024-04-07 01:47:27');
+INSERT INTO `aquiware_verite_stage`.`permissions` (`name`, `display`, `guard_name`) VALUES ('report.group_5', 'Report Review target Group 5', 'web');
+
+report.view
+report.edit
+report.editor
+
+report.saveandcontinue
+report.saveandsubmit
+report.saveandapprove
+report.saveandclose
+report.review
+
+
+report.group_1
+report.group_2
+report.group_3
+report.group_4
+report.group_5

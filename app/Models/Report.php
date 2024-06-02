@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Traits\CreatedUpdatedBy;
 use App\Models\Spaf;
 use App\Models\SpafAnswer;
+use Illuminate\Support\Str;
 
 class Report extends Model
 {
@@ -15,10 +16,47 @@ class Report extends Model
 
     protected $table = 'report';
 
-    protected $fillable = ['title', 'audit_id', 'content', 'created_by', 'updated_by'];
+    protected $fillable = ['title', 'audit_id', 'content', 'created_by', 'updated_by', 'google_drive_link', 'final_pdf', 'status'];
 
     public function audit(){
         return $this->belongsTo(Audit::class, 'audit_id');
+    }
+
+    public function reviews(){
+        return $this->hasMany(ReportReview::class, 'report_id');
+    }
+
+    public function getStatusTextAttribute(){
+        switch($this->status){
+            case 0: return 'Pending'; break;
+            case 1: return 'For Review'; break;
+            case 2: return 'Approved - Waiting for Final PDF'; break;
+            case 3: return 'Closed'; break;
+            default: return 'Unknown';
+        }
+    }
+
+    public function getStatusDisplayAttribute(){
+        $statusText = $this->status_text;
+        if($this->status == 0){
+            return '<span class="badge rounded-pill badge-light-danger  me-1">'. $statusText .'</span>';
+        }elseif($this->status == 1){
+            return '<span class="badge rounded-pill badge-light-warning  me-1">'. $statusText .'</span>';
+        }elseif($this->status == 2){
+            return '<span class="badge rounded-pill badge-light-info  me-1">'. $statusText .'</span>';
+        }elseif($this->status == 3){
+            return '<span class="badge rounded-pill badge-light-success  me-1">'. $statusText .'</span>';
+        }else{
+            return '<span class="badge rounded-pill badge-light-danger  me-1">'. $statusText .'</span>';
+        }
+    }
+
+    public function getGoogleDriveLinkDisplayAttribute(){
+        return '<a target="_blank" href="'. $this->google_drive_link .'">'. Str::limit($this->google_drive_link, 20, '...') .'</a>';
+    }
+
+    public function getFinalPdfDisplayAttribute(){
+        return '<a target="_blank" href="'. $this->final_pdf .'">'. Str::limit($this->final_pdf, 20, '...') .'</a>';
     }
 
     public function processContent(){

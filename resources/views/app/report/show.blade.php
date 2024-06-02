@@ -88,13 +88,13 @@
                             <div class="col-lg-6">
                                 <div class="form-group">
                                     <label>Report Title:</label>
-                                    <input type="text" name="title" class="form-control" value="{{ $report->title }}">
+                                    <input type="text" name="title" class="form-control" value="{{ $report->title }}" readonly="readonly">
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group">
                                     <label>{!! $report->google_drive_link ? '<a target="_blank" href="'. $report->google_drive_link .'"> ' : '' !!}Google Drive Link: {!! $report->google_drive_link ? '</a>' : '' !!}</label>
-                                    <input type="text" name="google_drive_link" class="form-control" value="{{ $report->google_drive_link }}">
+                                    <input type="text" name="google_drive_link" class="form-control" value="{{ $report->google_drive_link }}" readonly="readonly">
                                 </div>
                             </div>
                         </div>
@@ -103,7 +103,7 @@
                                 <div class="col-lg-6">
                                     <div class="form-group">
                                         <label>{!! $report->final_pdf ? '<a target="_blank" href="'. $report->final_pdf .'"> ' : '' !!}Final PDF Link: {!! $report->final_pdf ? '</a>' : '' !!}</label>
-                                        <input type="text" name="final_pdf" class="form-control" value="{{ $report->final_pdf }}">
+                                        <input type="text" name="final_pdf" class="form-control" value="{{ $report->final_pdf }}" readonly="readonly">
                                     </div>
                                 </div>
                             </div>

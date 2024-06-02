@@ -28,7 +28,7 @@ class RoleController extends Controller
             $role = Role::where('is_deleted', 0)->orderBy('updated_at', 'desc');
             return Datatables::eloquent($role)
             ->addColumn('action', function(Role $role) {
-                            if(! in_array($role->id, [1,2,3,4])){
+                            if(! in_array($role->id, [1,3,4])){
                                 return Utilities::actionButtons([['route' => route('role.show', $role->id), 'name' => 'Show'],['route' => route('role.edit', $role->id), 'name' => 'Edit'], ['route' => route('role.delete', $role->id), 'name' => 'Delete']]);
                             }else{
                                 return Utilities::actionButtons([['route' => route('role.show', $role->id), 'name' => 'Show'],]);

@@ -40,6 +40,9 @@
               <th>Title</th>
               <th>Audit</th>
               <th>Schedule</th>
+              <th>Status</th>
+              <th>Google Drive Link</th>
+              <th>Final PDF Link</th>
               <th>Created</th>
               <th>Updated</th>
               <th class="noexport">Action</th>
@@ -87,6 +90,9 @@
             { data: 'title', name: 'title'},
             { data: 'audit_title', name: 'audit_title'},
             { data: 'schedule_title', name: 'schedule.title'},
+            { data: 'status', name: 'status'},
+            { data: 'google_drive_link', name: 'google_drive_link'},
+            { data: 'final_pdf', name: 'final_pdf'},
             { data: 'created_at', name: 'created_at'},
             { data: 'updated_at', name: 'updated_at'},
             { data: 'action', name: 'action', 'orderable' : false, 'printable' : false}

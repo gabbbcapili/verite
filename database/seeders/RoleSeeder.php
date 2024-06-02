@@ -70,18 +70,31 @@ class RoleSeeder extends Seeder
             ['name' => 'auditForm.delete', 'display' => 'Audit Form access to delete records'],
             ['name' => 'auditForm.review', 'display' => 'Audit Form access as reviewer'],
             ['name' => 'auditForm.modifyForms', 'display' => 'Audit Form access to modify forms'],
+            
+            ['name' => 'report.manage_assigned_resource', 'display' => 'Manager Reports only to Schedule entry assigned as resource'],
+            ['name' => 'report.view', 'display' => 'Report List View Button'],
+            ['name' => 'report.edit', 'display' => 'Report List Edit Button'],
+            ['name' => 'report.editor', 'display' => 'Report List Editor Button'],
+            ['name' => 'report.saveandcontinue', 'display' => 'Report Edit Save and Continue Button'],
+            ['name' => 'report.saveandsubmit', 'display' => 'Report Edit Save and Submit Button'],
+            ['name' => 'report.saveandapprove', 'display' => 'Report Edit Save and Approve Button'],
+            ['name' => 'report.saveandclose', 'display' => 'Report Edit Save and Close Button'],
+            ['name' => 'report.review', 'display' => 'Report Edit Review Function'],
+            ['name' => 'report.group_1', 'display' => 'Report Review target Group 1'],
+            ['name' => 'report.group_2', 'display' => 'Report Review target Group 2'],
+            ['name' => 'report.group_3', 'display' => 'Report Review target Group 3'],
+            ['name' => 'report.group_4', 'display' => 'Report Review target Group 4'],
+            ['name' => 'report.group_5', 'display' => 'Report Review target Group 5'],
         ];
         foreach($permissions as $p){
             Permission::create($p);
         }
 
         $sa_permission = Permission::all();
-        $sa->syncPermissions(['user.manage', 'spaf.manage','template.manage', 'supplier.manage', 'client.manage', 'spaf.approve', 'role.manage', 'template.approve', 'dashboard.default', 'settings.email.manage', 'settings.country.manage', 'settings.scheduleStatus.manage', 'settings.auditModel.manage', 'schedule.manage', 'settings.schedule.manage', 'schedule.selectableAuditor', 'audit.manage', 'audit.approve', 'settings.audit.manage', 'report.manage', 'settings.standard.manage', 'audit.auditform', 'audit.wif', 'audit.drf', 'audit.mif', 'audit.all_records', 'auditForm.saveandcontinue', 'auditForm.saveandsubmit', 'auditForm.saveandapprove', 'auditForm.view', 'auditForm.edit', 'auditForm.delete', 'auditForm.review', 'auditForm.modifyForms']);
+        $sa->syncPermissions(['user.manage', 'spaf.manage','template.manage', 'supplier.manage', 'client.manage', 'spaf.approve', 'role.manage', 'template.approve', 'dashboard.default', 'settings.email.manage', 'settings.country.manage', 'settings.scheduleStatus.manage', 'settings.auditModel.manage', 'schedule.manage', 'settings.schedule.manage', 'schedule.selectableAuditor', 'audit.manage', 'audit.approve', 'settings.audit.manage', 'report.manage', 'settings.standard.manage', 'audit.auditform', 'audit.wif', 'audit.drf', 'audit.mif', 'audit.all_records', 'auditForm.saveandcontinue', 'auditForm.saveandsubmit', 'auditForm.saveandapprove', 'auditForm.view', 'auditForm.edit', 'auditForm.delete', 'auditForm.review', 'auditForm.modifyForms', 'report.manage_assigned_resource', 'report.view', 'report.edit', 'report.editor', 'report.saveandcontinue', 'report.saveandsubmit', 'report.saveandapprove', 'report.saveandclose', 'report.review', 'report.group_1']);
         $default->syncPermissions(['dashboard.default']);
         $supplier->syncPermissions(['dashboard.supplier']);
         $client->syncPermissions(['dashboard.client']);
-
-
 
 
         User::find(1)->assignRole('Super Admin');

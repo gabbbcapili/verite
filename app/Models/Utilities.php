@@ -17,7 +17,8 @@ class Utilities extends Model
             'Default' => 'thumbs-up',
             'confirmWithNotes' => 'copy',
             'confirm' => 'copy',
-            'archive' => 'archive'
+            'archive' => 'archive',
+            'Report Editor' => 'layout'
         ];
     }
 

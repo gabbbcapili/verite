@@ -6,7 +6,7 @@
   </div>
   <div class="card-body">
     <div class="row g-1">
-      @if( $request->user()->can('user.manage') || $request->user()->can('role.manage') || $request->user()->can('client.manage') || $request->user()->can('supplier.manage') || $request->user()->can('template.manage') || $request->user()->can('template.approve') || $request->user()->can('spaf.manage') || $request->user()->can('spaf.approve') || $request->user()->can('audit.manage') || $request->user()->can('schedule.selectableAuditor')  || $request->user()->can('report.manage'))
+      @if( $request->user()->can('user.manage') || $request->user()->can('role.manage') || $request->user()->can('client.manage') || $request->user()->can('supplier.manage') || $request->user()->can('template.manage') || $request->user()->can('template.approve') || $request->user()->can('spaf.manage') || $request->user()->can('spaf.approve') || $request->user()->can('audit.manage') || $request->user()->can('schedule.selectableAuditor')  || $request->user()->can('report.manage') || $request->user()->can('report.manage_assigned_resource'))
 
         @if( $request->user()->can('user.manage') || $request->user()->can('role.manage'))
         <div class="col-lg-1 col-md-2 col-xs-6">
@@ -65,14 +65,14 @@
         </div>
         @endif
 
-        @can('report.manage')
+        @if($request->user()->can('report.manage') || $request->user()->can('report.manage_assigned_resource'))
         <div class="col-lg-1 col-md-2 col-xs-6">
             <a class="bgreen cwhite quick-button small" href="{{ route('report.index') }}">
                 <i data-feather="file-text" class="feather-20 mb-50"></i>
                 <h5 class="cwhite">Reports</h5>
             </a>
         </div>
-        @endcan
+        @endif
       @endif
 
 

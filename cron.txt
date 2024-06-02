@@ -1,0 +1,2 @@
+/usr/local/bin/ea-php81 /home4/aquiware/public_html/verite/artisan schedule:run
+/usr/local/bin/ea-php81 /home4/aquiware/public_html/verite-stage/artisan schedule:run

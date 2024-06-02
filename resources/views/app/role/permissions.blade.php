@@ -445,8 +445,161 @@
               <span class="">Manage Reports</span>
             </div></fieldset>
           </td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="report.manage_assigned_resource" name="permissions[]" {{ isset($roleList) ? in_array('report.manage_assigned_resource', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="users" class="vs-icon"></i></span>
+              </span>
+              <span class="">Manage Reports only to Schedule entry assigned as resource</span>
+            </div></fieldset>
+          </td>
           <td></td>
+        </tr>
+
+        <tr>
           <td></td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="report.view" name="permissions[]" {{ isset($roleList) ? in_array('report.view', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="eye" class="vs-icon"></i></span>
+              </span>
+              <span class="">Can View</span>
+            </div></fieldset>
+          </td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="report.edit" name="permissions[]" {{ isset($roleList) ? in_array('report.edit', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="edit" class="vs-icon"></i></span>
+              </span>
+              <span class="">Can Edit</span>
+            </div></fieldset>
+          </td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="report.editor" name="permissions[]" {{ isset($roleList) ? in_array('report.editor', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="layout" class="vs-icon"></i></span>
+              </span>
+              <span class="">Can Use Editor</span>
+            </div></fieldset>
+          </td>
+        </tr>
+
+        <tr>
+          <td></td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="report.saveandcontinue" name="permissions[]" {{ isset($roleList) ? in_array('report.saveandcontinue', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="pocket" class="vs-icon"></i></span>
+              </span>
+              <span class="">Save and Continue Button</span>
+            </div></fieldset>
+          </td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="report.saveandsubmit" name="permissions[]" {{ isset($roleList) ? in_array('report.saveandsubmit', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="check-circle" class="vs-icon"></i></span>
+              </span>
+              <span class="">Save and Submit Button</span>
+            </div></fieldset>
+          </td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="report.saveandapprove" name="permissions[]" {{ isset($roleList) ? in_array('report.saveandapprove', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="check-circle" class="vs-icon"></i></span>
+              </span>
+              <span class="">Save and Approve Button</span>
+            </div></fieldset>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="report.saveandclose" name="permissions[]" {{ isset($roleList) ? in_array('report.saveandclose', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="x-square" class="vs-icon"></i></span>
+              </span>
+              <span class="">Save and Close</span>
+            </div></fieldset>
+          </td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="report.review" name="permissions[]" {{ isset($roleList) ? in_array('report.review', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="book-open" class="vs-icon"></i></span>
+              </span>
+              <span class="">Can Review</span>
+            </div></fieldset>
+          </td>
+          <td></td>
+        </tr>
+      </tbody>
+      <thead>
+        <tr>
+          <th>Report Review Group</th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td></td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="report.group_1" name="permissions[]" {{ isset($roleList) ? in_array('report.group_1', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="user-plus" class="vs-icon"></i></span>
+              </span>
+              <span class="">{{ config('report.target_groups')['report.group_1'] }}</span>
+            </div></fieldset>
+          </td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="report.group_2" name="permissions[]" {{ isset($roleList) ? in_array('report.group_2', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="user-plus" class="vs-icon"></i></span>
+              </span>
+              <span class="">{{ config('report.target_groups')['report.group_2'] }}</span>
+            </div></fieldset>
+          </td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="report.group_3" name="permissions[]" {{ isset($roleList) ? in_array('report.group_3', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="user-plus" class="vs-icon"></i></span>
+              </span>
+              <span class="">{{ config('report.target_groups')['report.group_3'] }}</span>
+            </div></fieldset>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="report.group_4" name="permissions[]" {{ isset($roleList) ? in_array('report.group_4', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="user-plus" class="vs-icon"></i></span>
+              </span>
+              <span class="">{{ config('report.target_groups')['report.group_4'] }}</span>
+            </div></fieldset>
+          </td>
+          <td>
+            <fieldset><div class="vs-checkbox-con vs-checkbox-primary">
+              <input type="checkbox" value="report.group_5" name="permissions[]" {{ isset($roleList) ? in_array('report.group_5', $roleList) ? 'checked' : '' : '' }}>
+              <span class="vs-checkbox">
+                <span class="vs-checkbox--check"><i data-feather="user-plus" class="vs-icon"></i></span>
+              </span>
+              <span class="">{{ config('report.target_groups')['report.group_5'] }}</span>
+            </div></fieldset>
+          </td>
         </tr>
       </tbody>
       <thead>

@@ -193,7 +193,7 @@
   </li>
   @endif
 
-  @if($request->user()->can('report.manage'))
+  @if($request->user()->can('report.manage') || $request->user()->can('report.manage_assigned_resource'))
   <li class="nav-item has-sub" style=""><a class="d-flex align-items-center" href="#">
     <i data-feather="file-text"></i>
     <span class="menu-title text-truncate">Reports</span><span class="badge badge-light-warning rounded-pill ms-auto me-1" id="badge_audits"></span></a>
@@ -202,10 +202,12 @@
           <a class="d-flex align-items-center" href="{{ route('report.index') }}"><i data-feather="circle"></i>
           <span class="menu-item text-truncate">List Reports</span></a>
         </li>
+        @if($request->user()->can('report.manage'))
         <li class="nav-item {{ $request->segment(1) == 'report' && $request->segment(2) == 'create' ? 'active' : '' }}">
           <a class="d-flex align-items-center" href="{{ route('report.create') }}"><i data-feather="plus-circle"></i>
           <span class="menu-item text-truncate">Create New Report</span></a>
         </li>
+        @endif
     </ul>
   </li>
   @endif
