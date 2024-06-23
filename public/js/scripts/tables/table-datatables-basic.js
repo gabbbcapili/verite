@@ -58,7 +58,9 @@ $(function () {
     // $('div.head-label').html('<h6 class="mb-0"> ' + table_title +' </h6>');
   }
 
-
+  if(typeof(initialSearchValue) !== 'undefined'){
+    dt_basic.search(initialSearchValue).draw();
+  }    
 
   $('.view_modal').on('hidden.bs.modal', function () {
         dt_basic.ajax.reload();

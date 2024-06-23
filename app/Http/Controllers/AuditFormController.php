@@ -79,7 +79,7 @@ class AuditFormController extends Controller
 
             $auditFormHeader = $auditForm->headers()->create($requestFormHeaders);
 
-            Question::processAnswers($request, $auditFormHeader, 'uploads/audit/');
+            Question::processAnswers($request, $auditFormHeader, 'uploads/spaf/');
             DB::commit();
             $output = ['success' => 1,
                         'msg' => 'Audit Form answered successfully!',
@@ -158,7 +158,7 @@ class AuditFormController extends Controller
 
             $auditFormHeader->update($requestFormHeaders);
 
-            Question::processAnswers($request, $auditFormHeader, 'uploads/audit/');
+            Question::processAnswers($request, $auditFormHeader, 'uploads/spaf/');
             DB::commit();
             $output = ['success' => 1,
                         'msg' => 'Audit Form answered successfully!',

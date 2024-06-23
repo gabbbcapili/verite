@@ -62,7 +62,7 @@
                           <thead>
                             <tr>
                               <th>Id</th>
-                              <th>Target Group</th>
+                              <th>Target</th>
                               <th>File</th>
                               <th>Message</th>
                               <th>Resolved Notes</th>
@@ -102,8 +102,8 @@
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group">
-                                        <label>{!! $report->final_pdf ? '<a target="_blank" href="'. $report->final_pdf .'"> ' : '' !!}Final PDF Link: {!! $report->final_pdf ? '</a>' : '' !!}</label>
-                                        <input type="text" name="final_pdf" class="form-control" value="{{ $report->final_pdf }}">
+                                        <label>Final PDF: {!! $report->FinalPdfDisplay !!}</label>
+                                        <input type="file" accept="application/pdf" name="final_pdf" class="form-control" value="{{ $report->final_pdf }}">
                                     </div>
                                 </div>
                             </div>

@@ -4,7 +4,7 @@
 {{ $reportReview->updated_by_user->fullName }} marked your review as resolved.
 
 @component('mail::panel')
-<p>Target Group: {{ $reportReview->target_group_display }}</p>
+<p>Target: {{ $reportReview->target_group_display }}</p>
 <p>Message: {{ $reportReview->message }}</p>
 <p>File Link: {!! $reportReview->file_display !!}</p>
 <p>Status: {{ $reportReview->status }}</p>

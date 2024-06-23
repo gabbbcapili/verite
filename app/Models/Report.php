@@ -56,7 +56,7 @@ class Report extends Model
     }
 
     public function getFinalPdfDisplayAttribute(){
-        return '<a target="_blank" href="'. $this->final_pdf .'">'. Str::limit($this->final_pdf, 20, '...') .'</a>';
+        return '<a target="_blank" href="/images/finalpdf/'. $this->final_pdf .'">'. Str::limit($this->final_pdf, 20, '...') .'</a>';
     }
 
     public function processContent(){

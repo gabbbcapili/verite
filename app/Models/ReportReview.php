@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\CreatedUpdatedBy;
 use Illuminate\Support\Str;
+use App\Models\User;
 
 class ReportReview extends Model
 {
@@ -27,8 +28,12 @@ class ReportReview extends Model
     }
 
     public function getTargetGroupDisplayAttribute(){
-        $groups = config('report.target_groups');
-        return isset($groups[$this->target_group]) ? $groups[$this->target_group] : '';
+        // $groups = config('report.target_groups');
+        // return isset($groups[$this->target_group]) ? $groups[$this->target_group] : '';
+        $targets = User::whereIn('id', explode(',', $this->target_group))->get()->pluck('full_name');
+        if($targets->count()){
+            return $targets->implode(', ');
+        }
     }
     
     public function getStatusClass(){

@@ -541,7 +541,7 @@
           <td></td>
         </tr>
       </tbody>
-      <thead>
+      <!-- <thead>
         <tr>
           <th>Report Review Group</th>
           <th></th>
@@ -601,7 +601,7 @@
             </div></fieldset>
           </td>
         </tr>
-      </tbody>
+      </tbody> -->
       <thead>
         <tr>
           <th>Settings</th>

@@ -173,11 +173,20 @@ class AuditController extends Controller
      * @param  \App\Models\Audit  $audit
      * @return \Illuminate\Http\Response
      */
-    public function show(Audit $audit)
+    public function show(Request $request, Audit $audit)
     {
         $breadcrumbs = [
             ['link'=>"/",'name'=>"Home"],['link'=> route('audit.index'), 'name'=>"Audits"], ['name'=>"Details"]
         ];
+
+        if($request->user()->can('audit.manage')){
+
+        }else{
+            $hasAcess = $audit->schedule->event->users()->where('modelable_id',$request->user()->id)->where('modelable_type', 'App\Models\User')->first();
+            if(! $hasAcess){
+                abort(401);
+            }
+        }
         $schedule = $audit->schedule;
         return view('app.audit.show', compact('audit', 'schedule', 'breadcrumbs'));
     }

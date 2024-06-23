@@ -67,7 +67,7 @@ apporval process:
 
 		editable google drive link
 		google_drive_link
-		final_pdf file upload
+		final_pdf file link
 
 		Review: same with audit, diff is resolve with notes, target based sa 5 permissions na iccreate
 		create 5 permission, Group 1 - 5
@@ -75,7 +75,7 @@ apporval process:
 
 
 php artisan migrate --path=/database/migrations/2024_06_01_053718_alter_report_table.php
-php artisan migrate --path=/database/migrations/2024_06_01_140513_create_report_review_table.php
+php artisan migrate --path=/database/migrations/2024_06_01_140514_create_report_review_table.php
 
 report.manage_assigned_resource
 INSERT INTO `aquiware_verite_stage`.`permissions` (`name`, `display`, `guard_name`, `created_at`, `updated_at`) VALUES ('report.manage_assigned_resource', 'Manage Reports only to Schedule entry assigned as resource', 'web', '2024-04-07 01:47:27', '2024-04-07 01:47:27');
@@ -93,6 +93,7 @@ INSERT INTO `aquiware_verite_stage`.`permissions` (`name`, `display`, `guard_nam
 INSERT INTO `aquiware_verite_stage`.`permissions` (`name`, `display`, `guard_name`, `created_at`, `updated_at`) VALUES ('report.group_4', 'Report Review target Group 4', 'web', '2024-04-07 01:47:27', '2024-04-07 01:47:27');
 INSERT INTO `aquiware_verite_stage`.`permissions` (`name`, `display`, `guard_name`) VALUES ('report.group_5', 'Report Review target Group 5', 'web');
 
+New Permissions
 report.view
 report.edit
 report.editor
@@ -109,3 +110,42 @@ report.group_2
 report.group_3
 report.group_4
 report.group_5
+
+
+
+
+
+
+#2 Updated offline, then saved online; discrepancy in Update Times
+overlapping schedule css
+#7 Display of certain items in Audit Forms (eg. Radio Button) is null. - report check values of radio/checkbox
+
+#0 Profile pic
+
+
+
+
+
+https://verite.aquiware.com/report/editor/25 
+	- URL not found pag dodownload ng file - Audit -> Document Review Form test - Adrian Clone - ok
+	- Fix table presentation in summary - 
+			- di lumalabas answers - Audit-> Management Interview Form v1 -> search work hours policy -  no display on answers [table] - a title field
+			- kulang answers - Audit-> WI Form_CAV Izumo_Japan -> search during busy production periods - kulang ang answers isa lang lumabas [table] - one answer only found
+
+
+Disable access pag d nila accessible talaga ung schedule( accessed by url) ok
+check schedule views for users who dont have manage.schedule ok
+
+Disable access pag d nila accessible talaga ung audit( accessed by url) ok
+
+Report process improvement - ok
+-pag pindot sa multiple forms
+Halimbawa
+Yes-10
+No- 5
+Pag no pinindot filter mo na agad sa No tapos may option lang to clear para lumabas lahat ung 15 ok
+
+report - pdf upload as file - ok
+
+report reviewers - Remove target groups change to multi select users (users that have "can review" in report) - ok
+access matrix if may "Can review" Selectable sya sa target drop down" - ok

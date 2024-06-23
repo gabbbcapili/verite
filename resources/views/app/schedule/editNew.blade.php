@@ -48,9 +48,9 @@
                                   
                                   <option value="Leave" {{ $event->type == 'Leave' ? 'selected' : '' }}>Leave</option>
                                   <option value="Holiday" {{ $event->type == 'Holiday' ? 'selected' : '' }}>Holiday (Resource / Company)</option>
-                                  @can('schedule.manage')
+                                  
                                   <option value="Holiday Country" {{ $event->type == 'Holiday Country' ? 'selected' : '' }}>Holiday (Country / State)</option>
-                                  @endcan
+                                  
                                   <option value="Unavailable" {{ $event->type == 'Unavailable' ? 'selected' : '' }}>Unavailable</option>
                                 </select>
                               </div>

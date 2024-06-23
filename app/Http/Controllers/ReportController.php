@@ -208,7 +208,11 @@ class ReportController extends Controller
         if(! $request->has('save_finish_later')){
             $validation['google_drive_link'] = ['required', 'url'];
             if($request->has('save_close')){
-                $validation['final_pdf'] = ['required', 'url'];
+                $validation['final_pdf'] = ['file', 'mimes:pdf'];
+                if(! $report->final_pdf){
+                    $validation['final_pdf'][] = 'required';
+                }
+                
             }
         }
 
@@ -228,6 +232,12 @@ class ReportController extends Controller
 
             }else if($request->has('save_submit')){
                 $data['status'] = 1;
+            }
+            if($request->hasFile('final_pdf')){
+              $photo = $data['final_pdf'];
+              $new_name = 'final_pdf_'  . sha1(time()) . '.' . $photo->getClientOriginalExtension();
+              $photo->move(public_path('images/finalpdf/') , $new_name);
+              $data['final_pdf'] = $new_name;
             }
 
             $report = $report->update($data);
@@ -328,20 +338,36 @@ class ReportController extends Controller
                 return $auditFormAnswer->created_at->format('M d, Y') . ' | ' . $auditFormAnswer->createdByName;
             })
             ->rawColumns(['form_name'])
+            ->smart(false)
             ->make(true);
         }
         return view('app.report.questionSummary', compact('audit', 'auditForm', 'question', 'schedule', 'breadcrumbs'));
     }
 
     public function reviewCreate(Report $report){
-        $targets = config('report.target_groups');
+        $targets = collect([]);
+        $permissionName = 'report.review';
+            $permission = Permission::where('name', $permissionName)->first();
+            if ($permission) {
+
+                $rolesWithPermission = Role::whereHas('permissions', function ($query) use ($permissionName) {
+                    $query->where('name', $permissionName);
+                })->pluck('id')->toArray();
+
+                $usersWithPermission = User::whereHas('roles', function ($query) use ($rolesWithPermission) {
+                    $query->whereIn('roles.id', $rolesWithPermission);
+                })->get();
+                if($usersWithPermission->count()){
+                    $targets = $usersWithPermission;
+                }
+            }
         return view('app.report.review.create', compact('report', 'targets'));
     }
 
     public function reviewStore(Report $report, Request $request){
         $validator = Validator::make($request->all(),
             [
-                'target_group' => 'required',
+                'target_group' => ['required', 'array'],
                 'message' => 'required',
                 'file' => ['nullable', 'url']
             ]);
@@ -350,30 +376,38 @@ class ReportController extends Controller
         }
         try {
             DB::beginTransaction();
+
             $review = $report->reviews()->create([
                 'status' => 'Pending',
-                'target_group' => $request->target_group,
+                'target_group' => implode(',', $request->target_group),
                 'message' => $request->message,
                 'file' => $request->file
             ]);
 
-            // mail to target group permission
-            $permissionName = $request->target_group;
-            $permission = Permission::where('name', $permissionName)->first();
-            if ($permission) {
-                // Get all roles that have this permission
-                $rolesWithPermission = Role::whereHas('permissions', function ($query) use ($permissionName) {
-                    $query->where('name', $permissionName);
-                })->pluck('id')->toArray();
-
-                // Get all users that have any of these roles
-                $usersWithPermission = User::whereHas('roles', function ($query) use ($rolesWithPermission) {
-                    $query->whereIn('roles.id', $rolesWithPermission);
-                })->pluck('email');
-                if($usersWithPermission->count()){
-                    Mail::to($usersWithPermission)->send(new ReviewNotification($review));
+            if($request->target_group){
+                $targets = User::whereIn('id', $request->target_group)->pluck('email');
+                if($targets->count()){
+                Mail::to($targets)->send(new ReviewNotification($review));
                 }
             }
+
+            // mail to target group permission
+            // $permissionName = $request->target_group;
+            // $permission = Permission::where('name', $permissionName)->first();
+            // if ($permission) {
+            //     // Get all roles that have this permission
+            //     $rolesWithPermission = Role::whereHas('permissions', function ($query) use ($permissionName) {
+            //         $query->where('name', $permissionName);
+            //     })->pluck('id')->toArray();
+
+            //     // Get all users that have any of these roles
+            //     $usersWithPermission = User::whereHas('roles', function ($query) use ($rolesWithPermission) {
+            //         $query->whereIn('roles.id', $rolesWithPermission);
+            //     })->pluck('email');
+            //     if($usersWithPermission->count()){
+            //         Mail::to($usersWithPermission)->send(new ReviewNotification($review));
+            //     }
+            // }
             
             
             DB::commit();
@@ -435,9 +469,9 @@ class ReportController extends Controller
                         'table_id' => 'report_form_reviews',
                     ];
 
-            if($reportReview->created_by_user->id != $request->user()->id){
+            // if($reportReview->created_by_user->id != $request->user()->id){
                 Mail::to($reportReview->created_by_user)->send(new ReviewResolved($reportReview));
-            }
+            // }
         } catch (\Exception $e) {
             \Log::emergency("File:" . $e->getFile(). " Line:" . $e->getLine(). " Message:" . $e->getMessage());
             $output = ['success' => 0,

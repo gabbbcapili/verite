@@ -88,6 +88,7 @@
       $(document).ready(function(){
         $('.select2').select2();
       });
+      var initialSearchValue = '{{ $request->get("search") }}';
   </script>
   <script src="{{ asset('js/scripts/tables/table-datatables-basic.js') }}"></script>
   <script src="{{ asset('js/scripts/forms-validation/form-normal.js') }}"></script>

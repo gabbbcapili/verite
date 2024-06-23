@@ -12,7 +12,7 @@
       </div>
       <div class="modal-body">
         <div class="row mb-2">
-            <div class="col-lg-6">
+            <!-- <div class="col-lg-6">
                 <label>Target Group:</label>
                 <select class="form-control select2Modal" name="target_group">
                     <option disabled selected></option>
@@ -20,8 +20,18 @@
                         <option value="{{ $key }}">{{ $val }}</option>
                     @endforeach
                 </select>
+            </div> -->
+            <div class="col-lg-12">
+                <label>Target:</label>
+                <select class="form-control select2Modal" name="target_group[]" multiple>
+                    @foreach($targets as $user)
+                        <option value="{{ $user->id }}">{{ $user->fullName }}</option>
+                    @endforeach
+                </select>
             </div>
-            <div class="col-lg-6">
+        </div>
+        <div class="row mb-2">
+            <div class="col-lg-12">
                 <div class="form-group">
                     <label>File Link:</label>
                     <input type="text" name="file" class="form-control">

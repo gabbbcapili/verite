@@ -162,6 +162,15 @@ class ScheduleController extends Controller
                                         })->where('status', 0)->where('event_id', $event->id)->first();
         $rejectedSchedules = $event->users()->withTrashed()->where('status', 2)->get();
 
+        $currentUser = $request->user();
+
+        if(! $currentUser->can('schedule.manage')){
+            $hasAccess = $request->user()->events()->where('event_id', $event->id)->first();
+            if(! $hasAccess){
+                abort(401);
+            }
+        }
+
         return view('app.schedule.editNew', compact('auditmodels','schedulestatuses','countries', 'event', 'schedule', 'client', 'supplier', 'companies', 'scheduleStatus', 'next_stop', 'proficiencies', 'auditors', 'breadcrumbs', 'countries', 'states', 'userEvents', 'rejectedSchedules'));
     }
 

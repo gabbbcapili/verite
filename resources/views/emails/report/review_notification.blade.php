@@ -4,7 +4,7 @@
 {{ $reportReview->created_by_user->fullName }} added a review on the report titled <b>"{{ $report->title }}"</b>
 
 @component('mail::panel')
-<p>Target Group: {{ $reportReview->target_group_display }}</p>
+<p>Target: {{ $reportReview->target_group_display }}</p>
 <p>Message: {{ $reportReview->message }}</p>
 <p>File Link: {!! $reportReview->file_display !!}</p>
 <p>Status: {{ $reportReview->status }}</p>

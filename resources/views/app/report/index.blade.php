@@ -42,7 +42,7 @@
               <th>Schedule</th>
               <th>Status</th>
               <th>Google Drive Link</th>
-              <th>Final PDF Link</th>
+              <th>Final PDF</th>
               <th>Created</th>
               <th>Updated</th>
               <th class="noexport">Action</th>

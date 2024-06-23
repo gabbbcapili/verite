@@ -76,11 +76,13 @@ class AuditForm extends Model
             foreach($group['questions'] as $keyy => $questions){
                 $html .= '<tr>';
                 $html .= '<th align="left" width="50%">'. $questions['text'] .'</th>';
-                $html .= '<td align="left"><a target="_blank" href="'. route('report.showQuestionSummary', ['auditForm' => $questions['audit_form'], 'question' => $keyy]) .'">';
+                $html .= '<td align="left">';
                 foreach($questions['answers'] as $answer){
-                    $html.= $answer['value'] . ' - <b>' . $answer['times'] . '</b><br>';
+                    $html .= '<a target="_blank" href="'. route('report.showQuestionSummary', ['auditForm' => $questions['audit_form'], 'question' => $keyy, 'search' => $answer['value']]) .'">';
+                    $html .= $answer['value'] . ' - <b>' . $answer['times'] . '</b><br>';
+                    $html .= '</a>';
                 }
-                $html .= '</a></td>';
+                $html .= '</td>';
                 $html .= '</tr>';
             }
             $html .= '<tr><th align="left">Total Submission</th><td align="left"><b>'. $headers->count() .'</b></td></tr>';
